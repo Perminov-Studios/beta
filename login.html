@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -8,24 +8,19 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="assets/CSS/login.css">
+
 </head>
 
 <body>
-    
-
-    <!-- RESET PASSWORD MODAL -->
-    <input type="checkbox" id="my_modal_7" class="modal-toggle" />
-    <div class="modal" role="dialog">
-        <div class="modal-box">
-            <h3 class="text-lg font-bold">Hello!</h3>
-            <p class="py-4">This modal works with a hidden checkbox!</p>
-        </div>
-        <label class="modal-backdrop" for="my_modal_7">Close</label>
-    </div>
-
     <div class="container" id="container">
         <div class="form-container sign-up-container">
             <form action="#" id="createAccount">
+                <div role="alert" class="hide alert alert-error alert-outline">
+                    <span>Error! Task failed successfully.</span>
+                </div>
+                <div role="alert" class="hide alert alert-success alert-outline">
+                    <span>Check your email for a confirmation link.</span>
+                </div>
                 <h1>Create Account<span id="dot">.</span></h1>
                 </h1>
 
@@ -66,11 +61,18 @@
                         title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
                 </label>
                 <br>
-                <button>Sign Up</button>
+                <button class="button">Register<span class="hide loading loading-spinner text-success"></span>
+                </button>
             </form>
         </div>
         <div class="form-container sign-in-container">
-            <form action="#" id="signIntoAccount">
+            <form action="#" id="signIntoAccount" class="formBorder">
+                <div role="alert" class="hide alert alert-error alert-outline">
+                    <span>Error! Task failed successfully.</span>
+                </div>
+                <div role="alert" class="alert alert-success alert-outline">
+                    <span>Login Successfull </span>
+                </div>
                 <h1>Welcome Back<span id="dot">.</span></h1>
                 <div class="social-container" style="display: none;">
                     <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -102,25 +104,69 @@
                         pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                         title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
                 </label>
-                <a href="#" style="color: #465259;" for="my_modal_7">Forgot your password?</a>
-                <button>Sign In</button>
+                <a href="#" style="color: #465259;" onclick="my_modal_1.showModal()">Forgot your password?</a>
+                <!-- Open the modal using ID.showModal() method -->
+
+                <button class="button">
+                    Sign In <span class="hide loading loading-spinner text-success"></span>
+                </button>
             </form>
         </div>
         <div class="overlay-container">
             <div class="overlay">
                 <div class="overlay-panel overlay-left">
-                    <h1>Welcome Back!</h1>
-                    <p>To keep connected with us please login with your personal info</p>
-                    <button class="ghost" id="signIn">Sign In</button>
+                    <h1>Oops, meant to login?</h1>
+                    <p>Log in and pick up where you left off</p>
+                    <button class="button ghost" id="signIn">Sign In</button>
                 </div>
                 <div class="overlay-panel overlay-right">
-                    <h1>Hello, Friend!</h1>
-                    <p>Enter your personal details and start journey with us</p>
-                    <button class="ghost" id="signUp">Sign Up</button>
+                    <h1>Not a member?</h1>
+                    <p>Register now to join our community!</p>
+                    <button class="button ghost" id="signUp">Register</button>
                 </div>
             </div>
         </div>
     </div>
+    <dialog id="my_modal_1" class="modal mainModal">
+        <div class="modal-box loginModal">
+            <span class="hide" id="emailSentMessage">
+                <div role="alert" class="alert alert-success alert-soft">
+                    <span><b>Email Sent</b> - check your inbox or spam</span>
+                </div>
+                <br><br><br>
+            </span>
+
+
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+
+            <h1 class="sm:text-3xl golden text-center">Forgot Password<span style="font-size: 30px !important;" id="dot">?</span></h1>
+            <fieldset class="fieldset">
+                <h3 class="text-center">No worries, we'll send you instructions</h3>
+                <br>
+                <label class="input validator w-full">
+                    <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none"
+                            stroke="currentColor">
+                            <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                        </g>
+                    </svg>
+                    <input type="email" placeholder="mail@site.com" required />
+                </label>
+            </fieldset>
+            <button class="btn btn-soft btn-success btn-block mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                </svg>
+                Send reset link
+            </button>
+        </div>
+    </dialog>
 </body>
 <script src="assets/JS/script.js"></script>
+
 </html>

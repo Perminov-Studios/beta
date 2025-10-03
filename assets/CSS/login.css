@@ -4,11 +4,82 @@
   box-sizing: border-box;
 }
 
+[data-theme="dark"] {
+  --rounded-box: 1rem;
+
+  /* core palette */
+  --primary: #16a34a; /* green primary */
+  --primary-content: #ffffff;
+  --primary-focus: #0f7a38;
+
+  --secondary: #0ea5a4;
+  --accent: #7c3aed;
+  --neutral: #0b1220;
+
+  --base-100: #0b1014; /* page background */
+  --base-200: #0f1720; /* panels */
+  --base-300: #132123; /* inputs, etc. */
+
+  --info: #60a5fa;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+}
+
+/* Optional: a custom theme name if you want to toggle between two dark variants */
+[data-theme="my-dark"] {
+  --primary: #06b6d4;
+  --primary-content: #001219;
+  --base-100: #071018;
+  --base-200: #08121a;
+  --base-300: #091518;
+  --accent: #ffb703;
+  --neutral: #0b1220;
+}
+
+/* ------- DaisyUI CDN modal scrollbar-gutter override ------- */
+/* Preferred: only when a dialog is open (requires :has() support) */
+html:has(dialog[open]),
+body:has(dialog[open]),
+html:has(.modal[open]),
+body:has(.modal[open]) {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+  scrollbar-gutter: auto !important;
+}
+
+/* Fallbacks and overrides for inline styles or DaisyUI attributes/classes */
+html[data-daisyui-modal-open],
+body[data-daisyui-modal-open],
+html.modal-open,
+body.modal-open,
+.daisyui-modal-open,
+.modal-open,
+html[style*="scrollbar-gutter"],
+body[style*="scrollbar-gutter"],
+html[style*="padding-right"],
+body[style*="padding-right"] {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+  scrollbar-gutter: auto !important;
+}
+
+/* If you don't care about preventing layout shift elsewhere, force globally */
+html,
+body {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+  scrollbar-gutter: auto !important;
+}
+
+.hide {
+  display: none;
+}
+
 body {
   background: #091011;
   background: linear-gradient(rgba(11, 19, 20, 0.9), rgba(11, 19, 20, 0.9)),
-    url("../images/main.png")
-      center/cover no-repeat;
+    url("../images/main.png") center/cover no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -45,7 +116,7 @@ a {
   margin: 15px 0;
 }
 
-button {
+.button {
   border-radius: 20px;
   border: 1px solid #004743;
   background-color: #004743;
@@ -55,18 +126,35 @@ button {
   padding: 12px 45px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  transition: transform 80ms ease-in;
+  transition: all 0.2s ease-in;
 }
 
-button:active {
+.button:active {
   transform: scale(0.95);
 }
 
-button:focus {
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.button:disabled:hover {
+  background-color: inherit; /* Prevent hover effect */
+  color: inherit; /* Prevent hover effect */
+}
+
+.button:hover {
+  background-color: #006f6d;
+  border-color: #006f6d;
+  cursor: pointer;
+}
+
+.button:focus {
   outline: none;
 }
 
-button.ghost {
+.button.ghost {
   background-color: transparent;
   border-color: #c1af93;
 }
@@ -80,8 +168,23 @@ form {
   padding: 0 50px;
   height: 100%;
   text-align: center;
-  border-right: 4px solid #004743;
   transition: border 0.1s;
+}
+
+.forcedCenter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  translate: calc(-50%, -50%);
+}
+
+.formBorder {
+  border-right: 4px solid #004743;
+}
+
+.golden {
+  color: #c1af93;
 }
 
 form h1 {
@@ -186,8 +289,11 @@ select,
 
 .alert {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 20px;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  width: fit-content;
 }
 
 .overlay {
@@ -259,27 +365,10 @@ select,
   width: 40px;
 }
 
-footer {
-  background-color: #222;
-  color: #fff;
-  font-size: 14px;
-  bottom: 0;
-  position: fixed;
-  left: 0;
-  right: 0;
-  text-align: center;
-  z-index: 999;
+.mainModal {
+  backdrop-filter: blur(5px);
 }
 
-footer p {
-  margin: 10px 0;
-}
-
-footer i {
-  color: red;
-}
-
-footer a {
-  color: #3c97bf;
-  text-decoration: none;
+.loginModal {
+  background: #132123;
 }
