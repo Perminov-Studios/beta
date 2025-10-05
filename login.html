@@ -8,11 +8,14 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="assets/CSS/login.css">
+    
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
 
 </head>
 
-<body>
-    <div class="container" id="container">
+<body class="body">
+    <div class="container" id="container" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <div class="form-container sign-up-container">
             <form action="#" id="createAccount">
                 <div role="alert" class="hide alert alert-error alert-outline">
@@ -169,6 +172,20 @@
         </div>
     </dialog>
 </body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+<!-- Initialize AOS -->
+<script>
+    AOS.init({
+        // Global settings (optional)
+        duration: 800,        // Animation duration (ms)
+        easing: 'ease',       // Easing function
+        once: true,          // Whether animation should happen only once
+        mirror: false,        // Whether elements should animate out while scrolling past them
+        offset: 120,          // Offset (in px) from the original trigger point
+    });
+</script>
 <script src="assets/JS/script.js"></script>
 
 </html>
