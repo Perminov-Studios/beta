@@ -1,3 +1,15 @@
+/* =====================================================================
+   LANDING PAGE NAV & HERO STYLES (nav.css)
+   ---------------------------------------------------------------------
+   Used by `index.html` for the marketing / public landing experience.
+   Contains the top navigation bar + responsive mobile menu and the
+   initial hero container blocks (.container1, .container2, etc.).
+
+   FUTURE IMPROVEMENTS (OPTIONAL):
+     - Extract color palette to CSS variables for theming.
+     - Unify button styles with those in login.css or a shared base file.
+     - Add prefers-reduced-motion adjustments for hover transitions.
+   ===================================================================== */
 body {
   margin: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -8,6 +20,7 @@ body {
   color: #333;
 }
 
+/* Sticky-ish header that can later gain scroll shrink effects */
 .navbar {
   position: relative;
   top: 0;
@@ -51,6 +64,7 @@ body {
   padding: 8px 0;
 }
 
+/* Animated underline grows from center outwards */
 .nav-links a::after {
   content: "";
   position: absolute;

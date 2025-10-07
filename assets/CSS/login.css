@@ -1,4 +1,18 @@
-/* Login-specific styles */
+/* =====================================================================
+   AUTH STYLES (login.css)
+   ---------------------------------------------------------------------
+   Covers login / registration panel, animated overlay, theme tokens,
+   and the password reset modal (shared by `login.html` + `resetpassword.html`).
+
+   QUICK JUMP SEARCH TERMS
+     THEME TOKENS          : CSS custom properties for two dark variants
+     MODAL SCROLLBAR FIXES : Prevents layout shift when dialog opens
+     PANEL CONTAINER       : 2-form sliding container
+     OVERLAY PANELS        : Encouraging text + ghost buttons
+     RESPONSIVE TWEAKS     : (Add here if needed in future)
+
+   NOTE: Behavior (form validation + toggle) is in `assets/JS/script.js`.
+   ===================================================================== */
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
 
 * {
@@ -72,6 +86,7 @@ body {
   display: none;
 }
 
+/* Background hero with gradient overlay + main photo */
 .body {
   background: #091011;
   background: linear-gradient(rgba(11, 19, 20, 0.9), rgba(11, 19, 20, 0.9)),
@@ -212,6 +227,7 @@ select,
   border: none !important;
 }
 
+/* PANEL CONTAINER (holds both forms + overlay) */
 .container {
   background-color: #132123;
   border-radius: 10px;
@@ -223,6 +239,7 @@ select,
   min-height: 480px;
 }
 
+/* Each half-form wrapper; positioned absolute for sliding effect */
 .form-container {
   position: absolute;
   top: 0;
@@ -268,6 +285,7 @@ select,
   }
 }
 
+/* Wrapper that clips the overlay panel and translates during flip */
 .overlay-container {
   position: absolute;
   top: 0;
@@ -292,6 +310,7 @@ select,
   width: fit-content;
 }
 
+/* Main overlay: gradient + background texture + 2 panels */
 .overlay {
   background: #ff416c;
   background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);

@@ -1,0 +1,282 @@
+/* =====================================================================
+   MESSAGES TAB STYLES
+   Styles specific to the messages/inbox functionality
+   ===================================================================== */
+
+/* =====================================================================
+  SECTION: INBOX DROPDOWN (Message list styling)
+  ===================================================================== */
+#inboxIcon .dropDown {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  background: #232327;
+  width: 320px; /* wider for list */
+  height: fit-content;
+  border-radius: 10px;
+  border: 1px solid #39393d;
+  z-index: 100;
+  opacity: 0;
+  transform: scale(0.96) translateY(-6px);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 120ms ease-out,
+    transform 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  backdrop-filter: blur(6px) saturate(140%);
+  padding: 8px 0 6px;
+  box-sizing: border-box;
+}
+
+#inboxIcon .dropDown.open {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+#inboxIcon .dropDown .messages-header {
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 650;
+  color: #d4d4d8;
+  padding: 4px 16px 6px;
+}
+
+#inboxIcon .dropDown .messages {
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 0 4px 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#inboxIcon .dropDown .messages::-webkit-scrollbar {
+  width: 6px;
+}
+#inboxIcon .dropDown .messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+#inboxIcon .dropDown .messages::-webkit-scrollbar-thumb {
+  background: #2a2a2f;
+  border-radius: 6px;
+}
+
+#inboxIcon .dropDown .message-item {
+  background: transparent;
+  border: none;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  padding: 8px 12px 9px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.18s, box-shadow 0.18s;
+  font-family: inherit;
+  color: #ececec;
+}
+
+#inboxIcon .dropDown .message-item:hover {
+  background: #2a2a2f;
+}
+
+#inboxIcon .dropDown .message-item:focus-visible {
+  outline: 2px solid #2b7fff;
+  outline-offset: 0;
+}
+
+#inboxIcon .dropDown .message-item.unread {
+  background: linear-gradient(140deg, #2b2b30 0%, #232327 60%);
+}
+
+#inboxIcon .dropDown .message-item.unread:hover {
+  background: linear-gradient(140deg, #343438 0%, #2c2c30 60%);
+}
+
+#inboxIcon .dropDown .message-item .avatar {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #18181b;
+  box-shadow: 0 0 0 1px #303036;
+}
+
+#inboxIcon .dropDown .message-item .details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+#inboxIcon .dropDown .message-item .nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #f5f5f7;
+}
+
+#inboxIcon .dropDown .message-item .time {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #9b9ba1;
+  letter-spacing: 0.3px;
+}
+
+#inboxIcon .dropDown .message-item .snippet {
+  font-size: 12px;
+  color: #b5b5bb;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 210px;
+}
+
+#inboxIcon .dropDown .message-item.unread .nameRow .name {
+  font-weight: 700;
+}
+
+/* Blue unread dot */
+#inboxIcon .dropDown .message-item.unread::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: #2b7fff;
+  border-radius: 50%;
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 0 2px #1f1f23;
+}
+
+#inboxIcon .dropDown .messages-footer {
+  margin-top: 4px;
+  padding: 6px 14px 4px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#inboxIcon .dropDown .view-all {
+  font-size: 12px;
+  color: #6daeff;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 10px 14px 6px 14px;
+  border-radius: 6px;
+  transition: background 0.18s, color 0.18s;
+}
+
+#inboxIcon .dropDown .view-all:hover {
+  background: #2b7fff;
+  color: #bcdcff;
+}
+
+#inboxIcon .dropDown hr {
+  width: 90%;
+  height: 1px;
+  border: none;
+  background-color: #39393d;
+}
+
+#inboxIcon .dropDown a {
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+  display: block;
+  letter-spacing: 0.4px;
+  font-weight: 520;
+  margin: 3px;
+  height: 20px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+#inboxIcon .dropDown a:hover {
+  background: #2b7fff;
+  cursor: pointer;
+  color: white !important;
+}
+
+#inboxIcon .dropDown svg {
+  height: 20px;
+  width: 20px;
+  position: relative;
+  bottom: -5px;
+}
+
+/* Message badge */
+#inboxIcon {
+  position: relative;
+}
+#inboxIcon .msg-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: #465efc;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 14px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  letter-spacing: 0.3px;
+  box-shadow: 0 0 0 2px #09090b, 0 2px 4px -1px rgba(0, 0, 0, 0.55);
+  font-family: "Mulish", sans-serif;
+  pointer-events: none;
+  transition: background 0.25s ease;
+}
+
+/* Badge animations */
+.msg-badge.count-transition-out {
+  animation: badgeCountShrink 120ms ease forwards;
+}
+.msg-badge.count-transition-in {
+  animation: badgeCountGrow 160ms ease forwards;
+}
+@keyframes badgeCountShrink {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.6);
+    opacity: 0.3;
+  }
+}
+@keyframes badgeCountGrow {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.3;
+  }
+  60% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  #inboxIcon .dropDown,
+  #inboxIcon .dropDown.open {
+    transition: none !important;
+    transform: none !important;
+  }
+}

@@ -1,2 +1,9 @@
-/* Footer-specific styles */
-/* Currently no footer-specific styles were identified. This file remains empty. */
+/* =====================================================================
+	 FOOTER PLACEHOLDER (footer.css)
+	 Currently unused; retained so future footer overrides can live in
+	 their own file rather than bloating `nav.css` or `index.css`.
+	 Suggested contents when needed:
+		 - Color theming overrides for dark/light
+		 - Layout grid adjustments (mobile stacking, spacing)
+		 - Animation or intersection observer reveal classes
+	 ===================================================================== */

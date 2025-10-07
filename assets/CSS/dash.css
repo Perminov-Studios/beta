@@ -1,0 +1,2070 @@
+/* =====================================================================
+   DASHBOARD MASTER STYLESHEET (dash.css)
+   ---------------------------------------------------------------------
+   PURPOSE: Styles for the authenticated dashboard (`client/dash.html`).
+            Includes navigation, column layout, dropdown menus (profile, 
+            inbox, notifications), gallery (bento grid), pagination UI, 
+            and the selected photo detail view.
+
+   HOW TO NAVIGATE THIS FILE QUICKLY:
+     Search / grep for:  SECTION: <NAME>
+     Major sections are ordered top → bottom from global → specific.
+
+   TABLE OF CONTENTS (approximate order)
+     1. SECTION: GLOBAL / RESET (Body, fonts, anchors, utility helpers)
+     2. SECTION: NAV (top navigation bar + underline effect)
+     3. SECTION: LAYOUT (three-column responsive layout + scrollbars)
+     4. SECTION: ACCOUNT PORTAL (profile/inbox/notifications icon bar)
+     5. SECTION: DROPDOWNS (shared dropdown container animations)
+     6. SECTION: INBOX (messages list styling + unread badges)
+     7. SECTION: NOTIFICATIONS (notifications list + badges)
+     8. SECTION: BADGE ANIMATIONS (count change keyframes)
+     9. SECTION: GALLERY (bento grid, cards, hover interactions)
+    10. SECTION: GALLERY PAGINATION (light card style controls)
+    11. SECTION: SELECTED PHOTO VIEW (detail panel + actions)
+    12. SECTION: ACCESSIBILITY / REDUCED MOTION ADJUSTMENTS
+
+   NOTE: Non-visual semantics (e.g. aria-* attributes) are handled in JS
+         or HTML. Custom scrollbar styling applied only to internal
+         scroll containers — global scrollbars intentionally preserved.
+
+   FUTURE SPLIT SUGGESTION:
+     - base.css (1)
+     - layout.css (2,3)
+     - components.css (4–10)
+     - pages-selectedphoto.css (11)
+     - a11y.css (12)
+
+   Last maintenance pass: 2025-10-07 (comment & structure only)
+   ===================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap");
+
+/* =====================================================================
+   SECTION: GLOBAL / RESET
+   ===================================================================== */
+
+body {
+  height: 100vh;
+  width: 100vw;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  background-color: #09090b;
+}
+
+/* =====================================================================
+   SECTION: NAV (Top navigation bar + interactive underline)
+   - The moving underline is positioned relative to .navLink container
+     and re-aligned via dash.js when active tab changes.
+   ===================================================================== */
+nav {
+  width: 100vw;
+  height: 55px;
+  display: flex;
+  background: #09090b;
+  font-family: "Mulish", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+  position: relative;
+}
+
+/* Removed blanket scrollbar hiding so custom scrollbars on columns can show.
+   If you still need to hide scrollbars for a specific container, add class
+   .hide-scroll and use the rule below instead of nuking all scrollbars. */
+.hide-scroll::-webkit-scrollbar {
+  display: none !important;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+}
+
+/* Base panel styling shared by all tab panels (.Main + modifier class) */
+.Main {
+  width: 99%;
+  height: calc(100vh - 70px);
+  margin: 0 auto;
+  background-color: transparent;
+  border: 1px solid #35353a;
+  border-radius: 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 14px 18px 18px;
+  box-sizing: border-box;
+}
+
+/* Three-column reusable layout container; used where present (home, profile, etc.) */
+
+a {
+  text-decoration: none;
+  color: white;
+}
+
+nav .logo {
+  width: 50px;
+  height: 50px;
+  background: transparent;
+  position: relative;
+}
+
+nav .logo svg {
+  height: 25px;
+  width: 25px;
+  fill: #fff;
+  position: absolute;
+  right: 0;
+  top: 15px;
+}
+
+nav .navLink ul {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+  padding-top: 10px;
+  padding-left: 25px;
+}
+
+nav .navLink ul li a {
+  color: white;
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  font-weight: 520;
+  margin-right: 15px;
+  position: relative;
+  padding: 5px 10px;
+  transition: all 0.2s;
+  border-radius: 5px;
+}
+
+nav .navLink ul li:hover a {
+  cursor: pointer;
+  color: white;
+  background: #18181b;
+  padding: 5px 10px;
+}
+
+nav .navLink ul li input[type="search"] {
+  background: #1f1f23;
+  border: 2px solid #1f1f23;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  height: 30px;
+  padding: 0 10px;
+  width: 300px;
+  transition: all 0.2s;
+}
+
+nav .navLink ul li input[type="search"]:focus {
+  outline: none;
+  border: 2px solid #2b7fff;
+}
+
+/* Sliding underline for active tab */
+nav .navLink {
+  position: relative; /* container for underline */
+}
+
+nav .navLink a {
+  display: inline-block; /* allow accurate measurements */
+  padding: 2px 0; /* small padding so underline sits below text */
+  color: white;
+}
+
+.nav-underline {
+  position: absolute;
+  height: 2px;
+  background: #fff;
+  left: 0;
+  transform: translateX(0);
+  /* add a small delay before the transform/width animation begins */
+  transition: transform 300ms cubic-bezier(0.22, 0.9, 0.32, 1) 120ms,
+    width 300ms cubic-bezier(0.22, 0.9, 0.32, 1) 120ms, opacity 200ms linear 0ms;
+  border-radius: 2px;
+  opacity: 0; /* hidden until a tab is active */
+  will-change: transform, width;
+  pointer-events: none;
+  /* default top: place just below the nav; JS will reposition to sit flush with the .Main element */
+  top: 100%;
+}
+
+/* (Removed duplicate .Main and .home definitions; unified above) */
+
+/* =====================================================================
+  SECTION: LAYOUT (Three-column responsive layout + scrollbars)
+  - .home-layout uses flex so hiding a column auto-expands others.
+  - Column classes (.home-left/center/right) have fixed or fluid bases.
+  - Custom scrollbars applied per column; not global.
+  ===================================================================== */
+/* Flex version so removal of any column lets the others auto expand */
+.home-layout {
+  flex: 1;
+  display: flex;
+  gap: 18px;
+  min-height: 100%;
+  height: fit-content;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+/* Column sizing */
+.home-left {
+  flex: 0 0 220px;
+}
+.home-right {
+  flex: 0 0 280px;
+}
+.home-center {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.home-col {
+  /*
+  background: linear-gradient(145deg, #1f1f23 0%, #1a1a1d 60%, #161619 100%); */
+  border: 1px solid #26262b;
+  border-radius: 14px;
+  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.5),
+    0 4px 18px -6px rgba(0, 0, 0, 0.55);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* allow inner scroll if needed */
+}
+
+/* Subtle inner sheen */
+.home-col:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 30% 10%,
+    rgba(255, 255, 255, 0.05),
+    transparent 60%
+  );
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+#promoted-heading {
+  font-family: "Mulish", sans-serif;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1400px) {
+  .home-left {
+    flex-basis: 200px;
+  }
+  .home-right {
+    flex-basis: 240px;
+  }
+}
+@media (max-width: 1100px) {
+  .home-right {
+    display: none;
+  }
+}
+@media (max-width: 820px) {
+  .home-left {
+    display: none;
+  }
+}
+
+/* Scroll containers if content overflows later */
+.home-left,
+.home-center,
+.home-right {
+  overflow-y: auto;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #2d2d31 transparent; /* Firefox thumb / track */
+  padding: 0 5px;
+}
+/* WebKit (Chrome / Edge / Safari) custom scrollbars for the three columns */
+.home-left::-webkit-scrollbar,
+.home-center::-webkit-scrollbar,
+.home-right::-webkit-scrollbar {
+  width: 10px;
+}
+
+.home-left::-webkit-scrollbar-track,
+.home-center::-webkit-scrollbar-track,
+.home-right::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.home-left::-webkit-scrollbar-thumb,
+.home-center::-webkit-scrollbar-thumb,
+.home-right::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #2d2d31 0%, #242426 100%);
+  border-radius: 12px;
+  border: 2px solid #18181b; /* creates a gap effect */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.55) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+  transition: background 0.25s, box-shadow 0.25s;
+}
+
+.home-left:hover::-webkit-scrollbar-thumb,
+.home-center:hover::-webkit-scrollbar-thumb,
+.home-right:hover::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #35353a 0%, #2a2a2f 100%);
+}
+
+.home-left::-webkit-scrollbar-thumb:active,
+.home-center::-webkit-scrollbar-thumb:active,
+.home-right::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, #3b69ff 0%, #2749b5 100%);
+  box-shadow: 0 0 0 1px rgba(43, 127, 255, 0.4),
+    0 1px 6px -1px rgba(43, 127, 255, 0.6);
+}
+
+/* Subtle separation visuals without content */
+.home-left {
+  outline: 1px solid rgba(255, 255, 255, 0.02);
+  padding-bottom: 160px; /* Make room for discord invite at bottom */
+}
+
+/* ---------------- FILTER PANEL (Sidebar) ---------------- */
+.filter-panel {
+  --panel-bg: linear-gradient(160deg, #202025 0%, #18181b 65%);
+  --panel-border: #26262b;
+  --panel-radius: 16px;
+  --panel-heading-size: 15px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--panel-radius);
+  padding: 16px 16px 20px;
+  margin: 10px 4px 16px;
+  font-family: "Mulish", sans-serif;
+  color: #f1f1f4;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  box-shadow: 0 2px 10px -4px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+}
+.filter-heading {
+  margin: 0 0 2px;
+  font-size: var(--panel-heading-size);
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+.filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #c9c9ce;
+  text-transform: uppercase;
+}
+.filter-panel input[type="search"],
+.filter-panel select {
+  background: #1f1f23;
+  border: 1px solid #2b2b30;
+  color: #eff0f3;
+  font-size: 13px;
+  padding: 8px 10px 7px;
+  border-radius: 8px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.filter-panel input[type="search"]:focus,
+.filter-panel select:focus {
+  border-color: #2b7fff;
+  box-shadow: 0 0 0 1px #2b7fff;
+}
+.filter-panel input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+  accent-color: #2b7fff;
+}
+.range-field output {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 6px;
+  border-radius: 8px;
+  background: #232327;
+  border: 1px solid #303036;
+  color: #9b9ba1;
+}
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  background: #232327;
+  border: 1px solid #303036;
+  color: #d0d0d4;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 6px 10px 5px;
+  border-radius: 18px;
+  cursor: pointer;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.chip:hover {
+  background: #2a2a30;
+}
+.chip[aria-pressed="true"] {
+  background: #2b7fff;
+  border-color: #2b7fff;
+  color: #fff;
+  box-shadow: 0 2px 6px -2px rgba(43, 127, 255, 0.6);
+}
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.filter-reset {
+  background: #26262b;
+  border: 1px solid #333338;
+  color: #d4d4d8;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.filter-reset:hover {
+  background: #2e2e34;
+}
+.filter-help {
+  font-size: 11.5px;
+  font-weight: 500;
+  margin: 2px 0 0;
+  color: #9b9ba1;
+  letter-spacing: 0.4px;
+}
+/* Refined styling for View Range Presets (remove harsh box border) */
+fieldset.views-range-group {
+  border: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+fieldset.views-range-group > .filter-label {
+  display: inline-block;
+  /*background: linear-gradient(145deg, #26262b 0%, #1e1e22 90%);
+  border: 1px solid #303036; */
+  padding: 4px 12px 4px 12px;
+  margin: 0 0 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.65px;
+  color: #d6d6da;
+  text-transform: uppercase;
+}
+fieldset.views-range-group .filter-chips {
+  background: linear-gradient(160deg, #1e1e22 0%, #18181b 80%);
+  border: 1px solid #2a2a30;
+  border-radius: 18px;
+  padding: 12px 12px 14px;
+  gap: 8px;
+  box-shadow: 0 4px 14px -6px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  position: relative;
+  overflow: hidden;
+}
+fieldset.views-range-group .filter-chips:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 20% 15%,
+    rgba(255, 255, 255, 0.07),
+    transparent 60%
+  );
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+fieldset.views-range-group .chip {
+  background: #232327;
+  border-color: #303036;
+  font-size: 12px;
+  padding: 7px 14px 6px;
+  border-radius: 22px;
+  letter-spacing: 0.4px;
+  font-weight: 600;
+  box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+}
+fieldset.views-range-group .chip:hover {
+  background: #2b2b30;
+}
+fieldset.views-range-group .chip[aria-pressed="true"] {
+  background: linear-gradient(145deg, #2b7fff 0%, #1d56cb 90%);
+  border-color: #2b7fff;
+  box-shadow: 0 2px 8px -3px rgba(43, 127, 255, 0.75),
+    0 0 0 1px rgba(43, 127, 255, 0.35);
+}
+
+@media (max-width: 1100px) {
+  fieldset.views-range-group {
+    display: none;
+  }
+}
+@media (max-width: 1100px) {
+  .filter-panel {
+    display: none;
+  }
+}
+.home-center {
+  outline: 1px solid rgba(255, 255, 255, 0.025);
+}
+.home-right {
+  outline: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+/* =====================================================================
+  SECTION: ACCOUNT PORTAL (Icon list right side of nav)
+  - Hosts search (notifications), inbox, and profile image icons.
+  - Each icon wraps an absolutely positioned dropdown (.dropDown).
+  ===================================================================== */
+.accountPortal ul {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  right: 20px;
+  flex-grow: 1;
+  background: transparent;
+  height: 50px;
+  width: fit-content;
+}
+
+.accountPortal ul li svg {
+  color: #9f9fa9;
+  height: 20px;
+  margin-top: 3px;
+  width: 20px;
+}
+
+.accountPortal ul li {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+  background: transparent;
+  height: 35px;
+  width: 35px;
+  margin-left: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.accountPortal ul li:hover {
+  background: #18181b;
+  cursor: pointer;
+  color: white !important;
+}
+
+.accountPortal ul li img {
+  height: 26px;
+  width: 26px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+/* =====================================================================
+  SECTION: DROPDOWNS (Shared base styles)
+  - Hidden by default (opacity 0 + pointer-events none).
+  - JS toggles `.open` class to animate scale & fade.
+  - Backdrop blur applied for a frosted panel effect.
+  ===================================================================== */
+#profileIcon .dropDown,
+#inboxIcon .dropDown,
+#searchIcon .dropDown {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  background: #232327;
+  width: 250px;
+  height: fit-content;
+  border-radius: 10px;
+  border: 1px solid #39393d;
+  z-index: 100;
+  /* Start hidden; JS adds .open for visibility */
+  opacity: 0;
+  transform: scale(0.96) translateY(-6px);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 120ms ease-out,
+    transform 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  backdrop-filter: blur(6px) saturate(140%);
+}
+
+/* Open state */
+#profileIcon .dropDown.open,
+#inboxIcon .dropDown.open,
+#searchIcon .dropDown.open {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  #profileIcon .dropDown,
+  #profileIcon .dropDown.open {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  #inboxIcon .dropDown,
+  #inboxIcon .dropDown.open {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  #searchIcon .dropDown,
+  #searchIcon .dropDown.open {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+#profileIcon .dropDown hr,
+#inboxIcon .dropDown hr,
+#searchIcon .dropDown hr,
+#pagination {
+  width: 90%;
+  height: 1px;
+  border: none;
+  background-color: #39393d;
+}
+
+#profileIcon .dropDown a,
+#inboxIcon .dropDown a,
+#searchIcon .dropDown a {
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+  display: block;
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  font-weight: 520;
+  margin: 3px;
+  height: 20px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+#profileIcon .dropDown a p,
+#inboxIcon .dropDown a p,
+#searchIcon .dropDown a p {
+  position: relative;
+  bottom: 20px;
+}
+
+#profileIcon .dropDown a:hover,
+#inboxIcon .dropDown a:hover,
+#searchIcon .dropDown a:hover {
+  background: #2b7fff;
+  cursor: pointer;
+  color: white !important;
+  fill: white;
+}
+
+#profileIcon .dropDown a:hover svg,
+#inboxIcon .dropDown a:hover svg,
+#searchIcon .dropDown a:hover svg {
+  color: white;
+}
+
+#profileIcon .dropDown svg,
+#inboxIcon .dropDown svg {
+  height: 20px;
+  width: 20px;
+  position: relative;
+  bottom: -5px;
+}
+
+#searchIcon .dropDown svg {
+  height: 20px;
+  width: 20px;
+  position: relative;
+}
+
+/* =====================================================================
+  SECTION: INBOX (Message list styling)
+  - Buttons used instead of anchors for better semantics (actions).
+  - `.unread` state drives background gradient & blue dot.
+  ===================================================================== */
+#inboxIcon .dropDown {
+  width: 320px; /* wider for list */
+  padding: 8px 0 6px;
+  box-sizing: border-box;
+}
+
+#inboxIcon .dropDown .messages-header {
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 650;
+  color: #d4d4d8;
+  padding: 4px 16px 6px;
+}
+
+#inboxIcon .dropDown .messages {
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 0 4px 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#inboxIcon .dropDown .messages::-webkit-scrollbar {
+  width: 6px;
+}
+#inboxIcon .dropDown .messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+#inboxIcon .dropDown .messages::-webkit-scrollbar-thumb {
+  background: #2a2a2f;
+  border-radius: 6px;
+}
+
+#inboxIcon .dropDown .message-item {
+  background: transparent;
+  border: none;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  padding: 8px 12px 9px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.18s, box-shadow 0.18s;
+  font-family: inherit;
+  color: #ececec;
+}
+
+#inboxIcon .dropDown .message-item:hover {
+  background: #2a2a2f;
+}
+
+#inboxIcon .dropDown .message-item:focus-visible {
+  outline: 2px solid #2b7fff;
+  outline-offset: 0;
+}
+
+#inboxIcon .dropDown .message-item.unread {
+  background: linear-gradient(140deg, #2b2b30 0%, #232327 60%);
+}
+
+#inboxIcon .dropDown .message-item.unread:hover {
+  background: linear-gradient(140deg, #343438 0%, #2c2c30 60%);
+}
+
+#inboxIcon .dropDown .message-item .avatar {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #18181b;
+  box-shadow: 0 0 0 1px #303036;
+}
+
+#inboxIcon .dropDown .message-item .details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+#inboxIcon .dropDown .message-item .nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #f5f5f7;
+}
+
+#inboxIcon .dropDown .message-item .time {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #9b9ba1;
+  letter-spacing: 0.3px;
+}
+
+#inboxIcon .dropDown .message-item .snippet {
+  font-size: 12px;
+  color: #b5b5bb;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 210px;
+}
+
+#inboxIcon .dropDown .message-item.unread .nameRow .name {
+  font-weight: 700;
+}
+
+/* Blue unread dot */
+#inboxIcon .dropDown .message-item.unread::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: #2b7fff;
+  border-radius: 50%;
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 0 2px #1f1f23;
+}
+
+#inboxIcon .dropDown .messages-footer {
+  margin-top: 4px;
+  padding: 6px 14px 4px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#inboxIcon .dropDown .view-all {
+  font-size: 12px;
+  color: #6daeff;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 10px 14px 6px 14px;
+  border-radius: 6px;
+  transition: background 0.18s, color 0.18s;
+}
+
+#inboxIcon .dropDown .view-all:hover {
+  background: #2b7fff;
+  color: #bcdcff;
+}
+
+/* =====================================================================
+  SECTION: NOTIFICATIONS (Notifications list styling)
+  - Similar structure to inbox but with its own icon box style.
+  - `.unread` items get a subtle gradient + red dot indicator.
+  ===================================================================== */
+#searchIcon .notifications-dropdown {
+  width: 360px;
+  padding: 8px 0 6px;
+  box-sizing: border-box;
+}
+
+#searchIcon .notifications-header {
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 650;
+  color: #d4d4d8;
+  padding: 4px 18px 6px;
+}
+
+#searchIcon .notifications {
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 0 6px 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#searchIcon .notifications::-webkit-scrollbar {
+  width: 6px;
+}
+#searchIcon .notifications::-webkit-scrollbar-track {
+  background: transparent;
+}
+#searchIcon .notifications::-webkit-scrollbar-thumb {
+  background: #2a2a2f;
+  border-radius: 6px;
+}
+
+#searchIcon .notification-item {
+  background: transparent;
+  border: none;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  padding: 10px 14px 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.18s, box-shadow 0.18s;
+  font-family: inherit;
+  color: #ececec;
+}
+
+#searchIcon .notification-item.unread {
+  background: linear-gradient(140deg, #2b2b30 0%, #232327 60%);
+}
+#searchIcon .notification-item.unread:hover {
+  background: linear-gradient(140deg, #343438 0%, #2c2c30 60%);
+}
+#searchIcon .notification-item:hover {
+  background: #2a2a2f;
+}
+#searchIcon .notification-item:focus-visible {
+  outline: 2px solid #2b7fff;
+  outline-offset: 0;
+}
+
+#searchIcon .notification-item .notification-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1d1d21;
+  color: #9f9fa9;
+  box-shadow: 0 0 0 1px #303036;
+  font-size: 16px;
+}
+
+#searchIcon .notification-item.unread .notification-icon {
+  color: #2b7fff;
+}
+
+#searchIcon .notification-item .content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#searchIcon .notification-item .content .line {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+#searchIcon .notification-item .content .text {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #f5f5f7;
+  line-height: 1.25;
+}
+#searchIcon .notification-item .content .time {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #9b9ba1;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+#searchIcon .notification-item .content .meta {
+  font-size: 12px;
+  color: #b5b5bb;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 230px;
+}
+
+#searchIcon .notification-item.unread::after {
+  content: "";
+  width: 9px;
+  height: 9px;
+  background: #eb3f77;
+  border-radius: 50%;
+  position: absolute;
+  right: 16px;
+  top: 18px;
+  box-shadow: 0 0 0 2px #1f1f23;
+}
+
+#searchIcon .notifications-footer {
+  margin-top: 6px;
+  padding: 6px 16px 4px;
+  display: flex;
+  justify-content: flex-end;
+}
+#searchIcon .view-all-notifications {
+  font-size: 12px;
+  color: #6daeff;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.18s, color 0.18s;
+}
+#searchIcon .view-all-notifications:hover {
+  background: #20385a;
+  color: #bcdcff;
+}
+
+/* badge on search icon */
+#searchIcon {
+  position: relative;
+}
+#searchIcon .notif-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: #eb3f77;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 14px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  letter-spacing: 0.3px;
+  box-shadow: 0 0 0 2px #09090b, 0 2px 4px -1px rgba(0, 0, 0, 0.6);
+  font-family: "Mulish", sans-serif;
+  pointer-events: none;
+  transition: background 0.25s ease; /* subtle color change potential */
+}
+
+/* Slight stagger feel without JS by animating children when parent opens */
+#profileIcon .dropDown.open a,
+#inboxIcon .dropDown.open a,
+#searchIcon .dropDown.open a {
+  animation: dropdown-fade 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes dropdown-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Inbox message unread badge */
+#inboxIcon {
+  position: relative;
+}
+#inboxIcon .msg-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: #465efc;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 14px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  letter-spacing: 0.3px;
+  box-shadow: 0 0 0 2px #09090b, 0 2px 4px -1px rgba(0, 0, 0, 0.55);
+  font-family: "Mulish", sans-serif;
+  pointer-events: none;
+  transition: background 0.25s ease;
+}
+
+/* =====================================================================
+  SECTION: BADGE ANIMATIONS
+  - count-transition-out / in provide a shrink-grow when numbers update.
+  ===================================================================== */
+.notif-badge.count-transition-out,
+.msg-badge.count-transition-out {
+  animation: badgeCountShrink 120ms ease forwards;
+}
+.notif-badge.count-transition-in,
+.msg-badge.count-transition-in {
+  animation: badgeCountGrow 160ms ease forwards;
+}
+@keyframes badgeCountShrink {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.6);
+    opacity: 0.3;
+  }
+}
+@keyframes badgeCountGrow {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.3;
+  }
+  60% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* =====================================================================
+  SECTION: GALLERY (Bento grid + image cards)
+  - Uniform card height for predictable rows.
+  - Hover: mild elevate + image scale + caption fade-in.
+  - Accessibility: figure focus shows caption; outlines kept.
+  ===================================================================== */
+.visually-hidden {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}
+
+.bento-gallery {
+  --gap: 16px;
+  --radius: 18px;
+  --item-bg: linear-gradient(145deg, #202025 0%, #18181b 70%);
+  --border: 1px solid #2a2a30;
+  --caption-bg: rgba(0, 0, 0, 0.45);
+  --caption-blur: 8px;
+  width: 100%;
+  padding: 6px 2px 0px 6px;
+  box-sizing: border-box;
+  animation: fadeInGallery 0.6s ease;
+}
+/* ---------- Promoted strip (featured items row) ---------- */
+.promoted-section {
+  position: relative;
+  margin: 0 0 2.25rem 0;
+  padding: 1.15rem 1.25rem 1.35rem;
+  border: 1px solid #2a2f38;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #1f242b 0%, #181c22 55%, #14161a 100%);
+  box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.55), 0 2px 0 0 #1a1e23 inset;
+  overflow: hidden;
+  font-family: "Mulish", sans-serif;
+}
+.promoted-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      circle at 15% 20%,
+      rgba(80, 200, 120, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 88% 75%,
+      rgba(130, 255, 180, 0.13),
+      transparent 65%
+    );
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+}
+.promoted-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.promoted-header h3 {
+  font-size: 1.05rem;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: linear-gradient(
+    90deg,
+    #d2ffe0 0%,
+    #9affc2 40%,
+    #6fee9a 70%,
+    #4adf80 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  position: relative;
+}
+.promoted-header h3::after {
+  content: "★"; /* subtle star */
+  font-size: 0.85rem;
+  color: #53ffa6;
+  filter: drop-shadow(0 0 4px rgba(83, 255, 166, 0.55));
+  opacity: 0.9;
+}
+.promoted-sub {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1.6px;
+  color: #6f7b84;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.25rem 0.65rem 0.3rem;
+  border-radius: 999px;
+  border: 1px solid rgba(110, 190, 150, 0.14);
+  position: relative;
+}
+.promoted-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(200px, 260px);
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
+  scrollbar-width: thin;
+  scrollbar-color: #35543f #1a1d20;
+}
+.promoted-row::-webkit-scrollbar {
+  height: 10px;
+}
+.promoted-row::-webkit-scrollbar-track {
+  background: #1a1d20;
+  border-radius: 40px;
+}
+.promoted-row::-webkit-scrollbar-thumb {
+  background: linear-gradient(160deg, #4caf7b, #2d754f);
+  border-radius: 40px;
+}
+.promoted-row::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(160deg, #5ed596, #34865b);
+}
+.promoted-card {
+  position: relative;
+  background: linear-gradient(160deg, #23302a 0%, #1a201f 55%, #121414 100%);
+  border: 1px solid #2b3531;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 205px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.55), 0 0 0 1px #222 inset;
+  transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.5s ease;
+  isolation: isolate;
+}
+.promoted-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.04) 0%,
+      rgba(255, 255, 255, 0) 60%
+    ),
+    radial-gradient(
+      circle at 75% 15%,
+      rgba(120, 255, 180, 0.2),
+      transparent 60%
+    );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+.promoted-card:hover::before {
+  opacity: 1;
+}
+.promoted-card:hover {
+  transform: translateY(-6px) rotateX(8deg);
+  box-shadow: 0 10px 28px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px #2d3b35 inset;
+}
+.promoted-card:focus {
+  outline: 2px solid #54ffa9;
+  outline-offset: 2px;
+}
+.promoted-card img.main {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  flex-shrink: 0;
+  filter: saturate(1.1) contrast(1.08);
+}
+.promoted-card .pc-body {
+  padding: 0.65rem 0.75rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  position: relative;
+}
+.promoted-card h4 {
+  font-size: 0.86rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: #e8fef2;
+  letter-spacing: 0.3px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.promoted-card h4 .badge-star {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(140deg, #53ffa6, #33b86d 65%);
+  border-radius: 6px;
+  font-size: 0.6rem;
+  color: #07140d;
+  box-shadow: 0 0 0 1px #2b4b37, 0 3px 6px -2px rgba(0, 0, 0, 0.6),
+    0 0 10px -2px rgba(83, 255, 166, 0.55);
+}
+.promoted-card p.desc {
+  font-size: 0.64rem;
+  line-height: 1.15;
+  color: #a4b5ad;
+  margin: 0;
+  max-height: 2.2em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.promoted-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  margin-top: 0.15rem;
+  font-size: 0.6rem;
+  color: #7c8c84;
+}
+.promoted-meta .views {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.65rem;
+}
+.promoted-meta .views svg {
+  width: 14px;
+  height: 14px;
+}
+.promoted-meta img.avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px #20362c, 0 2px 4px -1px rgba(0, 0, 0, 0.5);
+}
+.promoted-empty {
+  font-size: 0.65rem;
+  color: #6f7b84;
+  padding: 0.25rem 0 0.15rem;
+}
+@media (max-width: 760px) {
+  .promoted-section {
+    margin-bottom: 1.6rem;
+    padding: 1rem 1rem 1.15rem;
+  }
+  .promoted-row {
+    grid-auto-columns: minmax(180px, 220px);
+    gap: 14px;
+  }
+  .promoted-card img.main {
+    height: 110px;
+  }
+}
+@media (max-width: 520px) {
+  .promoted-header h3 {
+    font-size: 0.95rem;
+  }
+  .promoted-sub {
+    display: none;
+  }
+  .promoted-row {
+    grid-auto-columns: 66%;
+  }
+}
+@keyframes fadeInGallery {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Masonry using CSS columns so images keep natural aspect ratio */
+.bento-gallery .bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--gap);
+  align-items: stretch;
+}
+@media (max-width: 1400px) {
+  .bento-gallery .bento-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .bento-gallery .bento-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .bento-gallery .bento-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bento-item {
+  position: relative;
+  display: block;
+  margin: 0; /* grid gap now controls spacing */
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--item-bg);
+  cursor: pointer;
+  isolation: isolate;
+  height: 260px; /* uniform card height */
+  transition: box-shadow 0.3s ease,
+    transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.bento-item:hover {
+  transform: translateY(-4px);
+}
+.bento-item:active {
+  transform: translateY(-2px) scale(0.985);
+}
+
+.bento-item > img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  filter: saturate(1.05) brightness(0.95);
+  transition: filter 0.55s ease, transform 0.9s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.bento-item:hover img {
+  filter: saturate(1.18) brightness(1.03);
+  transform: scale(1.05);
+}
+
+/* Neutralize old span attributes so no forced stretching */
+.bento-item[data-w],
+.bento-item[data-h] {
+  grid-column: auto !important;
+  grid-row: auto !important;
+}
+
+.bento-item figcaption {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.35px;
+  color: #fff;
+  background: var(--caption-bg);
+  backdrop-filter: blur(var(--caption-blur)) saturate(180%);
+  padding: 7px 12px 6px;
+  border-radius: 14px;
+  line-height: 1.15;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 4px 14px -6px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.45s ease,
+    transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.bento-item:hover figcaption,
+.bento-item:focus-visible figcaption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bento-item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.65) 0%,
+    rgba(0, 0, 0, 0.35) 35%,
+    rgba(0, 0, 0, 0) 65%
+  );
+  mix-blend-mode: normal;
+  pointer-events: none;
+  opacity: 0.85;
+  transition: opacity 0.5s;
+}
+.bento-item:hover::after {
+  opacity: 0.95;
+}
+
+.bento-item:focus-visible {
+  outline: 2px solid #2b7fff;
+  outline-offset: 2px;
+}
+
+.ImgInfo {
+  height: 60px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding-top: 20px;
+  background: #1d1d20;
+  font-family: "Mulish", sans-serif;
+}
+
+.ImgInfo h3 {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  position: absolute;
+  top: 0p;
+  left: 10px;
+  margin: 0;
+  width: 70%;
+  max-height: 30px;
+  overflow: hidden; /* hide extra text */
+  text-overflow: ellipsis;
+  white-space: nowrap; /* prevent wrapping */
+}
+
+.ImgInfo p {
+  color: white;
+  font-size: 14px;
+  position: absolute;
+  bottom: 15px;
+  left: 10px;
+  margin: 0;
+  width: 60%;
+  overflow: hidden; /* hide extra text */
+  text-overflow: ellipsis;
+  white-space: nowrap; /* prevent wrapping */
+}
+
+.ImgInfo img {
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: absolute;
+  right: 10px;
+  top: -20px;
+  border: 10px solid #1d1d20;
+}
+
+/* Views count styling inside card footer */
+.ImgInfo .views {
+  position: absolute;
+  right: 10px; /* leave space before avatar */
+  bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #9b9ba1;
+  line-height: 1;
+  user-select: none;
+}
+.ImgInfo .views .view-icon {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  opacity: 0.55;
+  transition: opacity 0.25s ease;
+}
+.bento-item:hover .ImgInfo .views .view-icon {
+  opacity: 0.8;
+}
+.bento-item:focus-visible .ImgInfo .views .view-icon {
+  opacity: 0.9;
+}
+
+@media (max-width: 700px) {
+  .bento-gallery {
+    --gap: 12px;
+  }
+  .bento-item figcaption {
+    font-size: 11.5px;
+    padding: 6px 10px 5px;
+  }
+}
+@media (max-width: 480px) {
+  .bento-gallery {
+    --gap: 10px;
+  }
+  .bento-item {
+    border-radius: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bento-item,
+  .bento-item img,
+  .bento-item figcaption {
+    transition: none !important;
+  }
+  .bento-item:hover img {
+    transform: none;
+  }
+  .bento-item figcaption {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes pagFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =====================================================================
+  SECTION: GALLERY PAGINATION (Light card style controls)
+  - Lives outside grid container; JS builds dynamically after render.
+  - Dark mode tokens overridden via prefers-color-scheme media query.
+  ===================================================================== */
+.gallery-pagination {
+  --pag-bg: #ffffff;
+  --pag-border: #dcdfe4;
+  --pag-border-hover: #c4cad1;
+  --pag-active-bg: #1662f0;
+  --pag-active-color: #fff;
+  --pag-text: #1f2328;
+  --pag-muted: #6a737d;
+  --pag-radius: 8px;
+  --pag-gap: 4px;
+  --pag-shadow: 0 1px 2px rgba(31, 35, 40, 0.06),
+    0 4px 12px -2px rgba(31, 35, 40, 0.08);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "Mulish", sans-serif;
+  animation: pagFadeIn 0.4s ease;
+}
+.gallery-pagination button,
+.gallery-pagination .ellipsis {
+  font: 500 13px/1 "Mulish", sans-serif;
+  min-width: 38px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: var(--pag-radius);
+  border: 1px solid var(--pag-border);
+  background: #fff;
+  color: var(--pag-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease,
+    box-shadow 0.18s ease;
+  user-select: none;
+}
+.gallery-pagination button:hover:not(:disabled) {
+  background: #f6f8fa;
+  border-color: var(--pag-border-hover);
+}
+.gallery-pagination button:active:not(:disabled) {
+  background: #eef1f4;
+}
+.gallery-pagination button:focus-visible {
+  outline: 2px solid #2b7fff;
+  outline-offset: 2px;
+  z-index: 2;
+}
+.gallery-pagination button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.gallery-pagination .page-btn[aria-current="page"],
+.gallery-pagination .page-btn.active {
+  background: var(--pag-active-bg);
+  color: var(--pag-active-color);
+  border-color: var(--pag-active-bg);
+  font-weight: 600;
+  box-shadow: 0 0 0 1px var(--pag-active-bg),
+    0 2px 4px -1px rgba(22, 98, 240, 0.55);
+}
+.gallery-pagination .ellipsis {
+  pointer-events: none;
+  color: var(--pag-muted);
+  border: none;
+  background: transparent;
+  min-width: auto;
+  width: 40px;
+}
+.gallery-pagination .arrow {
+  padding: 0 14px;
+  font-weight: 500;
+  gap: 4px;
+}
+.gallery-pagination .arrow.prev::before {
+  content: "\2039"; /* ‹ */
+  font-size: 16px;
+  line-height: 1;
+  margin-right: 6px;
+}
+.gallery-pagination .arrow.next::after {
+  content: "\203A"; /* › */
+  font-size: 16px;
+  line-height: 1;
+  margin-left: 6px;
+}
+.gallery-pagination .numbers-track {
+  /* wrapper holding buttons */
+  display: inline-flex;
+  gap: var(--pag-gap);
+  position: relative;
+}
+/* Optional subtle fade for ellipsis dots spacing */
+.gallery-pagination .ellipsis::after {
+  content: "";
+}
+
+@media (prefers-color-scheme: dark) {
+  .gallery-pagination {
+    --pag-bg: #1e1f23;
+    --pag-border: #2d3035;
+    --pag-border-hover: #3a3f45;
+    --pag-text: #d0d2d6;
+    --pag-muted: #7e8289;
+    --pag-shadow: 0 1px 2px rgba(0, 0, 0, 0.5),
+      0 4px 16px -4px rgba(0, 0, 0, 0.6);
+  }
+  .gallery-pagination button,
+  .gallery-pagination .ellipsis {
+    background: #23252a;
+    border-color: var(--pag-border);
+  }
+  .gallery-pagination button:hover:not(:disabled) {
+    background: #272a2f;
+  }
+  .gallery-pagination button:active:not(:disabled) {
+    background: #2d3035;
+  }
+  .gallery-pagination .page-btn[aria-current="page"],
+  .gallery-pagination .page-btn.active {
+    background: var(--pag-active-bg);
+    color: #fff;
+  }
+}
+
+/* =====================================================================
+  SECTION: SELECTED PHOTO VIEW (Deep link detail page)
+  - Appears when hash matches #selectedphoto-<id>.
+  - Reuses column layout; image centers responsively.
+  ===================================================================== */
+.Main.selectedphoto .home-layout {
+  gap: 18px;
+}
+.Main.selectedphoto .home-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+.selected-photo-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.selected-photo-wrapper .selected-photo {
+  max-width: 100%;
+  max-height: calc(100vh - 140px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px -6px rgba(0, 0, 0, 0.65), 0 0 0 1px #26262b;
+}
+
+@media (max-width: 1100px) {
+  .Main.selectedphoto .home-right {
+    display: block;
+    flex-basis: 320px;
+  }
+}
+@media (max-width: 900px) {
+  .Main.selectedphoto .home-layout {
+    flex-direction: column;
+  }
+  .Main.selectedphoto .home-right {
+    order: 2;
+    flex: 0 0 auto;
+  }
+  .Main.selectedphoto .home-center {
+    order: 1;
+    min-height: 50vh;
+  }
+  .selected-photo-wrapper .selected-photo {
+    max-height: 60vh;
+  }
+}
+
+.photo-meta {
+  padding: 16px 18px 28px;
+  font-family: "Mulish", sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.photo-meta-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.photo-title {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  font-weight: 650;
+}
+.photo-views {
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #9b9ba1;
+  font-weight: 600;
+}
+.photo-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #d4d4d8;
+}
+.photo-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.photo-author .author-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px #303036;
+}
+.author-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #c9c9ce;
+  letter-spacing: 0.4px;
+}
+
+.photo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.photo-btn {
+  background: #232327;
+  color: #ececec;
+  border: 1px solid #323237;
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.photo-btn:hover {
+  background: #2c2c31;
+  border-color: #3a3a40;
+}
+.photo-btn:active {
+  background: #343438;
+}
+.photo-btn:focus-visible {
+  outline: 2px solid #2b7fff;
+  outline-offset: 2px;
+}
+.photo-btn.download {
+  background: #1662f0;
+  border-color: #1662f0;
+  color: #fff;
+  box-shadow: 0 2px 8px -2px rgba(22, 98, 240, 0.55);
+}
+.photo-btn.download:hover {
+  background: #1c6ffb;
+}
+.photo-btn.download:active {
+  background: #155edd;
+}
+
+.photo-nav {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+.photo-nav button {
+  flex: 1;
+  background: #1d1d21;
+  border: 1px solid #303036;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #e0e0e4;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s, border-color 0.2s;
+}
+.photo-nav button:hover:not(:disabled) {
+  background: #26262b;
+}
+.photo-nav button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.photo-nav button:focus-visible {
+  outline: 2px solid #2b7fff;
+  outline-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .photo-btn {
+    background: #26262b;
+    border-color: #35353a;
+  }
+  .photo-btn:hover {
+    background: #2e2e34;
+  }
+  .photo-btn:active {
+    background: #34343a;
+  }
+  .photo-nav button {
+    background: #232327;
+  }
+  .photo-nav button:hover:not(:disabled) {
+    background: #2a2a30;
+  }
+}
+
+/* =====================================================================
+  SECTION: ACCESSIBILITY / REDUCED MOTION
+  - Disable non-essential transitions & transforms for users opting out.
+  ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .photo-btn,
+  .photo-nav button,
+  .selected-photo-wrapper .selected-photo {
+    transition: none !important;
+  }
+}
+
+/* =====================================================================
+  SECTION: DISCORD INVITE BANNER
+  - Styles for the Discord invite banner.
+  ===================================================================== */
+.discordInvite {
+  height: 150px;
+  background: linear-gradient(145deg, #5865f2 0%, #6a7ce8 100%);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: 15px;
+  background: url("../images/discord.jpg") no-repeat center;
+  background-size: cover;
+  overflow: hidden;
+  margin: 10px;
+  z-index: 1;
+  
+  font-family: "Mulish", sans-serif;
+}
+
+.discordInvite svg {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 20px;
+  height: 20px;
+  fill: white;
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.4));
+}
+
+.discordInvite .discordText {
+  position: absolute;
+  top: 50px;
+  left: 45%;
+  transform: translateX(-50%);
+  width: 80%;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  margin: 0;
+}
+
+.discordInvite a {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  max-width: 200px;
+  background: #3b69ff;
+  color: #fff;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s, color 0.2s;
+  text-align: center;
+  font-size: 13px;
+}

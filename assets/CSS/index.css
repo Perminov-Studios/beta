@@ -1,4 +1,8 @@
-/* General styles */
+/* =====================================================================
+  INDEX GLOBAL STYLES (index.css)
+  Minimal base overrides for the marketing landing page only. The bulk
+  of component look & feel is in `nav.css`; keep this file lean.
+  ===================================================================== */
 .input {
   background-color: #24333a;
   color: white;

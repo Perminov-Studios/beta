@@ -1,3 +1,23 @@
+/** =====================================================================
+ * AUTH PAGE SCRIPT (script.js)
+ * ---------------------------------------------------------------------
+ * Handles:
+ *   - Sliding panel animation (create vs sign in) via class toggle.
+ *   - Dynamic border accent adjustments for form sides.
+ *   - Simple client-side form validation & feedback alerts.
+ *   - Theme variant toggle (dark / my-dark) helper.
+ *
+ * Design Choices:
+ *   - Avoided external validation libs; uses minimal inline checks.
+ *   - Each form's alerts are hidden by adding 'hide' class; reused DOM.
+ *   - submit buttons are disabled until all inputs are non-empty.
+ *
+ * Future Ideas:
+ *   - Extract validation rules into a schema object.
+ *   - Add strength meter for password field.
+ *   - Persist partial form data in sessionStorage to survive reloads.
+ * ===================================================================== */
+
 const signUpButton = document.getElementById("signUp");
 const signInButton = document.getElementById("signIn");
 const container = document.getElementById("container");
@@ -24,6 +44,7 @@ signInButton.addEventListener("click", () => {
   signIntoAccount.style.borderRight = "4px solid #004743"; // yellow
 });
 
+// Toggle root data-theme attribute between two dark variants.
 function toggleDarkVariant() {
   const el = document.documentElement;
   const current = el.getAttribute("data-theme") || "dark";
