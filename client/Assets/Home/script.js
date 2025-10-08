@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const filterSort = document.getElementById("filterSort");
   const filterMatchCount = document.getElementById("filterMatchCount");
   const filterResetBtn = document.getElementById("filterReset");
+  const filterApplyBtn = document.getElementById("filterApply");
 
   if (!galleryEl) return;
 
@@ -24,6 +25,403 @@ document.addEventListener("DOMContentLoaded", () => {
   let filteredImages = [];
   let currentPage = 1;
   let promotedImages = [];
+  // Active view range preset (null means none). When set, overrides min slider & adds max constraint.
+  let viewRangePreset = null; // {min:number, max:number}
+  // Track if any filter (other than default sort) is active to show empty state correctly
+  let filtersActive = false;
+  // Track whether user has intentionally adjusted the min views slider
+  let minViewsDirty = false;
+  // Track asynchronous color detection state
+  let colorDetectionInProgress = false;
+  let colorDetectionCompleted = false;
+  // Local cache (in-memory) loaded from localStorage if available
+  let colorCache = {};
+
+  /* =============================================================
+     AUTO COLOR DETECTION (Canvas Sampling)
+     - For each image we can fetch, sample a reduced-size bitmap (e.g. 32x32)
+       to determine prominent color categories (red/orange/yellow/...)
+     - Augments existing metadata colors[]; does NOT overwrite.
+     ============================================================= */
+  const COLOR_DEFS = [
+    { name: "black", rgb: [0, 0, 0] },
+    { name: "gray", rgb: [128, 128, 128] },
+    { name: "white", rgb: [255, 255, 255] },
+    { name: "red", rgb: [220, 20, 60] },
+    { name: "orange", rgb: [255, 140, 0] },
+    { name: "yellow", rgb: [255, 215, 0] },
+    { name: "green", rgb: [34, 139, 34] },
+    { name: "blue", rgb: [65, 105, 225] },
+    { name: "purple", rgb: [138, 43, 226] },
+    { name: "pink", rgb: [255, 105, 180] },
+    { name: "brown", rgb: [139, 69, 19] },
+  ];
+
+  function classifyColor(r, g, b) {
+    // function to classify color based on RGB values
+    // Convert to HSL-lite metrics for gray/black/white detection
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const lightness = (max + min) / 2;
+    const saturation =
+      max === min ? 0 : (max - min) / (255 - Math.abs(max + min - 255));
+    if (saturation < 0.08) {
+      if (lightness < 60) return "black";
+      if (lightness > 200) return "white";
+      return "gray";
+    }
+    // Choose nearest base color by Euclidean distance
+    let best = null;
+    let bestDist = 1e9;
+    for (const c of COLOR_DEFS) {
+      if (["black", "gray", "white"].includes(c.name)) continue; // already handled
+      const [cr, cg, cb] = c.rgb;
+      const d = (r - cr) ** 2 + (g - cg) ** 2 + (b - cb) ** 2;
+      if (d < bestDist) {
+        bestDist = d;
+        best = c.name;
+      }
+    }
+    return best || "gray";
+  }
+
+  function rgbToHsl(r, g, b) {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    const max = Math.max(r, g, b),
+      min = Math.min(r, g, b);
+    let h,
+      s,
+      l = (max + min) / 2;
+    if (max === min) {
+      h = s = 0;
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
+          break;
+        case g:
+          h = (b - r) / d + 2;
+          break;
+        case b:
+          h = (r - g) / d + 4;
+          break;
+      }
+      h /= 6;
+    }
+    return [h * 360, s, l];
+  }
+
+  function distance3(a, b) {
+    return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2;
+  }
+
+  /* ===================== Advanced Color Space Helpers ===================== */
+  function rgbToXyz(r, g, b) {
+    // sRGB to XYZ (D65)
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    // gamma correction
+    r = r > 0.04045 ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
+    g = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
+    b = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
+    const x = r * 0.4124 + g * 0.3576 + b * 0.1805;
+    const y = r * 0.2126 + g * 0.7152 + b * 0.0722;
+    const z = r * 0.0193 + g * 0.1192 + b * 0.9505;
+    return [x, y, z];
+  }
+  function xyzToLab(x, y, z) {
+    // D65 reference white
+    const refX = 0.95047,
+      refY = 1.0,
+      refZ = 1.08883;
+    x /= refX;
+    y /= refY;
+    z /= refZ;
+    const f = (t) => (t > 0.008856 ? Math.pow(t, 1 / 3) : 7.787 * t + 16 / 116);
+    const fx = f(x);
+    const fy = f(y);
+    const fz = f(z);
+    const L = 116 * fy - 16;
+    const a = 500 * (fx - fy);
+    const b = 200 * (fy - fz);
+    return [L, a, b];
+  }
+  function rgbToLab(r, g, b) {
+    const [x, y, z] = rgbToXyz(r, g, b);
+    return xyzToLab(x, y, z);
+  }
+  function labDistance(a, b) {
+    // CIE76
+    return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2;
+  }
+
+  function mapCentroidToCategory([r, g, b]) {
+    const [h, s, l] = rgbToHsl(r, g, b);
+    if (s < 0.08) {
+      if (l < 0.23) return "black";
+      if (l > 0.88) return "white";
+      return "gray";
+    }
+    // brown detection (lowish lightness mid hue)
+    if (l < 0.55 && h > 15 && h < 55 && s > 0.25) {
+      if (r > 60 && g > 30 && b < 120) {
+        return "brown";
+      }
+    }
+    // map hue to nearest anchor
+    let best = null;
+    let bestDist = 1e9;
+    for (const c of COLOR_DEFS) {
+      const d = distance3([r, g, b], c.rgb);
+      if (d < bestDist) {
+        bestDist = d;
+        best = c.name;
+      }
+    }
+    return best || "gray";
+  }
+
+  function detectImageColorsForItem(imageObj) {
+    return new Promise((resolve) => {
+      const src = imageObj.image?.src;
+      if (!src) return resolve(new Set());
+      // Cache hit
+      if (imageObj.id && colorCache[imageObj.id]) {
+        return resolve(new Set(colorCache[imageObj.id]));
+      }
+      const imgEl = new Image();
+      imgEl.crossOrigin = "anonymous"; // allow canvas sampling if CORS ok
+      imgEl.decoding = "async";
+      imgEl.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d", { willReadFrequently: true });
+          // Adaptive target size: larger images get a bit more detail up to 72
+          const longest = Math.max(
+            imgEl.naturalWidth || imgEl.width,
+            imgEl.naturalHeight || imgEl.height
+          );
+          const target = longest > 1600 ? 72 : longest > 900 ? 54 : 42; // tiers
+          const w = imgEl.naturalWidth || imgEl.width;
+          const h = imgEl.naturalHeight || imgEl.height;
+          if (!w || !h) return resolve(new Set());
+          const scale = Math.min(target / w, target / h, 1);
+          canvas.width = Math.max(1, Math.round(w * scale));
+          canvas.height = Math.max(1, Math.round(h * scale));
+          ctx.drawImage(imgEl, 0, 0, canvas.width, canvas.height);
+          const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          const pixels = [];
+          const maxSamples = 3500; // cap for performance
+          // Reservoir sampling over all pixels (step of 1 for fidelity)
+          let seen = 0;
+          for (let i = 0; i < data.length; i += 4) {
+            const a = data[i + 3];
+            if (a < 140) {
+              continue;
+            }
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            // Skip near-transparent or fully white filler regions aggressively
+            if (r > 248 && g > 248 && b > 248) {
+              continue;
+            }
+            seen++;
+            if (pixels.length < maxSamples) {
+              pixels.push([r, g, b]);
+            } else {
+              const j = Math.floor(Math.random() * seen);
+              if (j < pixels.length) pixels[j] = [r, g, b];
+            }
+          }
+          if (!pixels.length) return resolve(new Set());
+
+          // Determine K adaptively with diminishing returns
+          const K = Math.min(
+            10,
+            Math.max(3, Math.round(Math.sqrt(pixels.length / 400) + 3))
+          );
+          // Precompute Lab for all pixels
+          const pixelsLab = pixels.map((p) => rgbToLab(p[0], p[1], p[2]));
+          // k-means++ init
+          const centroidsIdx = [];
+          centroidsIdx.push(Math.floor(Math.random() * pixelsLab.length));
+          while (centroidsIdx.length < K) {
+            const dists = pixelsLab.map((lab, i) => {
+              let best = 1e12;
+              for (const ci of centroidsIdx) {
+                const d = labDistance(lab, pixelsLab[ci]);
+                if (d < best) best = d;
+              }
+              return best;
+            });
+            const sum = dists.reduce((a, b) => a + b, 0);
+            if (sum === 0) break;
+            let r = Math.random() * sum;
+            let pick = 0;
+            for (let i = 0; i < dists.length; i++) {
+              r -= dists[i];
+              if (r <= 0) {
+                pick = i;
+                break;
+              }
+            }
+            if (!centroidsIdx.includes(pick)) centroidsIdx.push(pick);
+            else break;
+          }
+          let centroidsLab = centroidsIdx.map((i) => pixelsLab[i].slice());
+          const assignments = new Array(pixelsLab.length).fill(0);
+          for (let iter = 0; iter < 12; iter++) {
+            let moved = 0;
+            for (let i = 0; i < pixelsLab.length; i++) {
+              const lab = pixelsLab[i];
+              let best = 0;
+              let bestD = 1e18;
+              for (let c = 0; c < centroidsLab.length; c++) {
+                const d = labDistance(lab, centroidsLab[c]);
+                if (d < bestD) {
+                  bestD = d;
+                  best = c;
+                }
+              }
+              if (assignments[i] !== best) {
+                assignments[i] = best;
+                moved++;
+              }
+            }
+            // Update centroids
+            const sums = centroidsLab.map(() => [0, 0, 0, 0]);
+            for (let i = 0; i < pixelsLab.length; i++) {
+              const a = assignments[i];
+              const lab = pixelsLab[i];
+              sums[a][0] += lab[0];
+              sums[a][1] += lab[1];
+              sums[a][2] += lab[2];
+              sums[a][3]++;
+            }
+            for (let c = 0; c < centroidsLab.length; c++) {
+              if (sums[c][3] > 0) {
+                centroidsLab[c][0] = sums[c][0] / sums[c][3];
+                centroidsLab[c][1] = sums[c][1] / sums[c][3];
+                centroidsLab[c][2] = sums[c][2] / sums[c][3];
+              }
+            }
+            if (moved === 0) break;
+          }
+          // Cluster size tally & prune tiny noise clusters (<1.5% of samples) by merging to nearest big
+          const counts = centroidsLab.map(() => 0);
+          assignments.forEach((a) => counts[a]++);
+          const minSize = Math.max(3, Math.floor(pixelsLab.length * 0.015));
+          for (let c = 0; c < centroidsLab.length; c++) {
+            if (counts[c] < minSize) {
+              // find nearest cluster with >= minSize
+              let target = -1;
+              let best = 1e18;
+              for (let d = 0; d < centroidsLab.length; d++) {
+                if (d === c || counts[d] < minSize) continue;
+                const dist = labDistance(centroidsLab[c], centroidsLab[d]);
+                if (dist < best) {
+                  best = dist;
+                  target = d;
+                }
+              }
+              if (target >= 0) {
+                // reassign small cluster points
+                for (let i = 0; i < assignments.length; i++)
+                  if (assignments[i] === c) assignments[i] = target;
+                counts[target] += counts[c];
+                counts[c] = 0;
+              }
+            }
+          }
+          // Recompute final centroid average after merging
+          centroidsLab.forEach((_, idx) => {
+            centroidsLab[idx] = [0, 0, 0, 0];
+          });
+          for (let i = 0; i < pixelsLab.length; i++) {
+            const a = assignments[i];
+            const lab = pixelsLab[i];
+            centroidsLab[a][0] += lab[0];
+            centroidsLab[a][1] += lab[1];
+            centroidsLab[a][2] += lab[2];
+            centroidsLab[a][3]++;
+          }
+          centroidsLab.forEach((c) => {
+            if (c[3] > 0) {
+              c[0] /= c[3];
+              c[1] /= c[3];
+              c[2] /= c[3];
+            }
+          });
+          // Map clusters to categories, weighting by saturation proxy (chroma in Lab)
+          const categoryCounts = new Map();
+          for (let i = 0; i < centroidsLab.length; i++) {
+            if (counts[i] === 0) continue;
+            const cLab = centroidsLab[i];
+            const L = cLab[0],
+              a = cLab[1],
+              b = cLab[2];
+            const chroma = Math.sqrt(a * a + b * b);
+            // Convert approximate Lab back to RGB-ish for existing hue logic via inverse (approx by searching nearest pixel sample of that cluster)
+            // Simpler: pick one pixel representative
+            const repIndex = assignments.findIndex((v) => v === i);
+            const rep = repIndex >= 0 ? pixels[repIndex] : [200, 200, 200];
+            const cat = mapCentroidToCategory(rep);
+            const weight = counts[i] * (1 + chroma / 100); // boost saturated clusters
+            categoryCounts.set(cat, (categoryCounts.get(cat) || 0) + weight);
+          }
+          const sorted = [...categoryCounts.entries()].sort(
+            (a, b) => b[1] - a[1]
+          );
+          const topCats = sorted.slice(0, 6).map((e) => e[0]);
+          if (imageObj.id) {
+            colorCache[imageObj.id] = topCats;
+          }
+          resolve(new Set(topCats));
+        } catch (e) {
+          resolve(new Set());
+        }
+      };
+      imgEl.onerror = () => resolve(new Set());
+      imgEl.src = src;
+    });
+  }
+
+  async function runAutoColorDetection() {
+    if (colorDetectionInProgress || colorDetectionCompleted) return;
+    // Load cache from localStorage once
+    if (!Object.keys(colorCache).length) {
+      try {
+        const raw = localStorage.getItem("imgColorCache_v1");
+        if (raw) colorCache = JSON.parse(raw);
+      } catch (e) {}
+    }
+    colorDetectionInProgress = true;
+    const tasks = allImages.map(async (img) => {
+      // Skip if already has detected colors
+      if (img._detectedColors instanceof Set && img._detectedColors.size)
+        return;
+      const detected = await detectImageColorsForItem(img);
+      img._detectedColors = detected;
+    });
+    await Promise.all(tasks);
+    colorDetectionCompleted = true;
+    colorDetectionInProgress = false;
+    // Persist cache
+    try {
+      localStorage.setItem("imgColorCache_v1", JSON.stringify(colorCache));
+    } catch (e) {}
+    // If user has a color filter active, re-apply to refine results
+    const selectedColor = (filterColor?.value || "").toLowerCase();
+    if (selectedColor && selectedColor !== "any") {
+      applyFilters();
+    }
+  }
 
   /** Return HTML string for a single gallery <figure> card. */
   function figureTemplate(item, absoluteIndex) {
@@ -125,15 +523,26 @@ document.addEventListener("DOMContentLoaded", () => {
   /** Render a single gallery page (paginate client-side). */
   function renderPage(page) {
     currentPage = page;
-    const active = filteredImages.length ? filteredImages : allImages;
+    let active;
+    if (filteredImages.length) {
+      active = filteredImages;
+    } else if (filtersActive) {
+      active = [];
+    } else {
+      active = allImages;
+    }
     const start = (page - 1) * pageSize;
     const slice = active.slice(start, start + pageSize);
     galleryEl.setAttribute("aria-busy", "true");
-    galleryEl.innerHTML = slice
-      .map((item, i) => figureTemplate(item, start + i))
-      .join("");
+    if (!slice.length && filtersActive) {
+      galleryEl.innerHTML = `<p class="gallery-empty" style="padding:1rem;color:#9b9ba1;">No images match your filters.</p>`;
+    } else {
+      galleryEl.innerHTML = slice
+        .map((item, i) => figureTemplate(item, start + i))
+        .join("");
+    }
     galleryEl.setAttribute("aria-busy", "false");
-    attachFigureHandlers();
+    if (slice.length) attachFigureHandlers();
     renderPagination();
   }
 
@@ -238,53 +647,93 @@ document.addEventListener("DOMContentLoaded", () => {
   /** Apply current filter state to allImages => filteredImages. */
   function applyFilters(silent = false) {
     const searchTerm = filterSearch?.value.toLowerCase().trim() || "";
-    const minViews = parseViewsString(filterMinViews?.value || "0");
-    const colorFilter = filterColor?.value || "";
+    const rawMinViews = parseViewsString(filterMinViews?.value || "0");
+    const selectedColor = (filterColor?.value || "").toLowerCase();
     const sortBy = filterSort?.value || "newest";
 
+    // Only treat slider value as active if user actually moved it (minViewsDirty)
+    const effectiveMinViews = viewRangePreset
+      ? 0 // overridden by preset range
+      : minViewsDirty
+      ? rawMinViews
+      : 0;
+
+    filtersActive = Boolean(
+      searchTerm ||
+        viewRangePreset ||
+        effectiveMinViews > 0 ||
+        (selectedColor && selectedColor !== "any")
+    );
+
     filteredImages = allImages.filter((img) => {
-      if (searchTerm && !img.title?.toLowerCase().includes(searchTerm)) {
-        return false;
+      if (searchTerm) {
+        const titleMatch = img.title?.toLowerCase().includes(searchTerm);
+        const descMatch = img.description?.toLowerCase().includes(searchTerm);
+        if (!titleMatch && !descMatch) return false;
       }
-      if (minViews > 0 && parseViewsString(img.views || 0) < minViews) {
-        return false;
+      const numericViews = parseViewsString(img.views || 0);
+      if (viewRangePreset) {
+        if (
+          numericViews < viewRangePreset.min ||
+          numericViews > viewRangePreset.max
+        )
+          return false;
+      } else if (effectiveMinViews > 0 && numericViews < effectiveMinViews) {
+        return false; // only enforce if user touched slider
       }
-      if (colorFilter && colorFilter !== "any" && img.color !== colorFilter) {
-        return false;
+      if (selectedColor && selectedColor !== "any") {
+        const palette = Array.isArray(img.colors)
+          ? img.colors.map((c) => String(c).toLowerCase())
+          : [];
+        const detected = img._detectedColors ? [...img._detectedColors] : [];
+        const combined = new Set([...palette, ...detected]);
+        if (!combined.has(selectedColor)) return false;
       }
       return true;
     });
 
-    // Sort
     if (sortBy === "newest") {
       filteredImages.sort((a, b) => (b.created || 0) - (a.created || 0));
     } else if (sortBy === "oldest") {
       filteredImages.sort((a, b) => (a.created || 0) - (b.created || 0));
-    } else if (sortBy === "views") {
+    } else if (sortBy === "views-desc") {
       filteredImages.sort(
         (a, b) =>
           parseViewsString(b.views || 0) - parseViewsString(a.views || 0)
       );
+    } else if (sortBy === "views-asc") {
+      filteredImages.sort(
+        (a, b) =>
+          parseViewsString(a.views || 0) - parseViewsString(b.views || 0)
+      );
+    } else if (sortBy === "title-asc") {
+      filteredImages.sort((a, b) =>
+        (a.title || "").localeCompare(b.title || "")
+      );
+    } else if (sortBy === "title-desc") {
+      filteredImages.sort((a, b) =>
+        (b.title || "").localeCompare(a.title || "")
+      );
     }
 
-    // Update count display
     if (filterMatchCount) {
-      filterMatchCount.textContent = `${filteredImages.length} match${
-        filteredImages.length === 1 ? "" : "es"
-      }`;
+      filterMatchCount.textContent = `${filteredImages.length}`;
     }
 
-    if (!silent) {
-      renderPage(1); // reset to first page
-    }
+    if (!silent) renderPage(1);
   }
 
   /** Reset all filters to default state. */
   function resetFilters() {
     if (filterSearch) filterSearch.value = "";
     if (filterMinViews) filterMinViews.value = "0";
-    if (filterColor) filterColor.value = "any";
+    if (filterColor) filterColor.value = ""; // matches 'Any Color' option
     if (filterSort) filterSort.value = "newest";
+    viewRangePreset = null;
+    minViewsDirty = false;
+    document
+      .querySelectorAll("[data-views-preset]")
+      .forEach((chip) => chip.setAttribute("aria-pressed", "false"));
     updateMinViewsDisplay();
     applyFilters();
   }
@@ -371,34 +820,61 @@ document.addEventListener("DOMContentLoaded", () => {
         .slice(0, 6);
       if (promotedSub) promotedSub.textContent = `Refreshes weekly`;
       renderPromoted();
-      applyFilters(true); // initialize filteredImages & counts
-      renderPage(1);
+      applyFilters(true); // initialize counts silently
+      renderPage(1); // show unfiltered first view
       checkSelectedPhotoDeepLink();
+      // Kick off color detection asynchronously (non-blocking)
+      runAutoColorDetection();
     } catch (err) {
       console.error(err);
       galleryEl.innerHTML = `<p style="padding:1rem;color:#f66;">Failed to load gallery.</p>`;
     }
   }
 
-  // Filter event listeners
-  if (filterSearch) {
-    filterSearch.addEventListener("input", applyFilters);
-  }
+  // Filter event listeners (deferred apply model)
   if (filterMinViews) {
     filterMinViews.addEventListener("input", () => {
       updateMinViewsDisplay();
-      applyFilters();
+      // mark slider as intentionally changed
+      minViewsDirty = true;
     });
   }
-  if (filterColor) {
-    filterColor.addEventListener("change", applyFilters);
-  }
-  if (filterSort) {
-    filterSort.addEventListener("change", applyFilters);
+  if (filterApplyBtn) {
+    filterApplyBtn.addEventListener("click", () => applyFilters());
   }
   if (filterResetBtn) {
     filterResetBtn.addEventListener("click", resetFilters);
   }
+
+  // View range preset chips logic
+  document.querySelectorAll("[data-views-preset]").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const active = chip.getAttribute("aria-pressed") === "true";
+      // Toggle off if already active
+      if (active) {
+        chip.setAttribute("aria-pressed", "false");
+        viewRangePreset = null;
+        // Wait for explicit Search click
+        return;
+      }
+      // Deactivate others
+      document
+        .querySelectorAll("[data-views-preset]")
+        .forEach((c) => c.setAttribute("aria-pressed", "false"));
+      chip.setAttribute("aria-pressed", "true");
+      const range = chip.getAttribute("data-views-preset"); // e.g. 1000-3000
+      const [minStr, maxStr] = range.split("-");
+      const min = parseInt(minStr, 10) || 0;
+      const max = parseInt(maxStr, 10) || 0;
+      viewRangePreset = { min, max };
+      // Sync slider to lower bound for visual consistency
+      if (filterMinViews) {
+        filterMinViews.value = String(min);
+        updateMinViewsDisplay();
+      }
+      // Do not auto-apply; user must press Search
+    });
+  });
 
   // Initialize displays
   updateMinViewsDisplay();

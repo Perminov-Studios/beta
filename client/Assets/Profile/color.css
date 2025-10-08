@@ -24,6 +24,7 @@
   height: 20px;
   margin-top: 3px;
   width: 20px;
+  transition: all .5s;
 }
 
 .accountPortal ul li {
@@ -105,7 +106,7 @@
   margin: 3px;
   height: 20px;
   border-radius: 8px;
-  transition: all 0.2s;
+  transition: all 0.5s;
 }
 
 #profileIcon .dropDown a p {
@@ -114,14 +115,14 @@
 }
 
 #profileIcon .dropDown a:hover {
-  background: #2b7fff;
   cursor: pointer;
+  background: #1ed75f1d;
   color: white !important;
   fill: white;
 }
 
 #profileIcon .dropDown a:hover svg {
-  color: white;
+  color: #1ed75f;
 }
 
 #profileIcon .dropDown svg {
@@ -137,5 +138,99 @@
   #profileIcon .dropDown.open {
     transition: none !important;
     transform: none !important;
+  }
+}
+
+/* =====================================================================
+   SECTION: PROFILE GALLERY TABS
+   Two-tab interface (Featured / All Images) reusing home gallery styles
+   ===================================================================== */
+.profile-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 18px 14px 40px;
+  box-sizing: border-box;
+  font-family: "Mulish", sans-serif;
+}
+
+.profile-gallery-tabs {
+  display: inline-flex;
+  background: #18181b;
+  border: 1px solid #26262b;
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
+  width: fit-content;
+  position: relative;
+}
+
+.profile-gallery-tabs .pg-tab {
+  position: relative;
+  background: transparent;
+  border: none;
+  color: #9b9ba1;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  padding: 8px 18px 7px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.profile-gallery-tabs .pg-tab:focus-visible {
+  outline: 2px solid #2b7fff;
+  outline-offset: 2px;
+}
+
+.profile-gallery-tabs .pg-tab.active {
+  color: #fff;
+  background: linear-gradient(180deg, #242428 0%, #1d1d20 100%);
+  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+
+.profile-gallery-panels {
+  position: relative;
+  min-height: 200px;
+}
+
+.profile-gallery .pg-panel {
+  animation: fadeInProfilePanel 0.45s ease;
+}
+
+.profile-gallery .pg-panel[hidden] {
+  display: none;
+}
+
+@keyframes fadeInProfilePanel {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tighten grid gap slightly inside profile for visual distinction */
+.profile-gallery .bento-gallery .bento-grid {
+  --gap: 16px;
+}
+
+/* Reuse existing .bento-item styles from Home; only adjust height if needed */
+.profile-gallery .bento-item {
+  height: 240px;
+}
+
+@media (max-width: 600px) {
+  .profile-gallery-tabs {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .profile-gallery .bento-item {
+    height: 220px;
   }
 }

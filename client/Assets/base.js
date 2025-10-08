@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const navLinks = Array.from(document.querySelectorAll(".navLink a"));
   const portalLinks = Array.from(
     document.querySelectorAll(
-      "#profileIcon .dropDown a[data-tab], #inboxIcon .dropDown a[data-tab], #searchIcon .dropDown a[data-tab]"
+      "#profileIcon .dropDown a[data-tab], #inboxIcon .dropDown a[data-tab], #searchIcon .dropDown a[data-tab], #uploadIcon a[data-tab]"
     )
   );
   const allTabLinks = [...navLinks, ...portalLinks];
@@ -156,6 +156,10 @@ document.addEventListener("DOMContentLoaded", () => {
     navLinks.find((a) => a.classList.contains("active")) || navLinks[0];
   showPanelByName = function (name) {
     originalShow(name);
+    if (name === "selectedphoto") {
+      // Render selected photo view when panel is activated
+      renderSelectedPhotoPanel();
+    }
     const activeNav = navLinks.find((a) => a.classList.contains("active"));
     const activePortal = portalLinks.some((a) =>
       a.classList.contains("active")
@@ -234,9 +238,259 @@ document.addEventListener("DOMContentLoaded", () => {
   // Optional: update visible panel when user navigates history (back/forward)
   window.addEventListener("hashchange", () => {
     const base = baseTabFromHash(location.hash || "");
+    // If hash includes selectedphoto-id pattern, persist id
+    const m = location.hash.match(/^#selectedphoto-(\d+)/i);
+    if (m) {
+      try {
+        sessionStorage.setItem("selectedPhotoId", m[1]);
+      } catch (e) {}
+    }
     if (base) showPanelByName(base);
   });
 
   // Make showPanelByName globally available for other scripts
   window.showPanelByName = showPanelByName;
+
+  /* =============================================================
+     SELECTED PHOTO RENDERING
+     Fetches images.json (lightweight) and renders the selected
+     image (by id stored in sessionStorage) into the SelectedPhoto
+     panel. Falls back gracefully if id/image not found.
+     ============================================================= */
+  async function renderSelectedPhotoPanel() {
+    const containerPanel = document.querySelector(
+      ".Main.selectedphoto, .Main.SelectedPhoto"
+    );
+    if (!containerPanel) return;
+    const mainEl = containerPanel.querySelector(
+      'main.home-col.home-center, main[aria-label="Selected photo view"]'
+    );
+    const asideEl = containerPanel.querySelector(
+      'aside.home-col.home-right, aside[aria-label="Photo actions"]'
+    );
+    if (!mainEl) return;
+    let selectedId = null;
+    try {
+      selectedId = sessionStorage.getItem("selectedPhotoId");
+    } catch (e) {}
+    if (!selectedId) {
+      const mh = location.hash.match(/^#selectedphoto-(\d+)/i);
+      if (mh) selectedId = mh[1];
+    }
+    if (!selectedId) {
+      mainEl.innerHTML =
+        '<p style="padding:1rem;color:#9b9ba1;">No image selected.</p>';
+      if (asideEl) asideEl.innerHTML = "";
+      return;
+    }
+    mainEl.setAttribute("aria-busy", "true");
+    mainEl.innerHTML = `<p style="padding:1rem;color:#9b9ba1;">Loading image #${selectedId}…</p>`;
+    if (asideEl) asideEl.innerHTML = "";
+    try {
+      const res = await fetch("../data/images.json", { cache: "no-store" });
+      const data = await res.json();
+      const images = Array.isArray(data) ? data : data.images || [];
+      const img = images.find(
+        (i, idx) => String(i.id || idx + 1) === String(selectedId)
+      );
+      if (!img) {
+        mainEl.innerHTML =
+          '<p style="padding:1rem;color:#f66;">Image not found.</p>';
+        return;
+      }
+      const safe = (s) =>
+        String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      const viewsIcon = () =>
+        `<svg class=\"w-6 h-6\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" fill=\"currentColor\" viewBox=\"0 0 24 24\"><path fill-rule=\"evenodd\" d=\"M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z\" clip-rule=\"evenodd\"/></svg>`;
+      const mainSrc = img.image?.src || "";
+      const mainAlt = safe(img.image?.alt || img.title || "Selected image");
+      const avatar = img.author?.avatar || "";
+      const avatarAlt = safe(img.author?.alt || "Author avatar");
+      const title = safe(img.title || "Untitled");
+      const desc = safe(img.description || "");
+      const views = safe(img.views || "0");
+
+      // IMAGE ONLY IN MAIN
+      mainEl.innerHTML = `<figure class="spv-media-wrapper"><img class="spv-media-img" src="${mainSrc}" alt="${mainAlt}" loading="eager" /></figure>`;
+      mainEl.removeAttribute("aria-busy");
+
+      // ACTIONS / META IN ASIDE (or fallback to main if aside hidden)
+      const actionsMarkup = `
+        <div class="spv-actions">
+          <div class="spv-actions-header">
+            <button type="button" class="spv-back" aria-label="Back to gallery">← Back</button>
+            <h1 class="spv-title" title="${title}">${title}</h1>
+          </div>
+          <div class="spv-author-block">
+            <img class="spv-avatar" src="${avatar}" alt="${avatarAlt}">
+            <div class="spv-author-info">
+              <span class="spv-author-name">${avatarAlt}</span>
+            </div>
+          </div>
+          <p class="spv-desc">${desc}</p>
+          <div class="spv-stats-bar" role="group" aria-label="Image stats and actions">
+            <span class="spv-views" aria-label="${views} views">${views} ${viewsIcon()}</span>
+            <button type="button" class="spv-like" aria-pressed="false" aria-label="Like this image"><span class="icon">❤</span> <span class="count">0</span></button>
+            <button type="button" class="spv-share" aria-label="Copy share link">🔗 Share</button>
+          </div>
+          <section class="spv-comments" aria-label="Comments">
+            <h2 class="spv-subheading">Comments</h2>
+            <ul class="spv-comment-list" aria-live="polite"></ul>
+            <form class="spv-comment-form" aria-label="Add a comment">
+              <input type="text" class="spv-comment-input" placeholder="Add a comment" aria-label="Comment text" maxlength="300" required />
+              <button type="submit" class="spv-comment-submit">Post</button>
+            </form>
+          </section>
+        </div>`;
+
+      const targetAside =
+        asideEl && getComputedStyle(asideEl).display !== "none"
+          ? asideEl
+          : mainEl;
+      targetAside.innerHTML =
+        targetAside === asideEl
+          ? actionsMarkup
+          : actionsMarkup + targetAside.innerHTML; // if fallback, prepend actions above image
+      if (targetAside !== asideEl) {
+        // ensure order: actions then image
+        const imgWrapper = mainEl.querySelector(".spv-media-wrapper");
+        if (imgWrapper) {
+          mainEl.appendChild(imgWrapper);
+        }
+      }
+
+      // Wire up interactions
+      const backBtn = containerPanel.querySelector(".spv-back");
+      if (backBtn) {
+        backBtn.addEventListener("click", () => {
+          const prev = sessionStorage.getItem("lastGalleryTab") || "home";
+          window.showPanelByName(prev);
+        });
+      }
+      const likeBtn = containerPanel.querySelector(".spv-like");
+      if (likeBtn) {
+        likeBtn.addEventListener("click", () => {
+          const pressed = likeBtn.getAttribute("aria-pressed") === "true";
+          likeBtn.setAttribute("aria-pressed", String(!pressed));
+          const countEl = likeBtn.querySelector(".count");
+          let val = parseInt(countEl.textContent, 10) || 0;
+          if (!pressed) val++;
+          else if (val > 0) val--;
+          countEl.textContent = val;
+        });
+      }
+      const shareBtn = containerPanel.querySelector(".spv-share");
+      if (shareBtn) {
+        shareBtn.addEventListener("click", async () => {
+          const shareUrl =
+            location.origin +
+            location.pathname +
+            "#selectedphoto-" +
+            selectedId;
+          try {
+            await navigator.clipboard.writeText(shareUrl);
+            shareBtn.textContent = "Copied!";
+            setTimeout(() => (shareBtn.textContent = "🔗 Share"), 1800);
+          } catch (e) {
+            shareBtn.textContent = "Copy failed";
+            setTimeout(() => (shareBtn.textContent = "🔗 Share"), 1800);
+          }
+        });
+      }
+      const commentForm = containerPanel.querySelector(".spv-comment-form");
+      const commentList = containerPanel.querySelector(".spv-comment-list");
+      if (commentForm && commentList) {
+        commentForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const input = commentForm.querySelector(".spv-comment-input");
+          const text = input.value.trim();
+          if (!text) return;
+          const li = document.createElement("li");
+          li.className = "spv-comment-item";
+          li.innerHTML = `<span class="cmt-author">You</span><span class="cmt-text"></span>`;
+          li.querySelector(".cmt-text").textContent = " " + text;
+          commentList.appendChild(li);
+          input.value = "";
+          input.focus();
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      mainEl.innerHTML =
+        '<p style="padding:1rem;color:#f66;">Failed to load image.</p>';
+      if (asideEl) asideEl.innerHTML = "";
+    } finally {
+      mainEl.removeAttribute("aria-busy");
+    }
+  }
+
+  // Track last non-selectedphoto gallery tab for back navigation
+  const galleryTabNames = ["home", "profile"]; // extend if needed
+  const observer = new MutationObserver(() => {
+    const visible = panels.find((p) => p.style.display !== "none");
+    if (visible) {
+      const classes = Array.from(visible.classList);
+      const name = classes.find((c) => galleryTabNames.includes(c));
+      if (name) {
+        try {
+          sessionStorage.setItem("lastGalleryTab", name);
+        } catch (e) {}
+      }
+    }
+  });
+  panels.forEach((p) =>
+    observer.observe(p, { attributes: true, attributeFilter: ["style"] })
+  );
+
+  // Initial deep-link id capture (#selectedphoto-XX)
+  const initialSelected = location.hash.match(/^#selectedphoto-(\d+)/i);
+  if (initialSelected) {
+    try {
+      sessionStorage.setItem("selectedPhotoId", initialSelected[1]);
+    } catch (e) {}
+  }
+  // ================= UPLOAD FORM HANDLING (Prototype) =================
+  const uploadForm = document.getElementById("uploadForm");
+  if (uploadForm) {
+    const feedbackEl = document.getElementById("uploadFeedback");
+    const cancelBtn = uploadForm.querySelector("[data-cancel]");
+    uploadForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const formData = new FormData(uploadForm);
+      const title = (formData.get("title") || "").toString().trim();
+      const file = formData.get("image");
+      if (!title || !file || !(file instanceof File) || !file.name) {
+        if (feedbackEl) {
+          feedbackEl.style.color = "#ff8484";
+          feedbackEl.textContent =
+            "Please provide a title and select an image.";
+        }
+        return;
+      }
+      if (feedbackEl) {
+        feedbackEl.style.color = "#8da8ff";
+        feedbackEl.textContent = "Uploading…";
+      }
+      setTimeout(() => {
+        if (feedbackEl) {
+          feedbackEl.style.color = "#5fe3a1";
+          feedbackEl.textContent =
+            "Upload successful (demo only, not persisted).";
+        }
+        uploadForm.reset();
+      }, 900);
+    });
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", () => {
+        uploadForm.reset();
+        if (feedbackEl) feedbackEl.textContent = "";
+        showPanelByName("home");
+      });
+    }
+  }
 });

@@ -74,7 +74,8 @@
 .filter-panel input[type="range"] {
   width: 100%;
   cursor: pointer;
-  accent-color: #2b7fff;
+  accent-color: #1ed65e;
+  border: 0px solid white;
 }
 
 .range-field output {
@@ -126,7 +127,6 @@
 
 .filter-actions {
   display: flex;
-  justify-content: flex-end;
 }
 
 .filter-reset {
@@ -919,7 +919,7 @@ fieldset.views-range-group .chip[aria-pressed="true"] {
   left: 0;
   right: 0;
   border-radius: 15px;
-  background: url('../../../assets/images/discord.jpg') no-repeat center;
+  background: url('../../../assets/images/green.jpg') no-repeat center;
   background-size: cover;
   overflow: hidden;
   margin: 10px;
@@ -958,7 +958,9 @@ fieldset.views-range-group .chip[aria-pressed="true"] {
   transform: translateX(-50%);
   width: 70%;
   max-width: 200px;
-  background: #3b69ff;
+  background: #1ed75f38;
+  backdrop-filter: blur(5px);   
+  border: 1px solid #1ed75f;
   color: #fff;
   font-weight: 700;
   padding: 10px 16px;
