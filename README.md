@@ -27,26 +27,6 @@ Notes
 
 - `client/dash.html` uses assets under `client/Assets/…` (not the legacy `assets/JS/dash.js`). The legacy script remains for landing/older prototypes and can be removed if not needed.
 
-## How to run locally
-
-Because the dashboard fetches `../data/images.json`, you should serve files over HTTP (not via file://) to avoid fetch/CORS issues.
-
-Option A (Python 3)
-
-```bash
-python -m http.server 5500
-```
-
-Then open: http://localhost:5500/client/dash.html
-
-Option B (Node)
-
-```bash
-npx serve -l 5500
-```
-
-Then open: http://localhost:5500/client/dash.html
-
 ## Runtime model (dashboard)
 
 Panels and tabs
