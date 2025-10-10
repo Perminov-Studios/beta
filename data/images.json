@@ -12,7 +12,8 @@
 			"colors": ["black", "gray", "green"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "John Doe"
 			}
 		},
 		{
@@ -27,7 +28,8 @@
 			"colors": ["orange", "yellow", "green", "gray"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Jane Smith"
 			}
 		},
 		{
@@ -42,7 +44,8 @@
 			"colors": ["blue", "brown", "green", "gray"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Alice Johnson"
 			}
 		},
 		{
@@ -57,7 +60,8 @@
 			"colors": ["orange", "yellow", "black", "gray"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Bob Brown"
 			}
 		},
 		{
@@ -72,7 +76,8 @@
 			"colors": ["orange", "red", "yellow", "black"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Charlie Davis"
 			}
 		},
 		{
@@ -87,7 +92,8 @@
 			"colors": ["green", "brown", "yellow", "orange"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Diana Evans"
 			}
 		},
 		{
@@ -102,7 +108,8 @@
 			"colors": ["blue", "green", "orange", "pink", "purple"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Ethan Foster"
 			}
 		},
 		{
@@ -117,7 +124,8 @@
 			"colors": ["pink", "orange", "white", "purple"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Fiona Green"
 			}
 		},
 		{
@@ -132,7 +140,8 @@
 			"colors": ["orange", "pink", "purple", "blue"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "George Harris"
 			}
 		},
 		{
@@ -147,7 +156,8 @@
 			"colors": ["green", "brown", "yellow", "orange"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Hannah Irving"
 			}
 		},
 		{
@@ -162,7 +172,8 @@
 			"colors": ["pink", "purple", "blue", "black"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Ian Jackson"
 			}
 		},
 		{
@@ -177,7 +188,8 @@
 			"colors": ["white", "gray", "green", "brown"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Julia King"
 			}
 		},
 		{
@@ -192,7 +204,8 @@
 			"colors": ["blue", "purple", "pink", "red"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Alice Johnson"
 			}
 		},
 		{
@@ -207,7 +220,8 @@
 			"colors": ["green"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",	
+				"name": "Bob Brown"
 			}
 		},
 		{
@@ -222,7 +236,8 @@
 			"colors": ["yellow", "orange", "brown", "gray"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Kevin Lee"
 			}
 		},
 		{
@@ -237,7 +252,8 @@
 			"colors": ["green", "blue", "purple", "black"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Laura Martinez"
 			}
 		},
 		{
@@ -252,7 +268,8 @@
 			"colors": ["brown", "white", "gray", "green"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Michael Nguyen"
 			}
 		},
 		{
@@ -267,7 +284,8 @@
 			"colors": ["black", "white", "red", "blue"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Nina Patel"
 			}
 		},
 		{
@@ -282,7 +300,8 @@
 			"colors": ["green", "gray", "white"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Oliver Quinn"
 			}
 		},
 		{
@@ -297,7 +316,8 @@
 			"colors": ["red", "orange", "yellow", "green", "purple"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Paula Roberts"
 			}
 		},
 		{
@@ -312,7 +332,8 @@
 			"colors": ["orange", "red", "black", "brown"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Quentin Smith"
 			}
 		},
 		{
@@ -327,7 +348,8 @@
 			"colors": ["white", "gray", "blue"],
 			"author": {
 				"avatar": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=120&q=60",
-				"alt": "Profile avatar"
+				"alt": "Profile avatar",
+				"name": "Rachel Turner"
 			}
 		}
 	]

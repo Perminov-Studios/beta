@@ -289,6 +289,21 @@
                             Privacy Policy
                         </p>
                     </a>
+                    <a href="" data-tab="Terms-of-service">
+                        <p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                    d="M8 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1h2a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2Zm6 1h-4v2H9a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2h-1V4Zm-3 8a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-2-1a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H9Zm2 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-2-1a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H9Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+
+
+                            Terms of Service
+                        </p>
+                    </a>
+                    <hr>
                     <a href="" data-tab="share feedback">
                         <p>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -304,7 +319,7 @@
                         </p>
                     </a>
                     <hr>
-                    <a href="" data-tab="logout">
+                    <a href="" data-tab="logout" id="logoutBtn">
                         <p>
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -324,7 +339,13 @@
 </nav>
 
 <body>
+    <!--
+    =====================================================================
+                            SECTION: TABS CONTENT
+    =====================================================================
+    -->
 
+    <!-- HOME TAB -->
     <div class="Main home">
         <div class="home-layout">
             <aside class="home-col home-left" aria-label="Dashboard navigation & gallery filters">
@@ -421,13 +442,6 @@
             <main class="home-col home-center" aria-label="Primary content area">
                 <section class="bento-gallery" aria-labelledby="gallery-heading">
                     <h2 id="gallery-heading" class="visually-hidden">Image Gallery</h2>
-                    <!-- =============================================================
-                         PROMOTED STRIP
-                         - Always visible above the main gallery grid.
-                         - Populated dynamically with a small set of high‑engagement images
-                           (top by views) or any flagged as promoted in data (future ready).
-                         - Not affected by user filters; acts as a featured carousel/row.
-                       ============================================================= -->
                     <div class="promoted-section" aria-labelledby="promoted-heading" role="region">
                         <div class="promoted-header">
                             <h3 id="promoted-heading">Promoted</h3>
@@ -448,6 +462,7 @@
         </div>
     </div>
 
+    <!-- ABOUT US TAB -->
     <div class="Main events">
         <div class="home-layout">
             <aside class="home-col home-left" aria-label="Dashboard navigation"></aside>
@@ -456,28 +471,54 @@
             </main>
         </div>
     </div>
+
+    <!--CONTACT US TAB -->
     <div class="Main orders">
         contact us if you need help
     </div>
+
+    <!-- FIND ARTISTS TAB -->
     <div class="Main broadcasts">
         Find an artist you like and hire them
     </div>
+
+    <!-- PROFILE TAB -->
     <div class="Main profile">
         <div class="home-layout">
-            <aside class="home-col home-left" aria-label="Dashboard navigation">
-                <div class="profileBanner">
-                    <div class="userProfile"></div>
-                </div>
+            <aside class="home-col home-left" aria-label="Dashboard navigation" id="profileSideBar">
+                
             </aside>
             <main class="home-col home-center" aria-label="Primary content area">
                 <!-- Profile Galleries -->
                 <section class="profile-gallery" aria-labelledby="profile-gallery-heading">
                     <h2 id="profile-gallery-heading" class="visually-hidden">User Images</h2>
+
                     <div class="profile-gallery-tabs" role="tablist" aria-label="Profile image categories">
+
                         <button type="button" role="tab" aria-selected="true" aria-controls="profileFeaturedPanel"
-                            id="profileFeaturedTab" class="pg-tab active">Featured</button>
+                            id="profileFeaturedTab" class="pg-tab active">
+                            Featured
+                        </button>
                         <button type="button" role="tab" aria-selected="false" aria-controls="profileAllPanel"
-                            id="profileAllTab" class="pg-tab">All Images</button>
+                            id="profileAllTab" class="pg-tab">
+                            All Images
+                        </button>
+                        <hr style="opacity: .5;">
+                        <button type="button" role="tab" aria-selected="false" aria-controls="profileLikedImagesPanel"
+                            id="profileLikedImagesTab" class="pg-tab likes" style="margin-left: 10px;">
+                            Likes
+
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                class="size-4">
+                                <path fill-rule="evenodd"
+                                    d="M3.28 2.22a.75.75 0 0 0-1.06 1.06l10.5 10.5a.75.75 0 1 0 1.06-1.06l-1.322-1.323a7.012 7.012 0 0 0 2.16-3.11.87.87 0 0 0 0-.567A7.003 7.003 0 0 0 4.82 3.76l-1.54-1.54Zm3.196 3.195 1.135 1.136A1.502 1.502 0 0 1 9.45 8.389l1.136 1.135a3 3 0 0 0-4.109-4.109Z"
+                                    clip-rule="evenodd" />
+                                <path
+                                    d="m7.812 10.994 1.816 1.816A7.003 7.003 0 0 1 1.38 8.28a.87.87 0 0 1 0-.566 6.985 6.985 0 0 1 1.113-2.039l2.513 2.513a3 3 0 0 0 2.806 2.806Z" />
+                            </svg>
+
+                        </button>
+
                     </div>
                     <div class="profile-gallery-panels">
                         <!-- Featured Images Panel -->
@@ -496,11 +537,21 @@
                                     aria-busy="true"></div>
                             </div>
                         </div>
+                        <!-- Liked Images Panel -->
+                        <div id="profileLikedImagesPanel" role="tabpanel" aria-labelledby="profileLikedImagesTab"
+                            class="pg-panel" hidden>
+                            <div class="bento-gallery">
+                                <div class="bento-grid" id="profileLikedGallery" data-page-size="20" aria-live="polite"
+                                    aria-busy="true"></div>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </main>
         </div>
     </div>
+
+    <!-- SETTINGS TAB -->
     <div class="Main settings">
         <div class="home-layout">
             <aside class="home-col home-left" aria-label="Dashboard navigation">
@@ -511,6 +562,8 @@
             </main>
         </div>
     </div>
+
+    <!-- PRIVACY POLICY TAB -->
     <div class="Main privacy-policy">
         <div class="home-layout">
             <main class="home-col home-center" aria-label="Primary content area">
@@ -520,14 +573,29 @@
             </main>
         </div>
     </div>
+
+    <!-- TOS TAB -->
+    <div class="Main Terms-of-service">
+        <div class="home-layout">
+            <main class="home-col home-center" aria-label="Primary content area">
+
+                <h1>Terms of Service</h1>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- FEEDBACK TAB -->
     <div class="Main share-feedback">
         Share Feedback
     </div>
+
+    <!-- LOGOUT TAB -->
     <div class="Main logout">
         Logout
     </div>
 
-
+    <!-- NOTIFICATIONS TAB -->
     <div class="Main notifications">
         <div class="home-layout">
             <aside class="home-col home-left" aria-label="Notifications navigation">
@@ -539,6 +607,7 @@
         </div>
     </div>
 
+    <!-- MESSAGE TAB -->
     <div class="Main messages">
         <div class="home-layout">
             <aside class="home-col home-left" aria-label="Messages navigation">
@@ -551,6 +620,7 @@
         </div>
     </div>
 
+    <!-- SELECTED PHOTO TAB -->
     <div class="Main SelectedPhoto selectedphoto">
         <div class="home-layout">
 
@@ -564,6 +634,7 @@
         </div>
     </div>
 
+    <!-- UPLOAD IMAGE TAB -->
     <div class="Main uploadimage">
         <div class="home-layout">
             <main class="home-col home-center" aria-label="Upload image form area">

@@ -838,8 +838,7 @@ document.addEventListener("DOMContentLoaded", () => {
             parseViewsString(b.views || 0) - parseViewsString(a.views || 0)
         )
         .slice(0, 6);
-      if (promotedSub)
-        promotedSub.textContent = `Refreshes weekly`;
+      if (promotedSub) promotedSub.textContent = `Refreshes weekly`;
       renderPromoted();
       applyFilters(true); // initialize filteredImages & counts
       renderPage(1);
@@ -875,6 +874,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const mainAlt = escapeHtml(item.image?.alt || safeTitle);
     const views = escapeHtml(item.views || "0");
     const avatar = item.author?.avatar || "";
+    const avatarUsername = escapeHtml(item.author?.name || "Unknown");
     const avatarAlt = escapeHtml(item.author?.alt || "Author avatar");
     // Main: only the image, centered & responsive
     main.innerHTML = `
@@ -894,7 +894,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <p class="photo-desc">${safeDesc}</p>
         <div class="photo-author">
           <img src="${avatar}" alt="${avatarAlt}" class="author-avatar" />
-          <span class="author-label">Author</span>
+          <span class="author-label">$${avatarUsername}</span>
         </div>
         <div class="photo-actions" role="group" aria-label="Photo actions">
           <button type="button" class="photo-btn" data-action="like">Like</button>

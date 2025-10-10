@@ -1,102 +1,134 @@
 # Project Overview
 
-This repository currently serves a static prototype of an art / media platform consisting of three main page groups:
+This repository hosts a static prototype of an art/media platform with:
 
 1. Public landing pages: `index.html`, `login.html`, `resetpassword.html`
-2. Authenticated dashboard: `client/dash.html` (with a large tab system and dynamic gallery)
-3. Static data assets: JSON + images inside `data/` and `assets/images/`
+2. Authenticated dashboard web app: `client/dash.html`
+3. Static data assets: JSON + images in `data/` and `assets/images/`
 
-## Goals of This Documentation
-
-Provide a quick mental model so you can jump to the right place fast, and outline next refactors if/when you want to modularize further.
+The dashboard is structured for progressive enhancement: it renders without JS and upgrades to a tabbed SPA-like experience when scripts load.
 
 ## High-Level Structure
 
-assets/
-CSS/ (Global & page‑specific styles – see section below for suggested future split)
-JS/ (Per‑page scripts; dashboard logic lives in `dash.js`)
-images/ (Static raster + SVG assets)
-client/
-dash.html (Dashboard shell; multiple tab panels rendered/hidden by `dash.js`)
-data/
-images.json (Gallery seed data consumed by dashboard)
+- `assets/`
+  - `CSS/` Global and landing-page styles
+  - `JS/` Legacy dashboard script (`dash.js`) used by non-client pages
+  - `images/` Static raster + SVG assets
+- `client/`
+  - `dash.html` Dashboard shell (tabs/panels)
+  - `Assets/` Dashboard-only assets
+    - `base.css` Global dashboard layout/components
+    - `base.js` Core tab system, deep links, dropdown wiring, selected-photo view, upload demo
+    - Tab modules: `Home/`, `Profile/`, `Settings/`, `Privacy Policy/`, `Messages/`, `Notifcations/`, each with `color.css` and `script.js`
+- `data/`
+  - `images.json` Gallery seed data consumed by dashboard and profile
 
-## Key Runtime Concepts
+Notes
 
-Dashboard Tabs (`dash.html` + `assets/JS/dash.js`)
+- `client/dash.html` uses assets under `client/Assets/…` (not the legacy `assets/JS/dash.js`). The legacy script remains for landing/older prototypes and can be removed if not needed.
 
-- Each visible panel uses class `Main` plus a semantic class (e.g. `home`, `events`, `selectedphoto`).
-- Navigation links (top nav + dropdown portal links) use `data-tab` that matches a panel class.
-- URL hash deep‑links e.g. `#selectedphoto-15` switch the active panel and load a focused image view.
+## How to run locally
 
-Dynamic Gallery
+Because the dashboard fetches `../data/images.json`, you should serve files over HTTP (not via file://) to avoid fetch/CORS issues.
 
-- Populated from `data/images.json` (supports both `{ images: [...] }` and raw `[...]` formats).
-- Pagination is client‑side only; page size is read from `data-page-size` attribute on the gallery grid container.
+Option A (Python 3)
 
-Notifications & Messages
+```bash
+python -m http.server 5500
+```
 
-- Dropdown menus create accessible, keyboard-navigable popovers.
-- Badges animate numerical changes via CSS animation classes.
+Then open: http://localhost:5500/client/dash.html
 
-## Styling Overview
+Option B (Node)
 
-`dash.css` Largest file; contains layout primitives, navigation, dropdowns, gallery, pagination, selected-photo view, and utility helpers. Section headers have been normalized for quick grep (search for: SECTION: ).
-`login.css` Auth (login/register + modal) styles; includes theme CSS custom properties and panel flip transitions.
-`nav.css` Landing page hero & navigation bar styles.
-`index.css` Lightweight global resets / body defaults for the landing page.
-`footer.css` (Placeholder) – kept for future footer-specific overrides; currently empty.
+```bash
+npx serve -l 5500
+```
 
-## JavaScript Overview
+Then open: http://localhost:5500/client/dash.html
 
-`dash.js`
+## Runtime model (dashboard)
 
-- Boot sequence (DOMContentLoaded) wires tab system, dropdown accessibility, badges, gallery loader, deep linking.
-- Functions are grouped by feature with banner comments; search for: FEATURE: .
-  `script.js`
-- Handles login/register panel toggle animations, simple form validation, alert messages, and theme toggle.
+Panels and tabs
 
-## Suggested Future Refactor (Optional)
+- Each panel has class `Main` plus a semantic class, e.g. `home`, `events`, `profile`, `selectedphoto`.
+- Navigation and account-portal links carry `data-tab` matching the panel class. Example: `data-tab="profile"` -> `.Main.profile`.
+- Deep links: `#selectedphoto-<id>` opens the Selected Photo view for that image.
 
-Short Term (Low Risk)
+Custom tab activation event
 
-- Split `dash.css` into: `base.css` (reset + typography), `layout.css` (Main / columns / responsive), `components.css` (dropdowns, gallery, pagination, buttons), `pages.css` (selected-photo specifics), then import them in `dash.html` in order.
-- Move inline AOS init scripts into a new `assets/JS/aos-init.js` to declutter HTML.
-- Extract gallery + selected photo logic into `gallery.js` and `photo-view.js`; keep a small orchestrator in `dash.js`.
+- On every tab switch, `client/Assets/base.js` emits a custom event:
+  - Type: `tab:activate`
+  - Payload: `{ detail: { name: string /* normalized tab name */ } }`
+- Example listener:
 
-Longer Term
+```js
+document.addEventListener("tab:activate", (e) => {
+  if (e.detail?.name === "profile") {
+    // initialize or refresh profile view
+  }
+});
+```
 
-- Replace manual tab logic with a lightweight router (hash-based) for simpler deep links.
-- Introduce a build step (e.g. Vite) to allow ES module composition + bundling + minification.
-- Add a simple test harness (Jest or Vitest) for gallery pagination and hash parsing utilities.
+Selected Photo view
 
-## Developer Quick Links
+- When a gallery item is clicked, the app switches to `.Main.selectedphoto` and renders the image + metadata and actions.
+- The URL hash becomes `#selectedphoto-<id>`; a copyable share link is generated.
+- A lightweight report FAB and basic like/share/comment interactions are provided for demo.
+- The last gallery tab (`home` or `profile`) is remembered in `sessionStorage.lastGalleryTab` for a quick “Back” behavior.
 
-Search terms to jump fast:
+## Profile tab specifics
 
-- "SECTION: NAV" (navigation CSS)
-- "SECTION: DROPDOWNS" (profile / inbox / notifications)
-- "SECTION: GALLERY" (bento grid + item hover)
-- "FEATURE: TAB SYSTEM" (`dash.js` tab logic)
-- "FEATURE: GALLERY LOAD" (fetch + pagination)
-- "FEATURE: SELECTED PHOTO" (deep link view builder)
+Files
 
-## Accessibility Notes
+- Markup in `client/dash.html` under `.Main.profile`
+- Logic in `client/Assets/Profile/script.js`
 
-- Dropdowns trap focus and close on Escape.
-- Badges use hidden live regions for screen readers (messages).
-- Gallery images are focusable (`tabindex="0"`) supporting keyboard activation.
-- Pagination buttons implement `aria-current="page"` when active.
+Behavior
 
-## Browser Support Assumptions
+- Lazy initialization: the Profile module listens for `tab:activate` with `name === "profile"` and loads user images on first activation (also initializes immediately if the Profile panel is visible at page load).
+- Galleries
+  - Featured: top 6 by views (basic numeric parse supports values like `1.2k`)
+  - All Images: full set from `../data/images.json`
+  - Likes: for the profile owner only; computed from IDs stored in `localStorage.psLikedImageIds`
+- Image click navigates to the Selected Photo view; IDs are persisted in `sessionStorage.selectedPhotoId` when navigating.
+- Sidebar mock data renders banner, profile picture, status, username/handle, and example social links.
 
-Modern evergreen browsers (Chrome, Edge, Firefox, Safari). No polyfills included; optional chaining & ES2015+ features avoided or guarded.
+Data source
+
+- `../data/images.json` supports both `{ images: [...] }` and bare `[...]` formats. Each image should include `image.src`, `title`, `description`, and optionally `author.avatar`, `author.name`, `views`, `colors`, etc.
+
+## Accessibility highlights
+
+- Dropdowns (profile, inbox, notifications) trap focus and close on Escape; icons are keyboard-activatable.
+- Top navigation underline is purely decorative and hides for account-portal tabs as appropriate.
+- Gallery items and promoted cards are focusable and activate on Enter/Space.
+- Pagination marks the active page with `aria-current="page"`.
+
+## Developer guide (quick find)
+
+- “FEATURE: TAB SYSTEM” in `client/Assets/base.js`
+- “SELECTED PHOTO RENDERING” in `client/Assets/base.js`
+- Profile gallery in `client/Assets/Profile/script.js` (search for renderFeatured/renderAll/renderLikes)
+- Data fetch path: `../data/images.json` relative to `client/dash.html`
+
+## Suggested future refactors (optional)
+
+Short term
+
+- Extract Selected Photo and tab underline code to standalone modules.
+- Normalize data shape for `images.json` and add schema comments.
+
+Longer term
+
+- Introduce a hash router to replace manual tab management.
+- Add a build step (e.g., Vite) and unit tests for URL/hash parsing and filters.
 
 ## Contributing
 
-1.  Keep behavioral changes separate from commentary-only commits.
-2.  When splitting files, update all `<link rel="stylesheet">` / `<script>` references and test dashboard hash routes.
-3.  Prefer progressive enhancement: new JS features should fail gracefully if data or DOM elements are missing.
+1. Keep behavioral changes separate from commentary-only commits.
+2. When reorganizing files, update all `<link rel="stylesheet">`/`<script>` references in `client/dash.html` and verify deep links and tab activation events.
+3. Prefer progressive enhancement; handle missing DOM/data gracefully.
 
 ## License
 
@@ -104,4 +136,11 @@ Modern evergreen browsers (Chrome, Edge, Firefox, Safari). No polyfills included
 
 ## Revision History
 
-2025-10-07: Added documentation & inline comments pass (non-breaking) to improve discoverability.
+2025-10-10
+
+- Fix: Profile images now load automatically on tab switch by emitting a `tab:activate` event in `client/Assets/base.js` and listening in `client/Assets/Profile/script.js`.
+- Docs: Updated README to reflect `client/Assets/` structure, event contract, local run steps, and Profile behavior.
+
+2025-10-07
+
+- Added documentation & inline comments pass (non-breaking) to improve discoverability.

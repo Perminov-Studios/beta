@@ -620,7 +620,6 @@ fieldset.views-range-group .chip[aria-pressed="true"] {
   font-size: 14px;
   font-weight: 600;
   position: absolute;
-  top: 0px;
   left: 10px;
   margin: 0;
   width: 70%;
@@ -634,7 +633,7 @@ fieldset.views-range-group .chip[aria-pressed="true"] {
   color: white;
   font-size: 14px;
   position: absolute;
-  bottom: 15px;
+  bottom: 18px;
   left: 10px;
   margin: 0;
   width: 60%;

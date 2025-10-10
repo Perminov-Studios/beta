@@ -156,9 +156,19 @@ document.addEventListener("DOMContentLoaded", () => {
     navLinks.find((a) => a.classList.contains("active")) || navLinks[0];
   showPanelByName = function (name) {
     originalShow(name);
+    // Emit a custom event so tab-specific scripts (e.g., Profile) can initialize on demand
+    try {
+      const evt = new CustomEvent("tab:activate", { detail: { name } });
+      document.dispatchEvent(evt);
+    } catch (e) {
+      // no-op if CustomEvent not supported
+    }
     if (name === "selectedphoto") {
       // Render selected photo view when panel is activated
       renderSelectedPhotoPanel();
+    }
+    if (name === "profile") {
+      ensureProfileReportFab();
     }
     const activeNav = navLinks.find((a) => a.classList.contains("active"));
     const activePortal = portalLinks.some((a) =>
@@ -307,10 +317,13 @@ document.addEventListener("DOMContentLoaded", () => {
           .replace(/'/g, "&#039;");
       const viewsIcon = () =>
         `<svg class=\"w-6 h-6\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" fill=\"currentColor\" viewBox=\"0 0 24 24\"><path fill-rule=\"evenodd\" d=\"M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z\" clip-rule=\"evenodd\"/></svg>`;
+      const reportIcon = () =>
+        `<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" fill=\"currentColor\" aria-hidden=\"true\">\n  <path d=\"M2.75 2a.75.75 0 0 0-.75.75v10.5a.75.75 0 0 0 1.5 0v-2.624l.33-.083A6.044 6.044 0 0 1 8 11c1.29.645 2.77.807 4.17.457l1.48-.37a.462.462 0 0 0 .35-.448V3.56a.438.438 0 0 0-.544-.425l-1.287.322C10.77 3.808 9.291 3.646 8 3a6.045 6.045 0 0 0-4.17-.457l-.34.085A.75.75 0 0 0 2.75 2Z\" />\n</svg>`;
       const mainSrc = img.image?.src || "";
       const mainAlt = safe(img.image?.alt || img.title || "Selected image");
       const avatar = img.author?.avatar || "";
       const avatarAlt = safe(img.author?.alt || "Author avatar");
+      const avatarName = safe(img.author?.name || "Unknown");
       const title = safe(img.title || "Untitled");
       const desc = safe(img.description || "");
       const views = safe(img.views || "0");
@@ -329,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="spv-author-block">
             <img class="spv-avatar" src="${avatar}" alt="${avatarAlt}">
             <div class="spv-author-info">
-              <span class="spv-author-name">${avatarAlt}</span>
+              <span class="spv-author-name">${avatarName}</span>
             </div>
           </div>
           <p class="spv-desc">${desc}</p>
@@ -337,6 +350,9 @@ document.addEventListener("DOMContentLoaded", () => {
             <span class="spv-views" aria-label="${views} views">${views} ${viewsIcon()}</span>
             <button type="button" class="spv-like" aria-pressed="false" aria-label="Like this image"><span class="icon">❤</span> <span class="count">0</span></button>
             <button type="button" class="spv-share" aria-label="Copy share link">🔗 Share</button>
+          </div>
+          <div class="hireAccount">
+            <a href="#">Hire ${avatarName}</a>
           </div>
           <section class="spv-comments" aria-label="Comments">
             <h2 class="spv-subheading">Comments</h2>
@@ -363,6 +379,16 @@ document.addEventListener("DOMContentLoaded", () => {
           mainEl.appendChild(imgWrapper);
         }
       }
+
+      // Add floating report button pinned to bottom-right of the main section
+      const fab = document.createElement("button");
+      fab.type = "button";
+      fab.className = "spv-report fab";
+      fab.setAttribute("aria-pressed", "false");
+      fab.setAttribute("aria-label", "Report this image");
+      fab.setAttribute("title", "Report");
+      fab.innerHTML = reportIcon();
+      mainEl.appendChild(fab);
 
       // Wire up interactions
       const backBtn = containerPanel.querySelector(".spv-back");
@@ -400,6 +426,18 @@ document.addEventListener("DOMContentLoaded", () => {
             shareBtn.textContent = "Copy failed";
             setTimeout(() => (shareBtn.textContent = "🔗 Share"), 1800);
           }
+        });
+      }
+      const reportBtn = containerPanel.querySelector(".spv-report");
+      if (reportBtn) {
+        reportBtn.addEventListener("click", () => {
+          const pressed = reportBtn.getAttribute("aria-pressed") === "true";
+          reportBtn.setAttribute("aria-pressed", String(!pressed));
+          const prevTitle = reportBtn.getAttribute("title") || "Report";
+          reportBtn.setAttribute("title", pressed ? "Report" : "Reported");
+          // Optional: quick visual feedback via outline flash
+          reportBtn.style.outline = "2px solid #ff4d4f";
+          setTimeout(() => (reportBtn.style.outline = ""), 250);
         });
       }
       const commentForm = containerPanel.querySelector(".spv-comment-form");
@@ -453,6 +491,34 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       sessionStorage.setItem("selectedPhotoId", initialSelected[1]);
     } catch (e) {}
+  }
+
+  // Ensure a floating report icon exists on the Profile tab main section
+  function ensureProfileReportFab() {
+    const profMain = document.querySelector(
+      '.Main.profile .home-center[aria-label="Primary content area"], .Main.profile .home-center'
+    );
+    if (!profMain) return;
+    if (profMain.querySelector(".spv-report.fab")) return; // already added
+    const icon =
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">` +
+      `<path d="M2.75 2a.75.75 0 0 0-.75.75v10.5a.75.75 0 0 0 1.5 0v-2.624l.33-.083A6.044 6.044 0 0 1 8 11c1.29.645 2.77.807 4.17.457l1.48-.37a.462.462 0 0 0 .35-.448V3.56a.438.438 0 0 0-.544-.425l-1.287.322C10.77 3.808 9.291 3.646 8 3a6.045 6.045 0 0 0-4.17-.457l-.34.085A.75.75 0 0 0 2.75 2Z" />` +
+      `</svg>`;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "spv-report fab";
+    btn.setAttribute("aria-pressed", "false");
+    btn.setAttribute("aria-label", "Report");
+    btn.setAttribute("title", "Report");
+    btn.innerHTML = icon;
+    profMain.appendChild(btn);
+    btn.addEventListener("click", () => {
+      const pressed = btn.getAttribute("aria-pressed") === "true";
+      btn.setAttribute("aria-pressed", String(!pressed));
+      btn.setAttribute("title", pressed ? "Report" : "Reported");
+      btn.style.outline = "2px solid #ff4d4f";
+      setTimeout(() => (btn.style.outline = ""), 250);
+    });
   }
   // ================= UPLOAD FORM HANDLING (Prototype) =================
   const uploadForm = document.getElementById("uploadForm");
