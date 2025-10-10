@@ -110,10 +110,6 @@ Longer term
 2. When reorganizing files, update all `<link rel="stylesheet">`/`<script>` references in `client/dash.html` and verify deep links and tab activation events.
 3. Prefer progressive enhancement; handle missing DOM/data gracefully.
 
-## License
-
-(Add a LICENSE file if/when you choose an open-source license.)
-
 ## Revision History
 
 2025-10-10
