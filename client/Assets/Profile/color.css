@@ -748,8 +748,6 @@ button.likes svg {
 
 /* Views icon subtle hover like Home */
 .profile-gallery .ImgInfo .views svg {
-  width: 8px;
-  height: 8px;
   display: inline-block;
   opacity: 0.55;
   transition: opacity 0.25s ease;
