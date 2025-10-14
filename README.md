@@ -1,5 +1,30 @@
 # Project Overview
 
+[Project Updates — October 2025]
+
+## Recent Features & UI Improvements
+
+- **Dynamic Footer Distribution:**
+
+  - The dashboard footer is now automatically distributed to all tab panels (`.Main`).
+  - Footer is sticky at the bottom for tabs with minimal content, and stays in flow for scrollable tabs.
+  - Footer links are dynamically bound to tab navigation.
+
+- **Footer Exclusion Array:**
+
+  - You can exclude the footer from specific tabs by adding their class names to the `excludeFooterFromTabs` array in `client/Assets/base.js`.
+  - Example: `["selectedphoto", "uploadimage", "logout"]`.
+
+- **Pro Badge Visuals:**
+
+  - The `#pro-btn` badge uses a cyan-to-blue-to-purple gradient background.
+  - A soft, multi-layered box shadow gives the badge a glowing effect.
+
+- **Tab System Improvements:**
+  - All navigation, portal, and footer links are now included in the tab system.
+  - Tab switching updates the URL hash and emits a custom `tab:activate` event.
+  - Accessibility: Keyboard navigation and ARIA roles for all tab links.
+
 This repository hosts a static prototype of an art/media platform with:
 
 1. Public landing pages: `index.html`, `login.html`, `resetpassword.html`

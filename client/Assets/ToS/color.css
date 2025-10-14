@@ -1,0 +1,166 @@
+/* =====================================================================
+   PRIVACY POLICY TAB STYLES
+   Styles specific to the privacy policy page
+   ===================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap");
+
+.pp-container,
+.tos-container {
+  padding: 20px;
+  font-family: "Mulish", sans-serif;
+  text-align: left !important;
+}
+
+.pp-container .home-left,
+.terms-of-service .home-left {
+  padding-bottom: 0px !important;
+}
+
+.pp main,
+.terms-of-service main {
+  border-radius: 0px !important;
+}
+
+.pp-container .home-center a,
+.tos-container .home-center a {
+  color: #325bdd !important;
+  font-weight: bolder !important;
+}
+
+.pp-container h1,
+.tos-container h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #1ed760;
+}
+
+.pp-container h5,
+.tos-container h5 {
+  background-color: rgba(119, 136, 153, 0.249);
+  border: 1px solid lightslategrey;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 12px;
+  margin-top: -20px;
+  margin-bottom: 10px;
+  width: fit-content;
+}
+
+.pp-container h4,
+.tos-container h4 {
+  background: none !important;
+  transition: none !important;
+}
+
+.pp-container h3,
+.tos-container h3 {
+  font-size: 15px;
+  margin-bottom: -5px;
+  color: #636363;
+}
+
+.pp ul,
+.TOS ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin-bottom: 20px;
+}
+
+.pp ul li,
+.TOS ul li {
+  margin-bottom: 10px;
+  color: #9c9c9c;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  list-style: none;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+} 
+
+.pp ul li a,
+.TOS ul li a {
+  color: #9c9c9c !important;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.pp ul li a:hover,
+.TOS ul li a:hover {
+  color: #1ed760 !important;
+}
+
+.pp-container p,
+.pp-container table,
+.tos-container p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #9c9c9c;
+  margin-bottom: 15px;
+  width: 70%;
+  padding-left: 10px;
+  border-left: 1px solid lightslategrey;
+}
+
+
+
+.home-center ul li {
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: #9c9c9c !important;
+}
+
+.pp-container hr,
+.tos-container hr {
+  border: none;
+  border-top: 1px solid #333;
+  margin: 20px 0; 
+  width: 70%;
+}
+
+.pp-container .home-center,
+.tos-container .home-center {
+  border: 0px solid #ccc !important;
+}
+
+
+.pp-container .home-center table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 70%;
+  border-radius: 20px;
+  border-left: 0px solid lightslategrey;
+  background: rgba(128, 128, 128, 0.107);
+}
+
+.pp-container .home-center table td:nth-child(3) {
+  text-align: center !important;
+}
+
+.pp-container .home-center table td, 
+.pp-container .home-center table th {
+  text-align: left;
+  padding: 10px 15px;
+}
+
+#no {
+  color: #ef233c;
+  padding: 5px 8px;
+  background-color:#ef233b38;
+  border: 1px solid #ef233c;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 10px; letter-spacing: 1.5px;
+}
+
+#yes {
+  color: #1ed760;
+  padding: 5px 8px;
+  background-color:#1ed76038;
+  border: 1px solid #1ed760;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 10px; letter-spacing: 1.5px;
+}

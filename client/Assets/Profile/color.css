@@ -197,8 +197,8 @@ button.likes svg {
   left: 0;
   right: 0;
   margin: 0 auto;
-  background-image: linear-gradient(90deg, #09a3e06e, #2bf5976f);
-  box-shadow: 0px 0px 50px #09a4e0;
+  background-image: linear-gradient(90deg, #fc466a79 0%, #3f5efb79 100%);
+  box-shadow: 0px 0px 50px #3f5efb79;
   color: white;
   font-size: 12px;
   backdrop-filter: blur(5px);
@@ -210,7 +210,7 @@ button.likes svg {
 }
 
 .AccPRO p {
-  background-image: linear-gradient(90deg, #09a4e0, #2bf598);
+  background-image: linear-gradient(90deg, #f8f8f8 0%, #ffffff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -240,7 +240,7 @@ button.likes svg {
 }
 
 #AccUserName #AccProBadge h4 {
-  background-image: linear-gradient(90deg, #09a4e0, #2bf598) !important;
+  background-image: linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
@@ -263,7 +263,7 @@ button.likes svg {
 
 #AccUserName #AccProBadge p {
   font-size: 14px;
-  background-image: linear-gradient(90deg, #09a4e0, #2bf598) !important;
+  background-image: linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   margin-top: 0px;
@@ -344,7 +344,7 @@ button.likes svg {
   left: 0;
   right: 0;
   margin: 0 auto;
-  
+
   background: #1ed75f38;
   backdrop-filter: blur(5px);
   border: 1px solid #1ed75f;
@@ -363,13 +363,13 @@ button.likes svg {
   cursor: pointer !important;
 }
 
-#hire2 {  
+#hire2 {
   width: 70%;
   display: block;
   left: 0;
   right: 0;
   margin: 0 auto;
-  
+
   background: #fbbe241b;
   backdrop-filter: blur(5px);
   color: #fbbe2486;
@@ -389,7 +389,7 @@ button.likes svg {
   left: 0;
   right: 0;
   margin: 0 auto;
-  
+
   background: #f8717138;
   backdrop-filter: blur(5px);
   color: #f87171ac;
@@ -484,46 +484,48 @@ button.likes svg {
 /* Keep icon color constant on hover; accents are applied via border/bg */
 
 /* Brand hover accents using :has() when available */
-#AccSocials ul li a:has(.social-icon.twitter):hover {
+
+#AccSocials ul li a[data-platform="Twitter"]:hover {
   border-color: #1da1f2;
-  fill: #1da1f2;
   background-color: rgba(29, 161, 242, 0.12);
 }
-
-#AccSocials ul li a:has(.social-icon.linkedin):hover {
+#AccSocials ul li a[data-platform="LinkedIn"]:hover {
   border-color: #0077b5;
-  fill: #0077b5;
   background-color: rgba(0, 119, 181, 0.12);
 }
-#AccSocials ul li a:has(.social-icon.facebook):hover {
+#AccSocials ul li a[data-platform="Facebook"]:hover {
   border-color: #1877f2;
   background-color: rgba(24, 119, 242, 0.12);
 }
-#AccSocials ul li a:has(.social-icon.instagram):hover {
+#AccSocials ul li a[data-platform="Instagram"]:hover {
   border-color: #e1306c;
   background-color: rgba(225, 48, 108, 0.12);
 }
-#AccSocials ul li a:has(.social-icon.github):hover {
+#AccSocials ul li a[data-platform="GitHub"]:hover {
   border-color: #8b949e;
   background-color: rgba(139, 148, 158, 0.12);
 }
-#AccSocials ul li a:has(.social-icon.tiktok):hover {
+#AccSocials ul li a[data-platform="TikTok"]:hover {
   border-color: #ee1d52;
   background-color: rgba(238, 29, 82, 0.12);
 }
-#AccSocials ul li a:has(.social-icon.dribbble):hover {
+#AccSocials ul li a[data-platform="Dribbble"]:hover {
   border-color: #ea4c89;
   background-color: rgba(234, 76, 137, 0.12);
 }
-#AccSocials ul li a:has(.social-icon.behance):hover {
+#AccSocials ul li a[data-platform="YouTube"]:hover {
+  border-color: #ff0000;
+  background-color: rgba(255, 0, 0, 0.12);
+}
+#AccSocials ul li a[data-platform="Behance"]:hover {
   border-color: #1769ff;
   background-color: rgba(23, 105, 255, 0.12);
 }
-#AccSocials ul li a:has(.social-icon.website):hover {
+#AccSocials ul li a[data-platform="Website"]:hover {
   border-color: #4ade80;
   background-color: rgba(56, 189, 248, 0.12);
 }
-#AccSocials ul li a:has(.social-icon.email):hover {
+#AccSocials ul li a[data-platform="Email"]:hover {
   border-color: #22c55e;
   background-color: rgba(34, 197, 94, 0.12);
 }
@@ -659,6 +661,105 @@ button.likes svg {
 /* Reuse existing .bento-item styles from Home; only adjust height if needed */
 .profile-gallery .bento-item {
   height: 240px;
+}
+
+/* Ensure profile gallery bento items inherit the same hover interactions as Home */
+.profile-gallery .bento-item {
+  position: relative;
+  display: block;
+  margin: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #161618;
+  cursor: pointer;
+  isolation: isolate;
+  transition: box-shadow 0.3s ease,
+    transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.profile-gallery .bento-item > img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  filter: saturate(1.05) brightness(0.95);
+  transition: filter 0.55s ease, transform 0.9s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.profile-gallery .bento-item:hover .bento-Image {
+  filter: saturate(1.18) brightness(1.03);
+  transform: scale(1.05);
+}
+
+.profile-gallery .bento-item:active {
+  transform: translateY(-2px) scale(0.985);
+}
+
+.profile-gallery .bento-item figcaption {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.35px;
+  color: #fff;
+  background: linear-gradient(
+    180deg,
+    rgba(29, 29, 32, 0.85) 0%,
+    rgba(24, 24, 27, 0.85) 100%
+  );
+  backdrop-filter: blur(8px) saturate(180%);
+  padding: 7px 12px 6px;
+  border-radius: 14px;
+  line-height: 1.15;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 4px 14px -6px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.45s ease,
+    transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.profile-gallery .bento-item:hover figcaption,
+.profile-gallery .bento-item:focus-visible figcaption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.profile-gallery .bento-item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.65) 0%,
+    rgba(0, 0, 0, 0.35) 35%,
+    rgba(0, 0, 0, 0) 65%
+  );
+  pointer-events: none;
+  opacity: 0.85;
+  transition: opacity 0.5s;
+}
+
+.profile-gallery .bento-item:hover::after {
+  opacity: 0.95;
+}
+
+/* Views icon subtle hover like Home */
+.profile-gallery .ImgInfo .views svg {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  opacity: 0.55;
+  transition: opacity 0.25s ease;
+}
+
+.profile-gallery .bento-item:hover .ImgInfo .views svg {
+  opacity: 0.8;
+}
+.profile-gallery .bento-item:focus-visible .ImgInfo .views svg {
+  opacity: 0.9;
 }
 
 @media (max-width: 600px) {

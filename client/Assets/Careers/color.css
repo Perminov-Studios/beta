@@ -1,0 +1,17 @@
+/* Careers Tab Styles */
+
+.careers {
+  /* Add custom styles for the Careers tab */
+}
+
+.careers h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color, #333);
+}
+
+.careers p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-color, #666);
+}

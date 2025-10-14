@@ -1,0 +1,102 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "James",
+      "handle": "@lynovichh",
+      "bio": "Digital artist and photographer specializing in portrait photography and digital illustrations. Available for commissions and collaborations.",
+      "avatar": "https://i.pinimg.com/originals/13/34/fd/1334fd5e90dd4f05919b25c76e3fa7e0.gif",
+      "banner": "https://i.pinimg.com/originals/dc/e6/59/dce659269993ee5c55a0543ecd2f159e.gif",
+      "status": "away",
+      "workStatus": "1",
+      "isPro": true,
+      "socialLinks": [
+        { "platform": "youtube", "url": "https://youtube.com/@lynovichh" },
+        { "platform": "linkedin", "url": "https://www.linkedin.com/" },
+        { "platform": "github", "url": "https://github.com/borisperminov" },
+        { "platform": "dribbble", "url": "https://dribbble.com/copelandx" }
+      ],
+      "stats": {
+        "followers": 1523,
+        "following": 342,
+        "likes": 2847,
+        "uploads": 156
+      },
+      "joinDate": "2023-01-15",
+      "location": "San Francisco, CA"
+    },
+    {
+      "id": 2,
+      "name": "Sarah Chen",
+      "handle": "@sarahc_designs",
+      "bio": "UI/UX Designer with a passion for creating beautiful and functional digital experiences. Always exploring new design trends.",
+      "avatar": "https://images.unsplash.com/photo-1494790108755-2616b612b2fd?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=200&fit=crop",
+      "status": "online",
+      "workStatus": "2",
+      "isPro": false,
+      "socialLinks": [
+        { "platform": "behance", "url": "https://www.behance.net/sarahc" },
+        { "platform": "twitter", "url": "https://twitter.com/sarahc_designs" },
+        { "platform": "dribbble", "url": "https://dribbble.com/sarahc" }
+      ],
+      "stats": {
+        "followers": 892,
+        "following": 156,
+        "likes": 1456,
+        "uploads": 73
+      },
+      "joinDate": "2023-03-22",
+      "location": "New York, NY"
+    },
+    {
+      "id": 3,
+      "name": "Alex Rodriguez",
+      "handle": "@alexr_photo",
+      "bio": "Street photographer capturing life's authentic moments. Available for event photography and portrait sessions.",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=200&fit=crop",
+      "status": "busy", 
+      "workStatus": "1",
+      "isPro": true,
+      "socialLinks": [
+        { "platform": "instagram", "url": "https://instagram.com/alexr_photo" },
+        { "platform": "website", "url": "https://alexrodriguez.photography" },
+        { "platform": "email", "url": "mailto:alex@alexrphoto.com" }
+      ],
+      "stats": {
+        "followers": 3241,
+        "following": 445,
+        "likes": 5623,
+        "uploads": 287
+      },
+      "joinDate": "2022-11-08",
+      "location": "Los Angeles, CA"
+    },
+    {
+      "id": 4,
+      "name": "Maya Patel",
+      "handle": "@maya_creates",
+      "bio": "Graphic designer and illustrator creating colorful artwork and brand identities. Open to freelance projects.",
+      "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=200&fit=crop",
+      "status": "offline",
+      "workStatus": "3",
+      "isPro": false,
+      "socialLinks": [
+        { "platform": "behance", "url": "https://www.behance.net/mayapatel" },
+        { "platform": "dribbble", "url": "https://dribbble.com/maya_creates" },
+        { "platform": "twitter", "url": "https://twitter.com/maya_creates" },
+        { "platform": "tiktok", "url": "https://tiktok.com/@maya_creates" }
+      ],
+      "stats": {
+        "followers": 1876,
+        "following": 234,
+        "likes": 3421,
+        "uploads": 145
+      },
+      "joinDate": "2023-05-10",
+      "location": "Toronto, ON"
+    }
+  ]
+}

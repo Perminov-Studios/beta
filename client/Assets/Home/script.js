@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const filterMatchCount = document.getElementById("filterMatchCount");
   const filterResetBtn = document.getElementById("filterReset");
   const filterApplyBtn = document.getElementById("filterApply");
+  const fetchFooter = document.getElementById("fetchFooter");
 
   if (!galleryEl) return;
 
@@ -435,7 +436,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const idVal = item.id != null ? item.id : absoluteIndex + 1;
     return `
       <figure class="bento-item" data-id="${idVal}" tabindex="0" aria-describedby="img-${idVal}-title">
-        <img src="${mainSrc}" alt="${mainAlt}" loading="lazy" />
+        <img src="${mainSrc}" class="bento-Image" alt="${mainAlt}" loading="lazy" />
         <div class="ImgInfo">
           <h3 id="img-${idVal}-title">${safeTitle}</h3>
           <p>${safeDesc}</p>
@@ -881,4 +882,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Load gallery data
   loadImages();
+
+  // Fetch footer content
+  fetchFooter.innerHTML = `
+    <ul>
+      <li><a href="#" data-tab="careers">Careers</a></li>
+      <li><a href="#" data-tab="events">About Us</a></li>
+      <li><a href="#" data-tab="perminov-pro">Try Perminov Pro</a></li>
+      <li><a href="#" data-tab="terms-of-service">Terms of Service</a></li>
+      <li><a href="#" data-tab="privacy-policy">Privacy Policy</a></li>
+      <li><a href="#" data-tab="help-center">Help Center</a></li>
+    </ul>
+  `;
 });

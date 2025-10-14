@@ -96,6 +96,8 @@ a {
   box-sizing: border-box;
 }
 
+
+
 /* Three-column reusable layout container; used where present (home, profile, etc.) */
 
 a {
@@ -1459,9 +1461,6 @@ fieldset.views-range-group .chip[aria-pressed="true"] {
   transition: box-shadow 0.3s ease,
     transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-.bento-item:hover {
-  transform: translateY(-4px);
-}
 .bento-item:active {
   transform: translateY(-2px) scale(0.985);
 }
@@ -1474,7 +1473,7 @@ fieldset.views-range-group .chip[aria-pressed="true"] {
   filter: saturate(1.05) brightness(0.95);
   transition: filter 0.55s ease, transform 0.9s cubic-bezier(0.19, 1, 0.22, 1);
 }
-.bento-item:hover img {
+.bento-item:hover .bento-Image {
   filter: saturate(1.18) brightness(1.03);
   transform: scale(1.05);
 }

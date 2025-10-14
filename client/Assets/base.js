@@ -15,7 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
       "#profileIcon .dropDown a[data-tab], #inboxIcon .dropDown a[data-tab], #searchIcon .dropDown a[data-tab], #uploadIcon a[data-tab]"
     )
   );
-  const allTabLinks = [...navLinks, ...portalLinks];
+  const footerLinks = Array.from(
+    document.querySelectorAll(".Mainfooter a[data-tab]")
+  );
+  const allTabLinks = [...navLinks, ...portalLinks, ...footerLinks];
   const panels = Array.from(document.querySelectorAll(".Main"));
   const profileIcon = document.getElementById("profileIcon");
   const dropdown = profileIcon ? profileIcon.querySelector(".dropDown") : null;
@@ -27,6 +30,103 @@ document.addEventListener("DOMContentLoaded", () => {
     : null;
 
   if (!allTabLinks.length || !panels.length) return; // nothing to do
+
+  // Array of tab names to exclude from footer distribution
+  const excludeFooterFromTabs = [
+    "selectedphoto",
+    "uploadimage",
+    "logout",
+    "perminov-pro",
+    "notifications",
+    "messages",
+    "settings",
+    "privacy-policy",
+    "terms-of-service"
+    // Add more tab names here as needed
+  ];
+
+  // Clone and distribute footer to all Main tabs that don't have content
+  function distributeFooterToAllTabs() {
+    // Wait for the Home tab to populate the footer first
+    setTimeout(() => {
+      const originalFooter = document.getElementById("fetchFooter");
+      if (!originalFooter || !originalFooter.innerHTML.trim()) return;
+
+      panels.forEach((panel) => {
+        // Skip if this panel already has a footer
+        if (panel.querySelector("#fetchFooter")) return;
+
+        // Check if this panel should be excluded from footer distribution
+        const panelClasses = Array.from(panel.classList);
+        const isExcluded = panelClasses.some((className) =>
+          excludeFooterFromTabs.includes(className)
+        );
+        if (isExcluded) return;
+
+        // Create a clone of the footer
+        const footerClone = document.createElement("div");
+        footerClone.id = "fetchFooter";
+        footerClone.innerHTML = originalFooter.innerHTML;
+
+        // Find where to insert the footer
+        // If the panel has a home-layout > main structure, append to that main
+        const mainElement = panel.querySelector(".home-col.home-center");
+        if (mainElement) {
+          mainElement.appendChild(footerClone);
+        } else {
+          // Otherwise append directly to the panel
+          panel.appendChild(footerClone);
+        }
+      });
+
+      // Re-bind footer links after cloning
+      const newFooterLinks = Array.from(
+        document.querySelectorAll("#fetchFooter a[data-tab]")
+      );
+      newFooterLinks.forEach((a) => {
+        if (!allTabLinks.includes(a)) {
+          a.setAttribute("role", "tab");
+          a.tabIndex = 0;
+          a.addEventListener("click", (e) => {
+            e.preventDefault();
+            const name = tabNameFromAnchor(a);
+            showPanelByName(name);
+          });
+          a.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              a.click();
+            }
+          });
+        }
+      });
+
+      // Check each panel to determine if footer should stick to bottom
+      checkFooterPositioning();
+    }, 500); // Wait for Home tab script to populate the original footer
+  }
+
+  // Function to check if content is scrollable and position footer accordingly
+  function checkFooterPositioning() {
+    panels.forEach((panel) => {
+      const footer = panel.querySelector("#fetchFooter");
+      if (!footer) return;
+
+      // Check if the panel's content height is less than viewport height
+      // If content is minimal, make footer stick to bottom
+      const contentHeight = panel.scrollHeight;
+      const viewportHeight = panel.clientHeight;
+
+      // If content doesn't fill the viewport, make footer sticky at bottom
+      if (contentHeight <= viewportHeight) {
+        panel.classList.add("footer-sticky");
+      } else {
+        panel.classList.remove("footer-sticky");
+      }
+    });
+  }
+
+  distributeFooterToAllTabs();
 
   function normalize(text) {
     return text.trim().toLowerCase();
@@ -70,6 +170,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const newHash = "#" + name;
         history.replaceState(null, "", newHash);
       }
+
+      // Recheck footer positioning when switching tabs
+      setTimeout(() => checkFooterPositioning(), 100);
     }
   }
 
@@ -188,6 +291,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "privacy-policy",
         "notifications",
         "messages",
+        "privacy-policy",
+        "terms-of-service",
       ];
       if (activePortalAnchor) {
         const portalName = tabNameFromAnchor(activePortalAnchor);
@@ -260,6 +365,77 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Make showPanelByName globally available for other scripts
   window.showPanelByName = showPanelByName;
+
+  /* =============================================================
+     USER PROFILE NAVIGATION
+     Functions to navigate to user profiles similar to image selection
+     ============================================================= */
+  function navigateToUserProfile(userId) {
+    // Store the selected user ID for the profile view
+    try {
+      sessionStorage.setItem("selectedUserId", String(userId));
+    } catch (e) {}
+
+    // Use the global showPanelByName function to switch to profile tab
+    if (window.showPanelByName) {
+      window.showPanelByName("profile");
+    } else {
+      // Fallback to hash navigation
+      location.hash = "#profile";
+    }
+  }
+
+  // Make user profile navigation globally available
+  window.navigateToUserProfile = navigateToUserProfile;
+
+  /* =============================================================
+     USER PROFILE LINK CREATION
+     Helper function to create clickable user profile elements
+     ============================================================= */
+  function createUserProfileLink(user, options = {}) {
+    const {
+      showAvatar = false,
+      showHandle = false,
+      className = "",
+      onClick = null,
+    } = options;
+
+    const element = document.createElement(showAvatar ? "div" : "span");
+    element.className = `user-profile-link ${className}`.trim();
+    element.style.cursor = "pointer";
+    element.setAttribute("role", "button");
+    element.setAttribute("tabindex", "0");
+    element.setAttribute("aria-label", `View ${user.name}'s profile`);
+
+    let content = "";
+    if (showAvatar && user.avatar) {
+      content += `<img class="user-avatar" src="${user.avatar}" alt="${user.name}" width="24" height="24" style="border-radius: 50%; margin-right: 8px;">`;
+    }
+    content += `<span class="user-name">${user.name}</span>`;
+    if (showHandle && user.handle) {
+      content += `<span class="user-handle" style="color: #888; margin-left: 4px;">${user.handle}</span>`;
+    }
+
+    element.innerHTML = content;
+
+    const handleClick = () => {
+      if (onClick) onClick(user);
+      navigateToUserProfile(user.id);
+    };
+
+    element.addEventListener("click", handleClick);
+    element.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handleClick();
+      }
+    });
+
+    return element;
+  }
+
+  // Make user profile link creation globally available
+  window.createUserProfileLink = createUserProfileLink;
 
   /* =============================================================
      SELECTED PHOTO RENDERING
@@ -426,6 +602,39 @@ document.addEventListener("DOMContentLoaded", () => {
             shareBtn.textContent = "Copy failed";
             setTimeout(() => (shareBtn.textContent = "🔗 Share"), 1800);
           }
+        });
+      }
+
+      // Add click handlers for author profile navigation
+      const authorBlock = containerPanel.querySelector(".spv-author-block");
+      const authorAvatar = containerPanel.querySelector(".spv-avatar");
+      const authorName = containerPanel.querySelector(".spv-author-name");
+      const hireLink = containerPanel.querySelector(".hireAccount a");
+
+      if (authorBlock && img.author && img.author.id) {
+        // Make author block clickable
+        authorBlock.style.cursor = "pointer";
+        authorBlock.addEventListener("click", () => {
+          window.navigateToUserProfile(img.author.id);
+        });
+
+        // Add keyboard navigation
+        authorBlock.setAttribute("tabindex", "0");
+        authorBlock.setAttribute("role", "button");
+        authorBlock.setAttribute("aria-label", `View ${avatarName}'s profile`);
+        authorBlock.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            window.navigateToUserProfile(img.author.id);
+          }
+        });
+      }
+
+      // Update hire link to navigate to profile
+      if (hireLink && img.author && img.author.id) {
+        hireLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          window.navigateToUserProfile(img.author.id);
         });
       }
       const reportBtn = containerPanel.querySelector(".spv-report");

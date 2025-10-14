@@ -230,6 +230,47 @@ fieldset.views-range-group .chip[aria-pressed="true"] {
   }
 }
 
+#fetchFooter {
+  margin: 10px 0 10px 0;  
+  margin-left: 10px;
+  width: calc(100% - 10px);
+  border: 0px solid #2a2a30;
+  display: flex;
+  justify-content: left;
+  align-items: flex-start;
+}
+
+#fetchFooter ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  font-family: "Mulish", sans-serif;
+  gap: 12px;
+}
+
+#fetchFooter ul li {
+  font-size: 13px;
+  color: #9b9ba1;
+  letter-spacing: 0.4px;
+  font-weight: 520;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+#fetchFooter ul li a {
+  color: #9b9ba1 !important;
+  text-decoration: none;
+}
+
+#fetchFooter ul li:hover {
+  background: #18181b;
+  cursor: pointer;
+  color: white !important;
+}
+
 /* =====================================================================
   SECTION: GALLERY (Bento grid + image cards)
   ===================================================================== */
@@ -523,10 +564,6 @@ fieldset.views-range-group .chip[aria-pressed="true"] {
     transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-.bento-item:hover {
-  transform: translateY(-4px);
-}
-
 .bento-item:active {
   transform: translateY(-2px) scale(0.985);
 }
@@ -540,7 +577,7 @@ fieldset.views-range-group .chip[aria-pressed="true"] {
   transition: filter 0.55s ease, transform 0.9s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.bento-item:hover img {
+.bento-item:hover .bento-Image {
   filter: saturate(1.18) brightness(1.03);
   transform: scale(1.05);
 }

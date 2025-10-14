@@ -1,0 +1,17 @@
+/* Perminov Pro Tab Styles */
+
+.perminov-pro {
+  /* Add custom styles for the Perminov Pro tab */
+}
+
+.perminov-pro h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color, #333);
+}
+
+.perminov-pro p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-color, #666);
+}

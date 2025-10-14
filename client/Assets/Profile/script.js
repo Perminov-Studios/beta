@@ -109,28 +109,78 @@ document.addEventListener("DOMContentLoaded", () => {
   const allGallery = document.getElementById("profileAllGallery");
   const likesGallery = document.getElementById("profileLikedGallery");
   const estProfileSideBar = document.getElementById("profileSideBar");
-  // Example static banner and profile picture URLs (replace with dynamic data as needed)
-  var bannersrc =
-    "https://i.pinimg.com/originals/dc/e6/59/dce659269993ee5c55a0543ecd2f159e.gif";
-  var userPFPsrc =
-    "https://i.pinimg.com/originals/13/34/fd/1334fd5e90dd4f05919b25c76e3fa7e0.gif";
 
-  const userName = "James"; // Replace with dynamic user name
-  const userHandle = "@lynovichh"; // Replace with dynamic user handle
-  // Move sidebar into profile if not already present (for non-owner view)
-  const accStatus = "away"; // Possible values: "online", "offline", "busy", "away"
-  const testPRO = true; // Set to true to show Pro badge, false to hide
+  // Profile user data - will be loaded dynamically
+  let currentUserData = {
+    name: "James", // fallback defaults
+    handle: "@lynovichh",
+    bio: "Loading profile...",
+    avatar:
+      "https://i.pinimg.com/originals/13/34/fd/1334fd5e90dd4f05919b25c76e3fa7e0.gif",
+    banner:
+      "https://i.pinimg.com/originals/dc/e6/59/dce659269993ee5c55a0543ecd2f159e.gif",
+    status: "away",
+    workStatus: "1",
+    isPro: true,
+    socialLinks: [],
+  };
 
-  const WorkStatus = "2";
+  /* =============================================================
+     USER PROFILE DATA LOADING
+     Fetches users.json and loads the selected user's profile data
+     Similar to how images are loaded in the selectedPhoto view
+     ============================================================= */
+  async function loadUserProfile() {
+    // Get selected user ID from sessionStorage (similar to selectedPhotoId)
+    let selectedUserId = null;
+    try {
+      selectedUserId = sessionStorage.getItem("selectedUserId");
+    } catch (e) {}
 
-  const getSocialLinks = () => {
-    // Example static social links (replace with dynamic data as needed)
-    const socials = [
-      { "Link 1": "https://x.com/X" },
-      { "Link 2": "https://www.linkedin.com/" },
-      { "Link 3": "https://github.com/borisperminov" },
-      { "Link 4": "https://dribbble.com/copelandx" },
-    ];
+    // If no ID selected, default to user ID 1
+    if (!selectedUserId) {
+      selectedUserId = "1";
+      try {
+        sessionStorage.setItem("selectedUserId", selectedUserId);
+      } catch (e) {}
+    }
+
+    try {
+      const res = await fetch("../data/users.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("Failed to load users.json: " + res.status);
+      const data = await res.json();
+      const users = Array.isArray(data) ? data : data.users || [];
+
+      // Find the selected user
+      const user = users.find((u) => String(u.id) === String(selectedUserId));
+      if (user) {
+        currentUserData = { ...currentUserData, ...user };
+      } else {
+        console.warn(
+          `User with ID ${selectedUserId} not found, using defaults`
+        );
+      }
+
+      // Render the profile with loaded data
+      renderProfileSidebar();
+    } catch (err) {
+      console.error("Failed to load user profile:", err);
+      // Continue with default data if loading fails
+      renderProfileSidebar();
+    }
+  }
+
+  const getSocialLinks = (socialLinksData = []) => {
+    // Use provided social links data or fallback to defaults
+    const socials =
+      socialLinksData.length > 0
+        ? socialLinksData
+        : [
+            { platform: "youtube", url: "https://youtube.com/@lynovichh" },
+            { platform: "linkedin", url: "https://www.linkedin.com/" },
+            { platform: "github", url: "https://github.com/borisperminov" },
+            { platform: "dribbble", url: "https://dribbble.com/copelandx" },
+          ];
 
     const escapeHtml = (str) =>
       String(str || "")
@@ -186,13 +236,32 @@ document.addEventListener("DOMContentLoaded", () => {
         return {
           href,
           platform: "Twitter",
-          label: handle
-            ? `<li class="social-icon twitter">@${handle}</li>`
-            : '<li class="social-icon twitter">Twitter</li>',
+          label: handle,
           iconSvg: icon,
           tooltip: handle ? `@${handle}` : "Twitter",
         };
       }
+      // Youtube
+      if (host === "youtube.com") {
+        const handle = u.pathname.replace(/^\//, "").split("/")[0] || "";
+        const href = `https://www.youtube.com/${handle}`.replace(/\/$/, "");
+        const iconSvg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24"><path fill="#ff0000" d="M21.58 7.194a2.47 2.47 0 0 0-1.773-1.775C18.258 5 12 5 12 5s-6.258 0-7.806.42a2.47 2.47 0 0 0-1.775 1.774C2 8.774 2 12 2 12s0 3.258.42 4.807c.225.87.903 1.548 1.774 1.774C5.742 19 12 19 12 19s6.258 0 7.807-.42a2.47 2.47 0 0 0 1.774-1.773C22 15.258 22 12 22 12s0-3.226-.42-4.806M10 15V9l5.194 3z"/></svg>
+        `;
+        // Use a well-known, compact YouTube play button path (fallback if above truncated)
+        const safeIconSvg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24"><path fill="#ff0000" d="M21.58 7.194a2.47 2.47 0 0 0-1.773-1.775C18.258 5 12 5 12 5s-6.258 0-7.806.42a2.47 2.47 0 0 0-1.775 1.774C2 8.774 2 12 2 12s0 3.258.42 4.807c.225.87.903 1.548 1.774 1.774C5.742 19 12 19 12 19s6.258 0 7.807-.42a2.47 2.47 0 0 0 1.774-1.773C22 15.258 22 12 22 12s0-3.226-.42-4.806M10 15V9l5.194 3z"/></svg>
+        `;
+        const icon = safeIconSvg; // choose stable svg
+        return {
+          href,
+          platform: "YouTube",
+          label: handle,
+          iconSvg: icon,
+          tooltip: handle ? `${handle}` : "YouTube",
+        };
+      }
+
       // Dribble
       if (host === "dribbble.com") {
         const handle = u.pathname.replace(/^\//, "").split("/")[0] || "";
@@ -210,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
           platform: "Dribbble",
           label: handle
             ? `<li class="dribbble">@${handle}</li>`
-            : "<li>Dribbble</li>",
+            : '<li class="dribbble">Dribbble</li>',
           iconSvg: icon,
           tooltip: handle ? `@${handle}` : "Dribbble",
         };
@@ -242,11 +311,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (host === "facebook.com" || host === "fb.com") {
         const path = u.pathname.replace(/^\//, "").split("/")[0] || "";
         const iconSvg = `
-          <svg class="social-icon facebook" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32"><path fill="#000000" d="M25.566 2.433H6.433c-2.2 0-4 1.8-4 4v19.135c0 2.2 1.8 4 4 4h19.135c2.2 0 4-1.8 4-4V6.433c-.002-2.2-1.8-4-4.002-4zm-.257 14.483h-3.22v11.65h-4.818v-11.65h-2.41V12.9h2.41v-2.41c0-3.276 1.36-5.225 5.23-5.225h3.217V9.28h-2.012c-1.504 0-1.604.563-1.604 1.61l-.013 2.01h3.645l-.426 4.016z"/></svg>
+          <svg class="social-icon facebook" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32"><path fill="#0866ff" d="M25.566 2.433H6.433c-2.2 0-4 1.8-4 4v19.135c0 2.2 1.8 4 4 4h19.135c2.2 0 4-1.8 4-4V6.433c-.002-2.2-1.8-4-4.002-4zm-.257 14.483h-3.22v11.65h-4.818v-11.65h-2.41V12.9h2.41v-2.41c0-3.276 1.36-5.225 5.23-5.225h3.217V9.28h-2.012c-1.504 0-1.604.563-1.604 1.61l-.013 2.01h3.645l-.426 4.016z"/></svg>
         `;
         // Use a well-known, compact Twitter bird path (fallback if above truncated)
         const safeIconSvg = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 32 32"><path fill="#000000" d="M25.566 2.433H6.433c-2.2 0-4 1.8-4 4v19.135c0 2.2 1.8 4 4 4h19.135c2.2 0 4-1.8 4-4V6.433c-.002-2.2-1.8-4-4.002-4zm-.257 14.483h-3.22v11.65h-4.818v-11.65h-2.41V12.9h2.41v-2.41c0-3.276 1.36-5.225 5.23-5.225h3.217V9.28h-2.012c-1.504 0-1.604.563-1.604 1.61l-.013 2.01h3.645l-.426 4.016z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 32 32"><path fill="#0866ff" d="M25.566 2.433H6.433c-2.2 0-4 1.8-4 4v19.135c0 2.2 1.8 4 4 4h19.135c2.2 0 4-1.8 4-4V6.433c-.002-2.2-1.8-4-4.002-4zm-.257 14.483h-3.22v11.65h-4.818v-11.65h-2.41V12.9h2.41v-2.41c0-3.276 1.36-5.225 5.23-5.225h3.217V9.28h-2.012c-1.504 0-1.604.563-1.604 1.61l-.013 2.01h3.645l-.426 4.016z"/></svg>
         `;
 
         const icon = safeIconSvg; // choose stable svg
@@ -361,7 +430,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return socials
       .map((entry) => {
-        const url = typeof entry === "string" ? entry : Object.values(entry)[0];
+        // Handle both old format (string/object with arbitrary keys) and new format (platform/url objects)
+        let url;
+        if (typeof entry === "string") {
+          url = entry;
+        } else if (entry.url) {
+          url = entry.url; // New format: { platform: "youtube", url: "https://..." }
+        } else {
+          url = Object.values(entry)[0]; // Old format: { "Link 1": "https://..." }
+        }
+
         const info = normalize(url);
         if (!info) return "";
         const labelText = info.label || info.platform || "Link";
@@ -389,67 +467,104 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   };
 
-  estProfileSideBar.innerHTML = `
-    <div id="profileBanner" style="background: linear-gradient(0deg, #09090b, #09090b00), url('${bannersrc}') center/cover no-repeat;" aria-label="User banner image">
+  /* =============================================================
+     PROFILE SIDEBAR RENDERING
+     Renders the profile sidebar with current user data
+     ============================================================= */
+  function renderProfileSidebar() {
+    if (!estProfileSideBar) return;
+
+    const user = currentUserData;
+    const escapeHtml = (str) =>
+      String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    estProfileSideBar.innerHTML = `
+      <div id="profileBanner" style="background: linear-gradient(0deg, #09090b, #09090b00), url('${escapeHtml(
+        user.banner
+      )}') center/cover no-repeat;" aria-label="User banner image">
+          ${
+            user.isPro
+              ? '<div class="AccPRO" aria-label="Pro Account"><p>PRO</p></div>'
+              : ""
+          }
+          <div id="userProfile" style="background: url('${escapeHtml(
+            user.avatar
+          )}') center/cover no-repeat;" aria-label="User profile picture">
+          
+          ${user.status === "online" ? '<div class="onlineStatus1"></div>' : ""}
+          ${user.status === "busy" ? '<div class="onlineStatus2"></div>' : ""}
+          ${user.status === "away" ? '<div class="onlineStatus3"></div>' : ""}
+          ${
+            user.status === "offline" ? '<div class="onlineStatus4"></div>' : ""
+          }
+          </div><br>
+      </div>
+
+      <div id="AccUserName">
         ${
-          testPRO
-            ? '<div class="AccPRO" aria-label="Pro Account"><p>PRO</p></div>'
+          user.isPro
+            ? `<span id="AccProBadge"><h4>${escapeHtml(
+                user.name
+              )}</h4><p>${escapeHtml(user.handle)}</p></span>`
+            : `<h4>${escapeHtml(user.name)}</h4><p>${escapeHtml(
+                user.handle
+              )}</p>`
+        }
+      </div>
+
+      <div id="AccSettings">
+        <a href="#settings" data-tab="settings" aria-label="Account Settings" title="Account Settings">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="size-4">
+            <path fill-rule="evenodd" d="M6.455 1.45A.5.5 0 0 1 6.952 1h2.096a.5.5 0 0 1 .497.45l.186 1.858a4.996 4.996 0 0 1 1.466.848l1.703-.769a.5.5 0 0 1 .639.206l1.047 1.814a.5.5 0 0 1-.14.656l-1.517 1.09a5.026 5.026 0 0 1 0 1.694l1.516 1.09a.5.5 0 0 1 .141.656l-1.047 1.814a.5.5 0 0 1-.639.206l-1.703-.768c-.433.36-.928.649-1.466.847l-.186 1.858a.5.5 0 0 1-.497.45H6.952a.5.5 0 0 1-.497-.45l-.186-1.858a4.993 4.993 0 0 1-1.466-.848l-1.703.769a.5.5 0 0 1-.639-.206l-1.047-1.814a.5.5 0 0 1 .14-.656l1.517-1.09a5.033 5.033 0 0 1 0-1.694l-1.516-1.09a.5.5 0 0 1-.141-.656L2.46 3.593a.5.5 0 0 1 .639-.206l1.703.769c.433-.36.928-.65 1.466-.848l.186-1.858Zm-.177 7.567-.022-.037a2 2 0 0 1 3.466-1.997l.022.037a2 2 0 0 1-3.466 1.997Z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      </div>
+
+      <div id="AccHire">
+        ${
+          user.workStatus === "1"
+            ? '<a id="hire1" href="#hire" data-tab="hire" aria-label="Available for Work" title="Available for Work">Available for Hire</a>'
             : ""
         }
-        <div id="userProfile" style="background: url('${userPFPsrc}') center/cover no-repeat;" aria-label="User profile picture">
-        <div class="onlineStatus1"></div>
+        ${
+          user.workStatus === "2"
+            ? '<a id="hire2" data-tab="hire" aria-label="Currently Working" title="Currently Working">Busy with a Project</a>'
+            : ""
+        }
+        ${
+          user.workStatus === "3"
+            ? '<a id="hire3" data-tab="hire" aria-label="Not Available for Work" title="Not Available for Work">Not looking for Work</a>'
+            : ""
+        }
+      </div>
+      
+      <div class="AccBio">
+        <p>${escapeHtml(user.bio)}</p>
+      </div>
+      <br>
+      <div id="AccSocials">
+         <ul>
+          ${getSocialLinks(user.socialLinks)}
+         </ul>
+      </div>
+    `;
 
-        ${accStatus === "online" ? '<div class="onlineStatus1"></div>' : ""}
-        ${accStatus === "busy" ? '<div class="onlineStatus2"></div>' : ""}
-        ${accStatus === "away" ? '<div class="onlineStatus3"></div>' : ""}
-        ${accStatus === "offline" ? '<div class="onlineStatus4"></div>' : ""}
-        </div><br>
-    </div>
-
-    <div id="AccUserName">
-      ${
-        testPRO
-          ? `<span id="AccProBadge"><h4>${userName}</h4><p>${userHandle}</p></span>`
-          : "<h4>" + userName + "</h4><p>" + userHandle + "</p>"
-      }
-    </div>
-
-    <div id="AccSettings">
-      <a href="#settings" data-tab="settings" aria-label="Account Settings" title="Account Settings">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="size-4">
-          <path fill-rule="evenodd" d="M6.455 1.45A.5.5 0 0 1 6.952 1h2.096a.5.5 0 0 1 .497.45l.186 1.858a4.996 4.996 0 0 1 1.466.848l1.703-.769a.5.5 0 0 1 .639.206l1.047 1.814a.5.5 0 0 1-.14.656l-1.517 1.09a5.026 5.026 0 0 1 0 1.694l1.516 1.09a.5.5 0 0 1 .141.656l-1.047 1.814a.5.5 0 0 1-.639.206l-1.703-.768c-.433.36-.928.649-1.466.847l-.186 1.858a.5.5 0 0 1-.497.45H6.952a.5.5 0 0 1-.497-.45l-.186-1.858a4.993 4.993 0 0 1-1.466-.848l-1.703.769a.5.5 0 0 1-.639-.206l-1.047-1.814a.5.5 0 0 1 .14-.656l1.517-1.09a5.033 5.033 0 0 1 0-1.694l-1.516-1.09a.5.5 0 0 1-.141-.656L2.46 3.593a.5.5 0 0 1 .639-.206l1.703.769c.433-.36.928-.65 1.466-.848l.186-1.858Zm-.177 7.567-.022-.037a2 2 0 0 1 3.466-1.997l.022.037a2 2 0 0 1-3.466 1.997Z" clip-rule="evenodd" />
-        </svg>
-
-      </a>
-    </div>
-
-    <div id="AccHire">
-      ${WorkStatus === "1" ? '<a id="hire1" href="#hire" data-tab="hire" aria-label="Available for Work" title="Available for Work">Available for Hire</a>' : ''}
-      ${WorkStatus === "2" ? '<a id="hire2" data-tab="hire" aria-label="Currently Working" title="Currently Working">Busy with a Project</a>' : ''}
-      ${WorkStatus === "3" ? '<a id="hire3" data-tab="hire" aria-label="Not Available for Work" title="Not Available for Work">Not looking for Work</a>' : ''}
-    </div>
-    
-    <div class="AccBio">
-      <p>This is a brief bio about the user. It can include information about their interests, background, and more.</p>
-    </div>
-    <br>
-    <div id="AccSocials">
-       <ul>
-        ${getSocialLinks()}
-       </ul>
-    </div>
-
-  `;
-  // Wire the Account Settings cog to open the Settings tab
-  const accSettingsLink = estProfileSideBar.querySelector(
-    '#AccSettings a[data-tab="settings"]'
-  );
-  if (accSettingsLink) {
-    accSettingsLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (window.showPanelByName) window.showPanelByName("settings");
-      else location.hash = "#settings";
-    });
+    // Wire the Account Settings cog to open the Settings tab
+    const accSettingsLink = estProfileSideBar.querySelector(
+      '#AccSettings a[data-tab="settings"]'
+    );
+    if (accSettingsLink) {
+      accSettingsLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (window.showPanelByName) window.showPanelByName("settings");
+        else location.hash = "#settings";
+      });
+    }
   }
   // <div id="AccName">User Info</div>
   //  <div id="AccUserName">Details about the user can go here.</div>
@@ -509,7 +624,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const idVal = item.id != null ? item.id : absoluteIndex + 1;
       return `
         <figure class="bento-item" data-id="${idVal}" tabindex="0" aria-describedby="pimg-${idVal}-title">
-          <img src="${mainSrc}" alt="${mainAlt}" loading="lazy" />
+          <img src="${mainSrc}" class="bento-Image" alt="${mainAlt}" loading="lazy" />
           <div class="ImgInfo">
             <h3 id="pimg-${idVal}-title">${safeTitle}</h3>
             <p>${safeDesc}</p>
@@ -719,6 +834,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function ensureProfileInitialized() {
       if (profileInitialized) return;
       profileInitialized = true;
+      loadUserProfile(); // Load user profile data
       loadProfileImages();
     }
 
