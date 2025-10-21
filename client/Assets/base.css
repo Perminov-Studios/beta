@@ -133,7 +133,7 @@ nav .navLink a {
 }
 
 #pro-btn {
-  background: linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%);
+  background: linear-gradient(90deg, #fc466b 0%, #3f5efb 100%);
   border-radius: 8px;
   padding: 6px 14px;
   font-size: 10px;
@@ -146,13 +146,50 @@ nav .navLink a {
   box-shadow: 0px 0px 30px #3f5efb8c;
   transition: background 0.35s, border-color 0.35s, color 0.35s, transform 0.35s,
     box-shadow 0.35s;
-  transition: all .5;
+  transition: all 0.5;
 }
 
 #pro-btn:hover {
   box-shadow: 0px 0px 40px #3f5efbef;
   transform: translateY(-2px);
 }
+
+a.LoginBtn {
+  background: linear-gradient(90deg, #3a6dff 0%, #2b7fff 45%, #5fe3a1 140%);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: #fff;
+  margin-top: 3px;
+  text-decoration: none;
+  box-shadow: 0px 0px 20px #2b7fff8c;
+  transition: background 0.35s, border-color 0.35s, color 0.35s, transform 0.35s,
+    box-shadow 0.35s;
+}
+
+a.LoginBtn:hover {
+  box-shadow: 0px 0px 30px #2b7fffef;
+  transform: translateY(-2px);
+}
+
+/* Prevent the parent <li> hover highlight when hovering the Login button */
+.accountPortal ul li:hover:has(> a.LoginBtn) {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+/* Fallback: if :has is not supported, mark the li with .no-li-hover in HTML */
+.accountPortal ul li.no-li-hover:hover {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+/* =====================================================================
+   SECTION: UPLOAD PANEL
+   ===================================================================== */
 
 /* Upload button (in accountPortal) */
 #uploadIcon a.upload-btn {

@@ -38,6 +38,217 @@ document.addEventListener("DOMContentLoaded", () => {
   // Local cache (in-memory) loaded from localStorage if available
   let colorCache = {};
 
+  // In-memory pre-index for fast, accurate relevance search
+  // Each image gets an _index with normalized strings and token arrays
+  let searchIndexBuilt = false;
+
+  // Color alias map to improve matching accuracy for user terms
+  const COLOR_ALIASES = {
+    magenta: "pink",
+    fuchsia: "pink",
+    rose: "pink",
+    scarlet: "red",
+    crimson: "red",
+    maroon: "red",
+    burgundy: "red",
+    amber: "yellow",
+    gold: "yellow",
+    golden: "yellow",
+    lemon: "yellow",
+    lime: "green",
+    teal: "green",
+    olive: "green",
+    cyan: "blue",
+    aqua: "blue",
+    navy: "blue",
+    indigo: "purple",
+    violet: "purple",
+    lilac: "purple",
+    lavender: "purple",
+    tan: "brown",
+    beige: "brown",
+    charcoal: "black",
+    ivory: "white",
+    cream: "white",
+    grey: "gray",
+  };
+
+  function normalizeText(str) {
+    return String(str || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // strip diacritics
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  }
+
+  function tokenize(str) {
+    const n = normalizeText(str);
+    return n ? n.split(/\s+/).filter(Boolean) : [];
+  }
+
+  // Very small, bounded edit distance (0..2) to support fuzzy term matching
+  function editDistanceAtMost(a, b, maxDist = 2) {
+    if (!a || !b) return Math.max(a?.length || 0, b?.length || 0);
+    // Quick exits
+    if (a === b) return 0;
+    const la = a.length,
+      lb = b.length;
+    if (Math.abs(la - lb) > maxDist) return maxDist + 1;
+    // DP over two rows, early stopping by band
+    const prev = new Array(lb + 1);
+    const curr = new Array(lb + 1);
+    for (let j = 0; j <= lb; j++) prev[j] = j;
+    for (let i = 1; i <= la; i++) {
+      curr[0] = i;
+      // banded range to avoid full matrix when far apart
+      const from = Math.max(1, i - maxDist);
+      const to = Math.min(lb, i + maxDist);
+      let best = curr[0];
+      for (let j = 1; j <= lb; j++) {
+        if (j < from || j > to) {
+          curr[j] = maxDist + 1; // outside band
+          continue;
+        }
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        const del = prev[j] + 1;
+        const ins = curr[j - 1] + 1;
+        const sub = prev[j - 1] + cost;
+        curr[j] = del < ins ? (del < sub ? del : sub) : ins < sub ? ins : sub;
+        best = Math.min(best, curr[j]);
+      }
+      // Early stop if best in this row already exceeds maxDist
+      if (best > maxDist) return best;
+      // swap rows
+      for (let j = 0; j <= lb; j++) prev[j] = curr[j];
+    }
+    return prev[lb];
+  }
+
+  // Extract quoted phrases and leftover terms
+  function parseQuery(q) {
+    const phrases = [];
+    const rest = [];
+    if (!q) return { phrases, terms: rest };
+    const re = /\"([^\"]+)\"/g; // "..."
+    let m;
+    let remaining = q;
+    while ((m = re.exec(q))) {
+      phrases.push(normalizeText(m[1]));
+    }
+    remaining = q.replace(re, " ");
+    tokenize(remaining).forEach((t) => rest.push(t));
+    return { phrases, terms: rest };
+  }
+
+  function buildItemIndex(item) {
+    const title = normalizeText(item.title);
+    const description = normalizeText(item.description);
+    const alt = normalizeText(item.image?.alt);
+    const author = normalizeText(item.author?.name);
+    const colorsArr = Array.isArray(item.colors)
+      ? item.colors.map((c) => String(c).toLowerCase())
+      : [];
+    const detected = item._detectedColors ? [...item._detectedColors] : [];
+    const colorSet = new Set([
+      ...colorsArr,
+      ...detected.map((c) => String(c).toLowerCase()),
+    ]);
+    // Add aliases
+    for (const [alias, base] of Object.entries(COLOR_ALIASES)) {
+      if (colorSet.has(alias)) colorSet.add(base);
+    }
+    return {
+      title,
+      description,
+      alt,
+      author,
+      colors: colorSet,
+      titleTokens: tokenize(title),
+      descTokens: tokenize(description),
+      altTokens: tokenize(alt),
+      authorTokens: tokenize(author),
+    };
+  }
+
+  function ensureSearchIndex() {
+    if (searchIndexBuilt) return;
+    allImages.forEach((img) => {
+      img._index = buildItemIndex(img);
+    });
+    searchIndexBuilt = true;
+  }
+
+  function applyColorAliases(term) {
+    if (!term) return term;
+    return COLOR_ALIASES[term] || term;
+  }
+
+  // Compute a relevance score for an image given a parsed query
+  function scoreItem(item, parsed) {
+    if (!parsed || (!parsed.terms.length && !parsed.phrases.length)) return 0;
+    const idx = item._index || buildItemIndex(item);
+    // Field weights chosen based on importance
+    const W = {
+      title: 3.0,
+      author: 2.2,
+      alt: 1.2,
+      description: 1.0,
+      colors: 2.0,
+    };
+    let score = 0;
+
+    // Helper: add boosts for a string field
+    function scoreField(text, tokens, weight, term) {
+      if (!text) return 0;
+      let s = 0;
+      // exact substring
+      if (text.includes(term)) s += 50 * weight;
+      // word equals
+      if (tokens && tokens.includes(term)) s += 40 * weight;
+      // starts-with on any token
+      if (tokens && tokens.some((t) => t.startsWith(term))) s += 30 * weight;
+      // fuzzy (1-2 edits) on any token, short-circuit at first good hit
+      const maxD = term.length <= 4 ? 1 : 2;
+      if (tokens) {
+        for (const t of tokens) {
+          const d = editDistanceAtMost(t, term, maxD);
+          if (d === 1) {
+            s += (term.length <= 4 ? 18 : 22) * weight;
+            break;
+          } else if (d === 2) {
+            s += 12 * weight;
+            break;
+          }
+        }
+      }
+      return s;
+    }
+
+    // Phrases get a big boost when found in title/desc/author
+    for (const phrase of parsed.phrases) {
+      if (!phrase) continue;
+      if (idx.title.includes(phrase)) score += 140 * W.title;
+      if (idx.description.includes(phrase)) score += 90 * W.description;
+      if (idx.author.includes(phrase)) score += 110 * W.author;
+      if (idx.alt.includes(phrase)) score += 60 * W.alt;
+    }
+
+    // Individual terms
+    for (let term of parsed.terms) {
+      term = applyColorAliases(term);
+      score += scoreField(idx.title, idx.titleTokens, W.title, term);
+      score += scoreField(idx.description, idx.descTokens, W.description, term);
+      score += scoreField(idx.alt, idx.altTokens, W.alt, term);
+      score += scoreField(idx.author, idx.authorTokens, W.author, term);
+
+      // Color matches
+      if (idx.colors.has(term)) score += 70 * W.colors;
+    }
+
+    return score;
+  }
+
   /* =============================================================
      AUTO COLOR DETECTION (Canvas Sampling)
      - For each image we can fetch, sample a reduced-size bitmap (e.g. 32x32)
@@ -413,15 +624,24 @@ document.addEventListener("DOMContentLoaded", () => {
     await Promise.all(tasks);
     colorDetectionCompleted = true;
     colorDetectionInProgress = false;
+    // Merge detected colors into any built search index for better accuracy
+    allImages.forEach((img) => {
+      if (!img._detectedColors || !(img._detectedColors instanceof Set)) return;
+      if (!img._index) return; // will be built lazily later
+      const idx = img._index;
+      // Merge and alias
+      img._detectedColors.forEach((c) =>
+        idx.colors.add(String(c).toLowerCase())
+      );
+      for (const [alias, base] of Object.entries(COLOR_ALIASES)) {
+        if (idx.colors.has(alias)) idx.colors.add(base);
+      }
+    });
     // Persist cache
     try {
       localStorage.setItem("imgColorCache_v1", JSON.stringify(colorCache));
     } catch (e) {}
-    // If user has a color filter active, re-apply to refine results
-    const selectedColor = (filterColor?.value || "").toLowerCase();
-    if (selectedColor && selectedColor !== "any") {
-      applyFilters();
-    }
+    // Do not auto-apply any filters here; user will click Search
   }
 
   /** Return HTML string for a single gallery <figure> card. */
@@ -635,8 +855,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /** Parse views string to numeric for sorting/filtering (e.g., '1.2k' => 1200). */
   function parseViewsString(str) {
-    const s = String(str).trim().toLowerCase();
-    const match = s.match(/^(\d+(?:\.\d+)?)\s*([km])?$/);
+    const s = String(str)
+      .trim()
+      .toLowerCase()
+      .replace(/[,\s]+/g, "");
+    const match = s.match(/^(\d+(?:\.\d+)?)([km])?$/);
     if (!match) return parseInt(str, 10) || 0;
     const num = parseFloat(match[1]);
     const suffix = match[2];
@@ -647,7 +870,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /** Apply current filter state to allImages => filteredImages. */
   function applyFilters(silent = false) {
-    const searchTerm = filterSearch?.value.toLowerCase().trim() || "";
+    const rawQuery = filterSearch?.value || "";
+    const searchTerm = normalizeText(rawQuery);
     const rawMinViews = parseViewsString(filterMinViews?.value || "0");
     const selectedColor = (filterColor?.value || "").toLowerCase();
     const sortBy = filterSort?.value || "newest";
@@ -666,12 +890,12 @@ document.addEventListener("DOMContentLoaded", () => {
         (selectedColor && selectedColor !== "any")
     );
 
-    filteredImages = allImages.filter((img) => {
-      if (searchTerm) {
-        const titleMatch = img.title?.toLowerCase().includes(searchTerm);
-        const descMatch = img.description?.toLowerCase().includes(searchTerm);
-        if (!titleMatch && !descMatch) return false;
-      }
+    // Build index lazily for search
+    ensureSearchIndex();
+    const parsedQuery = parseQuery(rawQuery);
+
+    // Pre-apply non-search constraints, then score remaining
+    const prelim = allImages.filter((img) => {
       const numericViews = parseViewsString(img.views || 0);
       if (viewRangePreset) {
         if (
@@ -688,12 +912,33 @@ document.addEventListener("DOMContentLoaded", () => {
           : [];
         const detected = img._detectedColors ? [...img._detectedColors] : [];
         const combined = new Set([...palette, ...detected]);
-        if (!combined.has(selectedColor)) return false;
+        // include aliases for color precision
+        const colorToCheck = applyColorAliases(selectedColor);
+        if (!combined.has(colorToCheck)) return false;
       }
       return true;
     });
 
-    if (sortBy === "newest") {
+    if (searchTerm) {
+      const scored = prelim
+        .map((img) => ({ img, score: scoreItem(img, parsedQuery) }))
+        .filter((x) => x.score > 0);
+      // Tie-breakers: relevance, then views, then recency
+      scored.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        const bv = parseViewsString(b.img.views || 0);
+        const av = parseViewsString(a.img.views || 0);
+        if (bv !== av) return bv - av;
+        return (b.img.created || 0) - (a.img.created || 0);
+      });
+      filteredImages = scored.map((s) => s.img);
+    } else {
+      filteredImages = prelim.slice();
+    }
+
+    if (sortBy === "relevance" && searchTerm) {
+      // Already sorted by relevance above; keep ordering
+    } else if (sortBy === "newest") {
       filteredImages.sort((a, b) => (b.created || 0) - (a.created || 0));
     } else if (sortBy === "oldest") {
       filteredImages.sort((a, b) => (a.created || 0) - (b.created || 0));
@@ -729,7 +974,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (filterSearch) filterSearch.value = "";
     if (filterMinViews) filterMinViews.value = "0";
     if (filterColor) filterColor.value = ""; // matches 'Any Color' option
-    if (filterSort) filterSort.value = "newest";
+    if (filterSort) filterSort.value = "newest"; // reset explicit sort
     viewRangePreset = null;
     minViewsDirty = false;
     document
@@ -846,6 +1091,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (filterResetBtn) {
     filterResetBtn.addEventListener("click", resetFilters);
   }
+
+  // No live auto-update: results change only when Search/Reset is clicked
 
   // View range preset chips logic
   document.querySelectorAll("[data-views-preset]").forEach((chip) => {

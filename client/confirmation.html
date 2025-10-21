@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="../assets/CSS/login.css">
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+</head>
+
+<nav>
+    <a href="index.html">
+        <svg xmlns="http://www.w3.org/2000/svg" id="Layer_2" data-name="Layer 2" viewBox="0 0 113.93 113.93">
+            <g id="Layer_1-2" data-name="Layer 1">
+                <path class="cls-1"
+                    d="M83.47,0H30.46C13.64,0,0,13.64,0,30.46v53.01c0,16.82,13.64,30.46,30.46,30.46h53.01c16.82,0,30.46-13.64,30.46-30.46V30.46c0-16.82-13.64-30.46-30.46-30.46ZM50.91,64.15c0,16.91-13.71,30.62-30.62,30.62v-49.67c0-14.98,12.14-27.12,27.12-27.12h27.71v13.89c0,13.37-10.84,24.21-24.21,24.21v8.07ZM93.64,69.73c0,14.49-11.74,26.23-26.23,26.23h-7.48v-16.97c0-14.49,11.74-26.23,26.23-26.23h7.48v16.97Z">
+                </path>
+            </g>
+        </svg>
+    </a>
+</nav>
+
+<body class="body">
+    <div class="Main">
+        <div class="container"
+            style="width: fit-content; height: fit-content; min-height: unset !important; padding: 20px; text-align: center;"
+            id="container" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+            <div style="background: transparent !important">
+                <figure class="px-10 pt-10">
+                    <img src="../assets/images/created.png" height="150px" alt="checkmark" class="rounded-xl" />
+                </figure>
+                <div class="card-body items-center text-center">
+                    <h1>Account Created<span id="dot">.</span></h1>
+                    <p>
+                        Your account has been successfully created.<br>You can now log in using your
+                        credentials.
+                    </p>
+                    <a href="./login.html">
+                        <button type="submit" class="button">Continue to Login</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+<!-- Initialize AOS -->
+<script>
+    AOS.init({
+        // Global settings (optional)
+        duration: 800,        // Animation duration (ms)
+        easing: 'ease',       // Easing function
+        once: true,          // Whether animation should happen only once
+        mirror: false,        // Whether elements should animate out while scrolling past them
+        offset: 120,          // Offset (in px) from the original trigger point
+    });
+</script>
+<script src="../assets/JS/script.js"></script>
+
+</html>

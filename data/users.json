@@ -97,6 +97,342 @@
       },
       "joinDate": "2023-05-10",
       "location": "Toronto, ON"
+    },
+    {
+      "id": 5,
+      "name": "Liam Nguyen",
+      "handle": "@liam.design",
+      "bio": "Product designer focused on clean UI, design systems, and accessibility.",
+      "avatar": "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=200&fit=crop",
+      "status": "online",
+      "workStatus": "1",
+      "isPro": true,
+      "socialLinks": [
+        { "platform": "behance", "url": "https://www.behance.net/liamdesign" },
+        { "platform": "dribbble", "url": "https://dribbble.com/liamdesign" }
+      ],
+      "stats": { "followers": 2110, "following": 310, "likes": 3890, "uploads": 128 },
+      "joinDate": "2023-07-14",
+      "location": "Seattle, WA"
+    },
+    {
+      "id": 6,
+      "name": "Noah Williams",
+      "handle": "@noah.motion",
+      "bio": "Motion designer creating crisp brand animations and explainer videos.",
+      "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=200&fit=crop",
+      "status": "busy",
+      "workStatus": "2",
+      "isPro": false,
+      "socialLinks": [
+        { "platform": "instagram", "url": "https://instagram.com/noah.motion" },
+        { "platform": "youtube", "url": "https://youtube.com/@noahmotion" }
+      ],
+      "stats": { "followers": 1458, "following": 220, "likes": 2711, "uploads": 96 },
+      "joinDate": "2022-10-02",
+      "location": "Austin, TX"
+    },
+    {
+      "id": 7,
+      "name": "Emma Garcia",
+      "handle": "@emmagraphics",
+      "bio": "Brand identity and packaging designer. Minimalist with a love for color theory.",
+      "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?w=800&h=200&fit=crop",
+      "status": "away",
+      "workStatus": "1",
+      "isPro": true,
+      "socialLinks": [
+        { "platform": "website", "url": "https://emma.studio" },
+        { "platform": "dribbble", "url": "https://dribbble.com/emmagfx" }
+      ],
+      "stats": { "followers": 3120, "following": 380, "likes": 5210, "uploads": 204 },
+      "joinDate": "2021-12-11",
+      "location": "Chicago, IL"
+    },
+    {
+      "id": 8,
+      "name": "Oliver Smith",
+      "handle": "@oliver.web",
+      "bio": "Frontend engineer and web designer. React, accessibility, and performance.",
+      "avatar": "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=200&fit=crop",
+      "status": "online",
+      "workStatus": "1",
+      "isPro": false,
+      "socialLinks": [
+        { "platform": "github", "url": "https://github.com/oliverweb" },
+        { "platform": "twitter", "url": "https://twitter.com/oliver_web" }
+      ],
+      "stats": { "followers": 980, "following": 180, "likes": 1340, "uploads": 52 },
+      "joinDate": "2024-03-28",
+      "location": "Vancouver, BC"
+    },
+    {
+      "id": 9,
+      "name": "Ava Thompson",
+      "handle": "@ava.illustrates",
+      "bio": "Illustrator crafting character art and playful editorial pieces.",
+      "avatar": "https://images.unsplash.com/photo-1547425260-eee0f7f6ba2d?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=200&fit=crop",
+      "status": "offline",
+      "workStatus": "3",
+      "isPro": false,
+      "socialLinks": [
+        { "platform": "behance", "url": "https://www.behance.net/availlus" }
+      ],
+      "stats": { "followers": 1675, "following": 245, "likes": 2987, "uploads": 121 },
+      "joinDate": "2023-09-05",
+      "location": "Portland, OR"
+    },
+    {
+      "id": 10,
+      "name": "William Johnson",
+      "handle": "@willfilms",
+      "bio": "Videographer and editor specializing in short-form branded content.",
+      "avatar": "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=200&fit=crop",
+      "status": "busy",
+      "workStatus": "2",
+      "isPro": true,
+      "socialLinks": [
+        { "platform": "youtube", "url": "https://youtube.com/@willfilms" }
+      ],
+      "stats": { "followers": 4210, "following": 512, "likes": 7890, "uploads": 340 },
+      "joinDate": "2020-06-19",
+      "location": "Atlanta, GA"
+    },
+    {
+      "id": 11,
+      "name": "Sophia Martinez",
+      "handle": "@sophiamartinez",
+      "bio": "Portrait photographer with a cinematic style. Studio and natural light.",
+      "avatar": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=200&fit=crop",
+      "status": "online",
+      "workStatus": "1",
+      "isPro": true,
+      "socialLinks": [
+        { "platform": "instagram", "url": "https://instagram.com/sophia.studio" }
+      ],
+      "stats": { "followers": 5160, "following": 620, "likes": 9022, "uploads": 410 },
+      "joinDate": "2019-04-07",
+      "location": "Miami, FL"
+    },
+    {
+      "id": 12,
+      "name": "Ethan Kim",
+      "handle": "@ethan.codes",
+      "bio": "UX engineer bridging design and frontend. Prototyping, React, and TypeScript.",
+      "avatar": "https://images.unsplash.com/photo-1545996124-0501ebae84d5?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&h=200&fit=crop",
+      "status": "away",
+      "workStatus": "1",
+      "isPro": false,
+      "socialLinks": [
+        { "platform": "github", "url": "https://github.com/ethankim" }
+      ],
+      "stats": { "followers": 740, "following": 120, "likes": 998, "uploads": 44 },
+      "joinDate": "2024-01-09",
+      "location": "San Jose, CA"
+    },
+    {
+      "id": 13,
+      "name": "Isabella Rossi",
+      "handle": "@rossi.art",
+      "bio": "Concept artist and matte painter for games and film.",
+      "avatar": "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&h=200&fit=crop",
+      "status": "offline",
+      "workStatus": "3",
+      "isPro": true,
+      "socialLinks": [
+        { "platform": "artstation", "url": "https://www.artstation.com/rossi" }
+      ],
+      "stats": { "followers": 2890, "following": 330, "likes": 4670, "uploads": 187 },
+      "joinDate": "2021-05-22",
+      "location": "Rome, Italy"
+    },
+    {
+      "id": 14,
+      "name": "Mason Lee",
+      "handle": "@mason3d",
+      "bio": "3D artist creating product renders and motion graphics in Blender.",
+      "avatar": "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&h=200&fit=crop",
+      "status": "busy",
+      "workStatus": "2",
+      "isPro": false,
+      "socialLinks": [
+        { "platform": "behance", "url": "https://www.behance.net/mason3d" }
+      ],
+      "stats": { "followers": 1205, "following": 210, "likes": 2331, "uploads": 78 },
+      "joinDate": "2022-08-31",
+      "location": "Melbourne, AU"
+    },
+    {
+      "id": 15,
+      "name": "Charlotte Brown",
+      "handle": "@char.art",
+      "bio": "Children’s book illustrator with a whimsical style.",
+      "avatar": "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&h=200&fit=crop",
+      "status": "online",
+      "workStatus": "1",
+      "isPro": true,
+      "socialLinks": [
+        { "platform": "instagram", "url": "https://instagram.com/char.art" }
+      ],
+      "stats": { "followers": 2560, "following": 340, "likes": 4980, "uploads": 160 },
+      "joinDate": "2020-02-18",
+      "location": "Dublin, IE"
+    },
+    {
+      "id": 16,
+      "name": "Benjamin Davis",
+      "handle": "@ben.dvs",
+      "bio": "Brand strategist and logo designer helping startups launch with clarity.",
+      "avatar": "https://images.unsplash.com/photo-1519340241574-2cec6aef0c01?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1523731407965-2430cd12f5e4?w=800&h=200&fit=crop",
+      "status": "away",
+      "workStatus": "1",
+      "isPro": false,
+      "socialLinks": [
+        { "platform": "dribbble", "url": "https://dribbble.com/bendvs" }
+      ],
+      "stats": { "followers": 980, "following": 150, "likes": 1400, "uploads": 60 },
+      "joinDate": "2023-11-27",
+      "location": "Denver, CO"
+    },
+    {
+      "id": 17,
+      "name": "Amelia Wilson",
+      "handle": "@amelia.ui",
+      "bio": "UX designer with focus on research, flows, and enterprise dashboards.",
+      "avatar": "https://images.unsplash.com/photo-1547425260-eee0f7f6ba2d?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1481988535861-271139e06469?w=800&h=200&fit=crop",
+      "status": "online",
+      "workStatus": "2",
+      "isPro": true,
+      "socialLinks": [
+        { "platform": "linkedin", "url": "https://www.linkedin.com/in/ameliaui" }
+      ],
+      "stats": { "followers": 1905, "following": 260, "likes": 3102, "uploads": 112 },
+      "joinDate": "2022-04-16",
+      "location": "London, UK"
+    },
+    {
+      "id": 18,
+      "name": "Lucas Pereira",
+      "handle": "@lucas.fx",
+      "bio": "VFX and compositing artist. After Effects, Nuke, and color work.",
+      "avatar": "https://images.unsplash.com/photo-1545996124-0501ebae84d5?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?w=800&h=200&fit=crop",
+      "status": "busy",
+      "workStatus": "2",
+      "isPro": false,
+      "socialLinks": [
+        { "platform": "youtube", "url": "https://youtube.com/@lucasfx" }
+      ],
+      "stats": { "followers": 1320, "following": 190, "likes": 2480, "uploads": 85 },
+      "joinDate": "2021-09-12",
+      "location": "São Paulo, BR"
+    },
+    {
+      "id": 19,
+      "name": "Mila Novak",
+      "handle": "@mila.typography",
+      "bio": "Type designer and lettering artist. Custom fonts and logotypes.",
+      "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1493612276216-ee3925520721?w=800&h=200&fit=crop",
+      "status": "offline",
+      "workStatus": "3",
+      "isPro": true,
+      "socialLinks": [
+        { "platform": "behance", "url": "https://www.behance.net/milatypo" }
+      ],
+      "stats": { "followers": 2405, "following": 290, "likes": 4100, "uploads": 150 },
+      "joinDate": "2020-11-03",
+      "location": "Prague, CZ"
+    },
+    {
+      "id": 20,
+      "name": "Henry Zhao",
+      "handle": "@henryz.dev",
+      "bio": "Designer-developer hybrid. Design tokens, theming, and UI kits.",
+      "avatar": "https://images.unsplash.com/photo-1545996124-0501ebae84d5?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1517433456452-f9633a875f6f?w=800&h=200&fit=crop",
+      "status": "away",
+      "workStatus": "1",
+      "isPro": false,
+      "socialLinks": [
+        { "platform": "github", "url": "https://github.com/henryz" }
+      ],
+      "stats": { "followers": 605, "following": 98, "likes": 870, "uploads": 33 },
+      "joinDate": "2024-05-30",
+      "location": "Hong Kong"
+    },
+    {
+      "id": 21,
+      "name": "Zoe Park",
+      "handle": "@zoepaints",
+      "bio": "Painter and mixed-media artist exploring textures and light.",
+      "avatar": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&h=200&fit=crop",
+      "status": "online",
+      "workStatus": "1",
+      "isPro": false,
+      "socialLinks": [ { "platform": "instagram", "url": "https://instagram.com/zoepaints" } ],
+      "stats": { "followers": 870, "following": 140, "likes": 1320, "uploads": 48 },
+      "joinDate": "2023-08-21",
+      "location": "Seoul, KR"
+    },
+    {
+      "id": 22,
+      "name": "David Green",
+      "handle": "@dgreen.audio",
+      "bio": "Audio designer and composer for indie games and film.",
+      "avatar": "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=200&fit=crop",
+      "status": "busy",
+      "workStatus": "2",
+      "isPro": true,
+      "socialLinks": [ { "platform": "soundcloud", "url": "https://soundcloud.com/dgreenaudio" } ],
+      "stats": { "followers": 1760, "following": 230, "likes": 3205, "uploads": 132 },
+      "joinDate": "2021-01-12",
+      "location": "Nashville, TN"
+    },
+    {
+      "id": 23,
+      "name": "Aria Khan",
+      "handle": "@ariak.codesign",
+      "bio": "Service designer mapping journeys and prototyping services end-to-end.",
+      "avatar": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=200&fit=crop",
+      "status": "offline",
+      "workStatus": "3",
+      "isPro": false,
+      "socialLinks": [ { "platform": "linkedin", "url": "https://www.linkedin.com/in/aria-k" } ],
+      "stats": { "followers": 540, "following": 110, "likes": 800, "uploads": 29 },
+      "joinDate": "2024-07-06",
+      "location": "Dubai, UAE"
+    },
+    {
+      "id": 24,
+      "name": "Yuki Tanaka",
+      "handle": "@yuki.cg",
+      "bio": "CG generalist & look-dev. Lighting, texturing, and NPR rendering.",
+      "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face",
+      "banner": "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&h=200&fit=crop",
+      "status": "away",
+      "workStatus": "1",
+      "isPro": true,
+      "socialLinks": [ { "platform": "artstation", "url": "https://www.artstation.com/yukicg" } ],
+      "stats": { "followers": 1995, "following": 275, "likes": 3560, "uploads": 142 },
+      "joinDate": "2022-02-02",
+      "location": "Tokyo, JP"
     }
   ]
 }

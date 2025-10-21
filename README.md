@@ -21,9 +21,20 @@
   - A soft, multi-layered box shadow gives the badge a glowing effect.
 
 - **Tab System Improvements:**
+
   - All navigation, portal, and footer links are now included in the tab system.
   - Tab switching updates the URL hash and emits a custom `tab:activate` event.
   - Accessibility: Keyboard navigation and ARIA roles for all tab links.
+
+- **Hire Artists tab updates:**
+  - Pagination visuals synced with Home for a consistent look and feel (scoped styles to avoid load-order issues).
+  - Added 20+ new seed users in `data/users.json` to improve pagination and search coverage.
+  - Replaced the contact modal with a “View Profile” button that navigates to the Profile tab and populates it based on the selected user.
+  - Robust media fallbacks: broken/missing avatars and banners gracefully swap to placeholders.
+  - Switched card layout to CSS Grid for left-aligned, evenly spaced rows across responsive breakpoints.
+  - Conditional `.pro` styling for premium users’ cards.
+  - Search-first UX: cards remain hidden until a query is entered.
+  - Polished empty state with a magnifying glass SVG icon, centered within the grid.
 
 This repository hosts a static prototype of an art/media platform with:
 
@@ -44,9 +55,10 @@ The dashboard is structured for progressive enhancement: it renders without JS a
   - `Assets/` Dashboard-only assets
     - `base.css` Global dashboard layout/components
     - `base.js` Core tab system, deep links, dropdown wiring, selected-photo view, upload demo
-    - Tab modules: `Home/`, `Profile/`, `Settings/`, `Privacy Policy/`, `Messages/`, `Notifcations/`, each with `color.css` and `script.js`
+    - Tab modules: `Home/`, `Profile/`, `Settings/`, `Privacy Policy/`, `Messages/`, `Notifcations/`, `Hire Artists/`, each with `color.css` and `script.js`
 - `data/`
   - `images.json` Gallery seed data consumed by dashboard and profile
+  - `users.json` Artist directory data consumed by Hire Artists
 
 Notes
 
@@ -74,6 +86,10 @@ document.addEventListener("tab:activate", (e) => {
   }
 });
 ```
+
+Hire Artists → Profile navigation
+
+- In the Hire Artists tab, clicking “View Profile” switches to `.Main.profile` and hydrates the profile view for the selected user. The tab system preserves deep-link behavior via hash/URL updates and emits `tab:activate` accordingly.
 
 Selected Photo view
 
@@ -109,6 +125,8 @@ Data source
 - Top navigation underline is purely decorative and hides for account-portal tabs as appropriate.
 - Gallery items and promoted cards are focusable and activate on Enter/Space.
 - Pagination marks the active page with `aria-current="page"`.
+- Hire Artists empty state is shown by default and centered; cards render after a search query is established to reduce noise.
+- Image fallbacks prevent broken avatars/banners from impacting layout or focus order.
 
 ## Developer guide (quick find)
 
@@ -116,6 +134,7 @@ Data source
 - “SELECTED PHOTO RENDERING” in `client/Assets/base.js`
 - Profile gallery in `client/Assets/Profile/script.js` (search for renderFeatured/renderAll/renderLikes)
 - Data fetch path: `../data/images.json` relative to `client/dash.html`
+- Hire Artists list in `client/Assets/Hire Artists/script.js`; styles in `client/Assets/Hire Artists/color.css`; data in `data/users.json`
 
 ## Suggested future refactors (optional)
 
@@ -145,3 +164,9 @@ Longer term
 2025-10-07
 
 - Added documentation & inline comments pass (non-breaking) to improve discoverability.
+
+2025-10-21
+
+- Hire Artists: Unified pagination styling with Home; switched to CSS Grid for even, left-aligned rows; added PRO card visuals; introduced search-first empty state with centered SVG prompt; replaced Contact with View Profile navigation.
+- Data: Expanded `data/users.json` with additional sample users for richer pagination/search.
+- Reliability: Implemented avatar/banner fallbacks to placeholders for missing or broken image sources.

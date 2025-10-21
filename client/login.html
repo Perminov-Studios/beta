@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="../assets/CSS/login.css">
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+    <script src="../assets/Home/script.js" defer></script>
+
+</head>
+
+
+<nav>
+    <a href="./dash.html" class="logo" aria-label="Go to homepage">
+        <svg xmlns="http://www.w3.org/2000/svg" id="Layer_2" data-name="Layer 2" viewBox="0 0 113.93 113.93">
+            <g id="Layer_1-2" data-name="Layer 1">
+                <path class="cls-1"
+                    d="M83.47,0H30.46C13.64,0,0,13.64,0,30.46v53.01c0,16.82,13.64,30.46,30.46,30.46h53.01c16.82,0,30.46-13.64,30.46-30.46V30.46c0-16.82-13.64-30.46-30.46-30.46ZM50.91,64.15c0,16.91-13.71,30.62-30.62,30.62v-49.67c0-14.98,12.14-27.12,27.12-27.12h27.71v13.89c0,13.37-10.84,24.21-24.21,24.21v8.07ZM93.64,69.73c0,14.49-11.74,26.23-26.23,26.23h-7.48v-16.97c0-14.49,11.74-26.23,26.23-26.23h7.48v16.97Z">
+                </path>
+            </g>
+        </svg>
+    </a>
+</nav>
+
+
+<body class="body">
+    <div class="Main">
+        <div class="container" id="container" data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
+            <div class="form-container sign-up-container">
+                <form action="#" id="createAccount" novalidate>
+                    <h1>Create Account<span id="dot">.</span></h1>
+
+                    <br>
+                    <label class="input validator">
+
+                        <input type="text" required placeholder="Username" pattern="[A-Za-z][A-Za-z0-9\-]*"
+                            minlength="3" maxlength="30" title="Only letters, numbers or dash" />
+                    </label>
+                    <br>
+                    <label class="input validator">
+
+                        <input type="email" placeholder="mail@site.com" required />
+                    </label>
+                    <br>
+                    <label class="input validator">
+
+                        <input type="password" required placeholder="Password" minlength="8"
+                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                            title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
+                    </label>
+                    <br>
+                    <button class="button">Register<span class="hide loading loading-spinner text-success"></span>
+                    </button>
+                </form>
+            </div>
+            <div class="form-container sign-in-container">
+                <form action="#" id="signIntoAccount" class="formBorder" novalidate>
+                    <h1>Welcome Back<span id="dot">.</span></h1>
+                    <div class="social-container" style="display: none;">
+                        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <span style="display: none;">or use your account</span><br>
+                    <label class="input validator">
+
+                        <input type="email" placeholder="mail@site.com" required />
+                    </label>
+                    <br>
+                    <label class="input validator">
+
+                        <input type="password" required placeholder="Password" minlength="8"
+                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                            title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
+                    </label>
+                    <a href="#" style="color: #465259;" onclick="my_modal_1.showModal()">Forgot your password?</a>
+                    <!-- Open the modal using ID.showModal() method -->
+
+                    <button class="button">
+                        Sign In <span class="hide loading loading-spinner text-success"></span>
+                    </button>
+                </form>
+            </div>
+            <div class="overlay-container">
+                <div class="overlay">
+                    <!-- Background video under gradient overlay; conditionally loaded to save bandwidth -->
+                    <video class="bg-video" id="loginBgVideo" muted loop playsinline preload="none"
+                        aria-hidden="true"></video>
+                    <div class="overlay-panel overlay-left">
+                        <h1>Oops, meant to login?</h1>
+                        <p>Log in and pick up where you left off</p>
+                        <button class="button ghost" id="signIn">Sign In</button>
+                    </div>
+                    <div class="overlay-panel overlay-right">
+                        <h1>Not a member?</h1>
+                        <p>Register now to join our community!</p>
+                        <button class="button ghost" id="signUp">Register</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <dialog id="my_modal_1" class="modal mainModal">
+        <div class="modal-box loginModal">
+
+            <form method="dialog">
+                <button type="submit" class="CloseBtn" aria-label="Close dialog">✕</button>
+            </form>
+
+            <h1>
+                Forgot Password<span style="font-size: 30px !important;"id="dot">?</span><br>
+                <span style="font-size: 15px; opacity: .5; position: relative; top: -10px; font-weight: 300;">No worries, we will send you instructions</span>
+            </h1>
+            <form id="resetPasswordForm" novalidate>
+                <br>
+                <fieldset class="fieldset" style="padding: unset !important; width: 100%; margin-top: 10px; margin-bottom: 20px;">
+                    <label class="input validator">
+                        <input type="email" placeholder="mail@site.com" required
+                            title="Enter a valid email (e.g., user@domain.com)" />
+                    </label>
+                </fieldset>
+                <div class="divider"></div>
+                <button type="submit" class="button">
+                    Send reset link
+                </button>
+            </form>
+        </div>
+    </dialog>
+    <script>
+        // Close dialog when clicking outside the modal box
+        (function () {
+            var dlg = document.getElementById('my_modal_1');
+            if (!dlg) return;
+            dlg.addEventListener('click', function (e) {
+                var box = dlg.querySelector('.loginModal');
+                if (!box) return;
+                if (!box.contains(e.target)) {
+                    try { dlg.close(); } catch (_) { }
+                }
+            });
+        })();
+    </script>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+<!-- Initialize AOS -->
+<script>
+    AOS.init({
+        // Global settings (optional)
+        duration: 800,        // Animation duration (ms)
+        easing: 'ease',       // Easing function
+        once: true,          // Whether animation should happen only once
+        mirror: false,        // Whether elements should animate out while scrolling past them
+        offset: 120,          // Offset (in px) from the original trigger point
+    });
+</script>
+<script src="../assets/JS/script.js"></script>
+
+<!-- Conditionally load background media (video/image) based on connection and source type -->
+<script>
+    (function () {
+        var v = document.getElementById('loginBgVideo');
+        if (!v) return;
+
+        var reduce = false;
+        try {
+            reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (_) { }
+
+        var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        var saveData = conn && conn.saveData;
+        var fast = conn ? /(^|\b)4g\b/.test(conn.effectiveType || '') : true; // assume fast if unknown
+        var wide = window.innerWidth >= 1024; // only load on larger screens
+
+        if (reduce || saveData || !fast || !wide) {
+            return; // don't download heavy media
+        }
+
+        function isYouTube(url) {
+            return /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i.test(url || '');
+        }
+        function getYouTubeId(url) {
+            var m = (url || '').match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+            return m && m[1];
+        }
+        function isVimeo(url) {
+            return /vimeo\.com\/(?:.*\/)?(\d+)/i.test(url || '');
+        }
+        function getVimeoId(url) {
+            var m = (url || '').match(/vimeo\.com\/(?:.*\/)?(\d+)/i);
+            return m && m[1];
+        }
+        function isImage(url) {
+            return /\.(?:avif|webp|png|jpe?g|gif)(?:$|[?#])/i.test(url || '');
+        }
+        function isVideoFile(url) {
+            return /\.(?:mp4|webm|ogg|ogv|mov|m4v)(?:$|[?#])/i.test(url || '');
+        }
+
+        function loadVideo() {
+            var container = v.parentElement; // .overlay
+            if (container && container.dataset.bgLoaded) return;
+
+            // Allow specifying source via data attribute on the <video> for easy configuration
+            // https://cdn.pixabay.com/video/2024/03/01/202587-918431513_large.mp4
+            var mediaSrc = v.getAttribute('data-src') || 'https://cdn.pixabay.com/video/2024/03/01/202587-918431513_large.mp4'; //./assets/images/coffeeHouse.jpg
+
+            if (isYouTube(mediaSrc)) {
+                var ytId = getYouTubeId(mediaSrc);
+                if (ytId) {
+                    var iframe = document.createElement('iframe');
+                    iframe.className = 'bg-video';
+                    iframe.src = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&mute=1&loop=1&playlist=' + ytId + '&controls=0&showinfo=0&rel=0&modestbranding=1';
+                    iframe.setAttribute('frameborder', '0');
+                    iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
+                    iframe.setAttribute('aria-hidden', 'true');
+                    v.parentNode.replaceChild(iframe, v);
+                    if (container) container.dataset.bgLoaded = 'true';
+                }
+                return;
+            }
+
+            if (isVimeo(mediaSrc)) {
+                var vimeoId = getVimeoId(mediaSrc);
+                if (vimeoId) {
+                    var vIframe = document.createElement('iframe');
+                    vIframe.className = 'bg-video';
+                    // background=1 hides controls and makes it ideal as a background
+                    vIframe.src = 'https://player.vimeo.com/video/' + vimeoId + '?background=1&autoplay=1&muted=1&loop=1&dnt=1';
+                    vIframe.setAttribute('frameborder', '0');
+                    vIframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
+                    vIframe.setAttribute('aria-hidden', 'true');
+                    v.parentNode.replaceChild(vIframe, v);
+                    if (container) container.dataset.bgLoaded = 'true';
+                }
+                return;
+            }
+
+            if (isImage(mediaSrc)) {
+                var img = document.createElement('img');
+                img.className = 'bg-video';
+                img.src = mediaSrc;
+                img.alt = '';
+                img.setAttribute('aria-hidden', 'true');
+                v.parentNode.replaceChild(img, v);
+                if (container) container.dataset.bgLoaded = 'true';
+                return;
+            }
+
+            // Fallback and direct video files (local or direct URLs)
+            if (isVideoFile(mediaSrc) || !mediaSrc) {
+                v.src = mediaSrc;
+                v.autoplay = true;
+                v.muted = true;
+                v.loop = true;
+                v.playsInline = true;
+                v.dataset.loaded = 'true';
+                v.load();
+                v.play && v.play().catch(function () { /* ignore autoplay blocks */ });
+                if (container) container.dataset.bgLoaded = 'true';
+                return;
+            }
+
+            // As a last resort, set as background-image on overlay if the type is unknown
+            if (container) {
+                container.style.backgroundImage = 'url(' + encodeURI(mediaSrc) + ')';
+                container.style.backgroundSize = 'cover';
+                container.style.backgroundPosition = 'center';
+                container.dataset.bgLoaded = 'true';
+            }
+        }
+
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadVideo, { timeout: 2000 });
+        } else {
+            setTimeout(loadVideo, 600);
+        }
+    })();
+</script>
+
+</html>

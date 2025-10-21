@@ -69,6 +69,16 @@
 
     <div class="accountPortal">
         <ul>
+            <li id="uploadIcon" class="upload-trigger no-li-hover">
+                <a href="./login.html" aria-label="Upload an image" class="LoginBtn">
+                    <span>Login</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="accountPortal" style="display: none;">
+        <ul>
             <li id="uploadIcon" class="upload-trigger">
                 <a href="#" data-tab="uploadImage" aria-label="Upload an image" class="upload-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -379,6 +389,7 @@
                     <label class="filter-field">
                         <span class="filter-label">Sort By</span>
                         <select id="filterSort" aria-label="Sort images">
+                            <option value="relevance">Relevance (best match)</option>
                             <option value="newest">Newest</option>
                             <option value="oldest">Oldest</option>
                             <option value="views-desc">Most Views</option>
@@ -445,10 +456,10 @@
     <div class="Main help-center">
         <div class="home-layout">
             <aside class="home-col home-left" aria-label="Dashboard navigation">
-
+                Help Center Aside
             </aside>
             <main class="home-col home-center" aria-label="Primary content area">
-
+                Help Center Main
             </main>
         </div>
     </div>
@@ -471,8 +482,31 @@
     </div>
 
     <!-- FIND ARTISTS TAB -->
-    <div class="Main broadcasts">
-        Find an artist you like and hire them
+    <div class="Main broadcasts" aria-label="Find Artists">
+
+        <main class="home-col home-center" style="border: 0px solid white;" aria-label="Primary content area">
+            <div class="hire-container" id="hireArtists">
+                <header class="hire-header">
+                    <h1>Find Artists</h1>
+                    <p>Discover talented creators. Search by name, skill, or location and reach out directly.</p>
+
+                    <form id="artistSearchForm" class="artist-search" role="search" aria-label="Search artists">
+                        <div class="search-row">
+                            <input type="search" id="artistSearch" placeholder="Search name, skills, or location"
+                                aria-label="Search artists" />
+                            <button type="submit" id="artistSearchBtn" class="filter-apply">Search</button>
+                            <button type="reset" id="artistSearchReset" class="filter-reset">Reset</button>
+                        </div>
+                        <p class="filter-help" id="artistMatchHelp" aria-live="polite" style="margin-top:8px;">
+                            <span id="artistMatchCount">0</span> artists match
+                        </p>
+                    </form>
+                </header>
+                <div class="artist-grid" id="artistGrid" data-page-size="12" aria-live="polite" aria-busy="true"></div>
+            </div>
+        </main>
+
+
     </div>
 
     <!-- PROFILE TAB -->

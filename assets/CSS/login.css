@@ -14,64 +14,10 @@
    NOTE: Behavior (form validation + toggle) is in `assets/JS/script.js`.
    ===================================================================== */
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
+@import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap");
 
 * {
   box-sizing: border-box;
-}
-
-[data-theme="dark"] {
-  --rounded-box: 1rem;
-  --primary: #16a34a;
-  --primary-content: #ffffff;
-  --primary-focus: #0f7a38;
-  --secondary: #0ea5a4;
-  --accent: #7c3aed;
-  --neutral: #0b1220;
-  --base-100: #0b1014;
-  --base-200: #0f1720;
-  --base-300: #132123;
-  --info: #60a5fa;
-  --success: #22c55e;
-  --warning: #f59e0b;
-  --error: #ef4444;
-}
-
-/* Optional: a custom theme name if you want to toggle between two dark variants */
-[data-theme="my-dark"] {
-  --primary: #06b6d4;
-  --primary-content: #001219;
-  --base-100: #071018;
-  --base-200: #08121a;
-  --base-300: #091518;
-  --accent: #ffb703;
-  --neutral: #0b1220;
-}
-
-/* ------- DaisyUI CDN modal scrollbar-gutter override ------- */
-/* Preferred: only when a dialog is open (requires :has() support) */
-html:has(dialog[open]),
-body:has(dialog[open]),
-html:has(.modal[open]),
-body:has(.modal[open]) {
-  padding-right: 0 !important;
-  margin-right: 0 !important;
-  scrollbar-gutter: auto !important;
-}
-
-/* Fallbacks and overrides for inline styles or DaisyUI attributes/classes */
-html[data-daisyui-modal-open],
-body[data-daisyui-modal-open],
-html.modal-open,
-body.modal-open,
-.daisyui-modal-open,
-.modal-open,
-html[style*="scrollbar-gutter"],
-body[style*="scrollbar-gutter"],
-html[style*="padding-right"],
-body[style*="padding-right"] {
-  padding-right: 0 !important;
-  margin-right: 0 !important;
-  scrollbar-gutter: auto !important;
 }
 
 /* If you don't care about preventing layout shift elsewhere, force globally */
@@ -79,6 +25,7 @@ html,
 body {
   padding-right: 0 !important;
   margin-right: 0 !important;
+  font-family: "Mulish", sans-serif;
   scrollbar-gutter: auto !important;
 }
 
@@ -88,15 +35,31 @@ body {
 
 /* Background hero with gradient overlay + main photo */
 .body {
-  background: #091011;
-  background: linear-gradient(rgba(11, 19, 20, 0.9), rgba(11, 19, 20, 0.9)),
-    url("../images/main.png") center/cover no-repeat;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  background: #09090b;
   font-family: "Montserrat", sans-serif;
   height: 100vh;
+}
+
+nav {
+  width: 100vw;
+  height: 55px;
+  display: flex;
+  background: #09090b;
+  font-weight: 100;
+  font-style: normal;
+  position: relative;
+  position: relative;
+  top: 0;
+}
+
+nav svg {
+  height: 25px;
+  width: auto;
+  margin: auto 20px;
+  fill: #1ed75f;
+  cursor: pointer;
 }
 
 h1 {
@@ -128,16 +91,19 @@ a {
 }
 
 .button {
-  border-radius: 20px;
-  border: 1px solid #004743;
-  background-color: #004743;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: bold;
-  padding: 12px 45px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: all 0.2s ease-in;
+  width: 100%;
+  background: #1ed75f38;
+  backdrop-filter: blur(5px);
+  border: 1px solid #1ed75f;
+  color: #fff;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s, color 0.2s;
+  text-align: center;
+  font-size: 13px;
 }
 
 .button:active {
@@ -156,8 +122,8 @@ a {
 }
 
 .button:hover {
-  background-color: #006f6d;
-  border-color: #006f6d;
+  background-color: #1ed75f;
+  border-color: #1ed75f;
   cursor: pointer;
 }
 
@@ -171,7 +137,8 @@ a {
 }
 
 form {
-  background-color: #132123;
+  background-color: #09090b;
+  border: 1px solid #09090b;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -179,6 +146,7 @@ form {
   padding: 0 50px;
   height: 100%;
   text-align: center;
+  width: 100%;
   transition: border 0.1s;
 }
 
@@ -191,7 +159,7 @@ form {
 }
 
 .formBorder {
-  border-right: 4px solid #004743;
+  border-right: 4px solid #09090b;
 }
 
 .golden {
@@ -199,25 +167,91 @@ form {
 }
 
 form h1 {
-  color: #c1af93;
+  color: #fff;
   font-size: 30px;
 }
 
 #dot {
-  color: #004743;
+  color: #16a34a;
   font-size: 50px;
   margin-left: 10px;
 }
 
-.input {
-  background-color: #24333a;
-  color: white;
-  border-radius: 20px;
-  border: none;
-  padding: 12px 15px;
-  margin: 8px 0;
+.validator {
   width: 100%;
-  outline: 1px solid transparent;
+  position: relative; /* allow absolute-positioned toggle */
+}
+
+input {
+  background: #161618;
+  border: 1px solid #232327;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #fff;
+  width: 100%;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  max-width: 100%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+}
+
+/* Extra space on the right when a toggle is present */
+.validator.has-toggle input[type="password"],
+.validator.has-toggle input[type="text"] {
+  padding-right: 42px;
+}
+
+/* Password visibility toggle button */
+.pw-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  border-radius: 6px;
+  /* Hidden by default; revealed on hover/focus for cleaner UI */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.validator:hover .pw-toggle,
+.validator:focus-within .pw-toggle {
+  opacity: 1;
+  visibility: visible;
+}
+
+.pw-toggle:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.pw-toggle:focus {
+  outline: 2px solid #2b7fff;
+  outline-offset: 2px;
+}
+
+.pw-toggle svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.validator input[type="email"]:focus,
+.validator input[type="password"]:focus,
+.validator input[type="text"]:focus,
+.validator textarea:focus,
+.validator select:focus {
+  outline: 2px solid #2b7fff !important;
+  box-shadow: 0 0 0 1px #2b7fff;
 }
 
 input,
@@ -227,9 +261,31 @@ select,
   border: none !important;
 }
 
+.Main {
+  width: 99%;
+  height: calc(100vh - 70px);
+  margin: 0 auto;
+  background-color: transparent;
+  border-radius: 40px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  /* Center child (.container) both vertically and horizontally */
+  justify-content: center;
+  align-items: center;
+  padding: 14px 18px 18px;
+  border: #6e6e6e34 1px solid;
+  box-sizing: border-box;
+
+  background: linear-gradient(rgba(11, 19, 20, 0.9), rgba(11, 19, 20, 0.9)),
+    url("../images/Firefly_dark\ green\ lush\ abstract\ fantasy\ forest\ wallpaper\ 584978.jpg")
+      center/cover no-repeat;
+  overflow: hidden;
+}
+
 /* PANEL CONTAINER (holds both forms + overlay) */
 .container {
-  background-color: #132123;
+  background-color: #09090b;
   border-radius: 10px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   position: relative;
@@ -237,6 +293,9 @@ select,
   width: 768px;
   max-width: 100%;
   min-height: 480px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }
 
 /* Each half-form wrapper; positioned absolute for sliding effect */
@@ -262,6 +321,7 @@ select,
   width: 50%;
   opacity: 0;
   z-index: 1;
+  position: relative;
 }
 
 .container.right-panel-active .sign-up-container {
@@ -301,32 +361,113 @@ select,
   transform: translateX(-100%);
 }
 
-.alert {
+#emailSentMessage {
   position: absolute;
   top: 20px;
   right: 0;
   left: 0;
   margin: 0 auto;
   width: fit-content;
+  color: white;
+}
+
+.alert {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: #e5e7eb; /* neutral-200 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  margin: 8px 0 12px;
+  font-size: 10px;
+}
+
+.alert-success {
+  border-color: rgba(22, 163, 74, 0.5);
+  background: rgba(22, 163, 74, 0.12);
+  color: #bbf7d0; /* green-200 */
+}
+
+.alert-error {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.12);
+  color: #fecaca; /* red-200 */
+}
+
+.alert-soft {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.alert-outline {
+  background: transparent;
+  border-style: solid;
+}
+
+.alert .close {
+  margin-left: auto;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.8;
+  background: transparent;
+  color: inherit;
+  border: none;
+}
+
+.alert .close:hover {
+  opacity: 1;
+}
+
+.alert-success {
+  position: absolute;
+  top: 20px;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  width: fit-content;
+  color: white;
+  background-color: #16a34a4a;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid #0fd35d;
 }
 
 /* Main overlay: gradient + background texture + 2 panels */
 .overlay {
-  background: #ff416c;
-  background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
-  background: linear-gradient(to right, #ff4b2b, #ff416c);
-  background: linear-gradient(rgb(21, 37, 43, 0.8), rgb(21, 37, 43, 0.8)),
-    url("../images/dark-green-gradient-wave-vector-45906713.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: 0 0;
+  /* Use a video background layered beneath a gradient overlay */
+  background: #15252b; /* solid fallback color */
   color: #ffffff;
   position: relative;
+  overflow: hidden; /* ensure video stays clipped */
   left: -100%;
   height: 100%;
   width: 200%;
   transform: translateX(0);
   transition: transform 0.6s ease-in-out;
+}
+
+/* Gradient overlay on top of the video */
+.overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(rgba(21, 37, 43, 0.8), rgba(21, 37, 43, 0.8));
+  z-index: 1;
+}
+
+/* Full-bleed background video */
+.overlay .bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0; /* sits beneath gradient and content */
+  filter: saturate(90%) brightness(60%);
 }
 
 .container.right-panel-active .overlay {
@@ -346,6 +487,7 @@ select,
   width: 50%;
   transform: translateX(0);
   transition: transform 0.6s ease-in-out;
+  z-index: 2; /* above gradient + video */
 }
 
 .overlay-left {
@@ -380,10 +522,169 @@ select,
   width: 40px;
 }
 
-.mainModal {
+dialog:-internal-dialog-in-top-layer {
+  position: fixed;
+  inset-block-start: 0px;
+  inset-block-end: 0px;
+  max-width: 100%;
+  max-height: 100%;
+  user-select: text;
+  visibility: visible;
+  overflow: auto;
+  transition: all 0.3s ease-in-out;
+}
+
+dialog {
+  width: 100vw;
+  margin: 0;
+  border: 0px solid transparent;
+  height: 100%;
+  transition: all 0.3s ease-in-out;
+  /* Start transparent and fade in overlay on open */
+  background-color: rgba(0, 0, 0, 0);
   backdrop-filter: blur(5px);
+  display: none; /* hidden until [open] */
+  color: white;
+}
+
+/* Show and center the dialog when opened, and fade in the overlay */
+dialog[open] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.244);
+}
+
+/* Ensure closed dialogs are not displayed regardless of UA styles */
+dialog:not([open]) {
+  display: none !important;
+}
+
+fieldset {
+  display: block;
+  min-inline-size: min-content;
+  margin-inline: 2px;
+  border-width: 0px;
+  border-style: groove;
+  border-color: threedface;
+  border-image: initial;
+  padding-block: 0.35em 0.625em;
+  padding-inline: 0.75em;
+}
+
+.CloseBtn {
+  background: transparent;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  border: 0px solid transparent;
+  transition: all 0.5s;
+}
+
+.CloseBtn:hover {
+  cursor: pointer;
+  opacity: 0.8;
 }
 
 .loginModal {
-  background: #132123;
+  border-radius: 10px;
+  background-color: #09090b;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  width: 400px;
+  padding: 30px 40px;
+  height: fit-content;
+  /* Prepare for animation */
+  transform-origin: center;
+  will-change: transform, opacity;
+  border: 1px solid #252525;
+  position: relative; /* for absolute-positioned close button */
+}
+
+/* Animate modal content in when dialog opens */
+dialog[open] .loginModal {
+  animation: modalIn 0.28s ease-in-out both;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  dialog,
+  dialog[open] .loginModal {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Toast notifications */
+.toast-container {
+  position: fixed;
+  top: 60px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999 !important;
+  /* Prevent ancestor filters from affecting toasts in some browsers */
+  isolation: isolate;
+}
+
+.toast {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  min-width: 240px;
+  max-width: 380px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  /* Opaque-ish background to avoid inheriting blur from backdrop */
+  background: rgba(17, 24, 39, 0.95); /* slate-900 */
+  color: #e5e7eb; /* neutral-200 */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+  transform: translateY(-8px);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast-success {
+  border-color: rgba(22, 163, 74, 0.5);
+  background: rgba(22, 163, 74, 0.12);
+  color: #bbf7d0;
+  font-size: 11px;
+}
+
+.toast-error {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.12);
+  color: #fecaca;
+  font-size: 11px;
+}
+
+.toast .close {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.toast .close:hover {
+  opacity: 1;
 }
