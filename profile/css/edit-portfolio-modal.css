@@ -1,0 +1,1799 @@
+/* ============================================================================
+   EDIT PORTFOLIO MODAL STYLES
+   Perminov Studios v3 - Redesigned
+   ============================================================================ */
+
+/* Import global variables (includes font-face and --primary color) */
+@import url("../../css/variables.css");
+
+/* ========== Edit Portfolio Panel ========== */
+.edit-portfolio-panel {
+  --ep-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mainFont: "Pavelt", sans-serif;
+  --ep-bg: #141417;
+  --ep-surface: #1a1a1e;
+  --ep-surface-elevated: #222226;
+  --ep-surface-hover: #2a2a2e;
+  --ep-border: rgba(255, 255, 255, 0.08);
+  --ep-border-hover: rgba(255, 255, 255, 0.16);
+  --ep-text-primary: #ffffff;
+  --ep-text-secondary: #a1a1aa;
+  --ep-text-tertiary: #71717a;
+  --ep-accent: var(--primary);
+  --ep-accent-muted: rgb(from var(--primary) r g b / 0.15);
+  --ep-success: #00d4aa;
+  --ep-error: #ff5a5a;
+  --ep-warning: #f59e0b;
+
+  position: relative;
+  width: 95vw;
+  max-width: 1100px;
+  height: 90vh;
+  background: var(--ep-bg);
+  border-radius: 16px;
+  border: 1px solid var(--ep-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--ep-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.edit-portfolio-panel * {
+  cursor: auto !important;
+}
+
+/* Pointer cursor for all interactive elements */
+.edit-portfolio-panel button,
+.edit-portfolio-panel a,
+.edit-portfolio-panel button svg,
+.edit-portfolio-panel a svg,
+.edit-portfolio-panel [role="button"],
+.edit-portfolio-panel [role="button"] svg {
+  cursor: pointer !important;
+}
+
+/* ========== Header ========== */
+.ep-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px 0 32px;
+  background: var(--ep-bg);
+}
+
+.ep-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ep-header-left h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ep-text-primary);
+  margin: 0;
+  font-family: var(--mainFont);
+  letter-spacing: -0.02em;
+}
+
+.ep-header-left p {
+  display: none;
+}
+
+.ep-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ep-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--ep-border);
+  color: var(--ep-error);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.ep-close-btn:hover {
+  background: rgba(255, 90, 90, 0.1);
+  border-color: var(--ep-error);
+}
+
+.ep-close-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.5;
+}
+
+/* ========== Tabs ========== */
+.ep-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 20px 32px 16px 32px;
+  border-bottom: 1px solid var(--ep-border);
+  background: var(--ep-bg);
+}
+
+.ep-tab {
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ep-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ep-tab svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ep-tab:hover {
+  color: var(--ep-text-primary);
+  background: var(--ep-surface);
+}
+
+.ep-tab.active {
+  color: var(--ep-text-primary);
+  background: var(--ep-surface-elevated);
+}
+
+.ep-tab .pro-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--primary);
+  color: #fff;
+}
+
+/* PRO Tab Styling */
+.ep-tab.ep-tab-pro {
+  position: relative;
+}
+
+.ep-pro-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.ep-tab.ep-tab-pro:not(.active):hover .ep-pro-badge {
+  transform: scale(1.05);
+}
+
+.ep-tab.ep-tab-pro.locked {
+  opacity: 0.6;
+  cursor: not-allowed !important;
+}
+
+.settings-pro-border::after ~ .ep-tab.ep-tab-pro.locked,
+.settings-pro-border::before ~ .ep-tab.ep-tab-pro.locked {
+  content: unset !important;
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+/* ========== Content Area ========== */
+.ep-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px 32px 32px;
+}
+
+.ep-section {
+  display: none;
+  animation: epFadeIn 0.2s ease;
+}
+
+.ep-section.active {
+  display: block;
+}
+
+@keyframes epFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== Section Header (Featured Images / My Works) ========== */
+.ep-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.ep-section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ep-section-header h3 {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ep-text-primary);
+  margin: 0;
+}
+
+.ep-section-header h3 span {
+  color: var(--ep-text-tertiary);
+  font-weight: 400;
+}
+
+.ep-section-edit-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ep-text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.ep-section-edit-btn:hover {
+  opacity: 1;
+  background: var(--primary);
+  border-color: var(--ep-accent);
+  color: #ffffff;
+}
+
+.ep-section-edit-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ep-add-image-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ep-text-primary);
+  background: var(--ep-surface-elevated);
+  border: 1px solid var(--ep-border);
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.ep-add-image-btn:hover {
+  background: var(--ep-surface-hover);
+  border-color: var(--ep-border-hover);
+}
+
+.ep-add-image-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ========== Image Grid (New Simplified Design) ========== */
+.ep-image-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.ep-image-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--ep-surface);
+  transition: all 0.2s ease;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ep-image-item:active {
+  cursor: grabbing;
+}
+
+.ep-image-item:hover {
+  transform: scale(1.02);
+}
+
+.ep-image-item.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+  cursor: grabbing;
+}
+
+.ep-image-item.drag-over {
+  border: 2px dashed var(--ep-accent);
+  transform: scale(1.02);
+}
+
+.ep-image-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  background: var(--ep-surface);
+}
+
+.ep-image-item .ep-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ep-image-item:hover .ep-image-overlay {
+  opacity: 1;
+}
+
+/* Drag Handle */
+.ep-drag-handle {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  cursor: grab !important;
+}
+
+.ep-drag-handle svg {
+  width: 16px;
+  height: 16px;
+  color: #fff;
+}
+
+.ep-image-item:hover .ep-drag-handle {
+  opacity: 1;
+}
+
+.ep-image-action {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  cursor: pointer !important;
+}
+
+.ep-image-action:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.ep-image-action.delete:hover {
+  background: var(--ep-error);
+}
+
+.ep-image-action svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ========== Categories Section (Pro Only) ========== */
+.ep-categories-section {
+  margin-top: 32px;
+}
+
+.ep-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.ep-section-title h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ep-text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ep-section-title .pro-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--primary);
+  color: #fff;
+}
+
+.ep-categories-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ep-category-tag {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ep-text-secondary);
+  background: var(--ep-surface);
+  border: 1px solid var(--ep-border);
+  border-radius: 20px;
+  transition: all 0.15s ease;
+}
+
+.ep-category-tag:hover {
+  border-color: var(--ep-border-hover);
+  color: var(--ep-text-primary);
+}
+
+.ep-category-tag.selected {
+  background: var(--ep-accent-muted);
+  border-color: var(--ep-accent);
+  color: var(--ep-accent);
+}
+
+.ep-category-tag.add-new {
+  border-style: dashed;
+  color: var(--ep-text-tertiary);
+}
+
+.ep-category-tag.add-new:hover {
+  border-color: var(--ep-accent);
+  color: var(--ep-accent);
+}
+
+/* PRO gradient border for Add Category */
+.ep-category-tag.add-new.pro-border,
+.ep-category-tab.add-new.pro-border {
+  position: relative;
+  border: none;
+  background:
+    linear-gradient(var(--ep-surface), var(--ep-surface)) padding-box,
+    linear-gradient(135deg, #a855f7, #6366f1, #3b82f6) border-box;
+  border: 2px solid transparent;
+  border-style: solid;
+  color: var(--ep-text-secondary);
+}
+
+.ep-category-tag.add-new.pro-border:hover,
+.ep-category-tab.add-new.pro-border:hover {
+  background:
+    linear-gradient(var(--ep-surface-hover), var(--ep-surface-hover))
+      padding-box,
+    linear-gradient(135deg, #a855f7, #6366f1, #3b82f6) border-box;
+  color: var(--ep-text-primary);
+}
+
+body:not(.pro) .ep-category-tag.add-new.pro-border,
+body:not(.pro) .ep-category-tab.add-new.pro-border {
+  opacity: 0.6;
+  cursor: not-allowed !important;
+}
+
+/* Category Filter Tabs */
+.ep-category-filter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.ep-category-tab {
+  padding: 8px 16px;
+  background: var(--ep-surface);
+  border: 1px solid var(--ep-border);
+  border-radius: 20px;
+  color: var(--ep-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ep-category-tab:hover {
+  border-color: var(--ep-border-hover);
+  color: var(--ep-text-primary);
+}
+
+.ep-category-tab.active {
+  background: var(--ep-accent-muted);
+  border-color: var(--ep-accent);
+  color: var(--ep-accent);
+}
+
+/* Grid visibility based on category */
+.ep-posts-grid {
+  display: none;
+}
+
+.ep-posts-grid.active {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Pro Locked State */
+.ep-pro-locked {
+  position: relative;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+body.pro .ep-pro-locked {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ep-pro-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 11, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 10;
+}
+
+body.pro .ep-pro-overlay {
+  display: none;
+}
+
+.ep-pro-overlay h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ep-text-primary);
+  margin: 0;
+}
+
+.ep-pro-overlay p {
+  font-size: 13px;
+  color: var(--ep-text-secondary);
+  margin: 0;
+}
+
+.ep-pro-overlay-btn {
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  background: var(--primary);
+  border: none;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+/* ========== My Posts / Manage Section ========== */
+.ep-posts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.ep-posts-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ep-text-primary);
+  margin: 0;
+}
+
+.ep-posts-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ep-posts-action-btn {
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ep-text-secondary);
+  background: var(--ep-surface);
+  border: 1px solid var(--ep-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.ep-posts-action-btn:hover {
+  color: var(--ep-text-primary);
+  border-color: var(--ep-border-hover);
+}
+
+.ep-posts-action-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Posts Grid - base styles only, display controlled by .active class above */
+.ep-post-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ep-surface);
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  contain: layout style paint;
+}
+
+.ep-post-item:hover {
+  border-color: var(--ep-border-hover);
+  transform: translateY(-2px);
+}
+
+.ep-post-item.selected {
+  border-color: var(--ep-accent);
+}
+
+.ep-post-item.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+  will-change: transform;
+}
+
+.ep-post-item.drag-over {
+  border-color: var(--ep-accent);
+  background: var(--ep-accent-muted);
+}
+
+.ep-post-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: var(--ep-surface-elevated);
+  image-rendering: auto;
+  will-change: auto;
+}
+
+.ep-post-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 12px;
+}
+
+.ep-post-item:hover .ep-post-overlay {
+  opacity: 1;
+}
+
+.ep-post-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ep-post-category {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ep-post-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.ep-post-item:hover .ep-post-actions {
+  opacity: 1;
+}
+
+.ep-post-action {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.ep-post-action:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.ep-post-action.delete:hover {
+  background: var(--ep-error);
+}
+
+.ep-post-action svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ep-post-checkbox {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.15s ease;
+}
+
+.ep-post-item:hover .ep-post-checkbox,
+.ep-post-item.selected .ep-post-checkbox {
+  opacity: 1;
+}
+
+.ep-post-item.selected .ep-post-checkbox {
+  background: var(--ep-accent);
+  border-color: var(--ep-accent);
+}
+
+.ep-post-checkbox svg {
+  width: 12px;
+  height: 12px;
+  color: #fff;
+  opacity: 0;
+}
+
+.ep-post-item.selected .ep-post-checkbox svg {
+  opacity: 1;
+}
+
+.ep-post-drag-handle {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  cursor: grab !important;
+}
+
+.ep-post-item:hover .ep-post-drag-handle {
+  opacity: 1;
+}
+
+/* ========== Empty State ========== */
+.ep-empty-state {
+  text-align: center;
+  padding: 64px 24px;
+}
+
+.ep-empty-state svg {
+  width: 64px;
+  height: 64px;
+  color: var(--ep-text-tertiary);
+  margin-bottom: 16px;
+}
+
+.ep-empty-state h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ep-text-primary);
+  margin: 0 0 8px;
+}
+
+.ep-empty-state p {
+  font-size: 14px;
+  color: var(--ep-text-secondary);
+  margin: 0;
+}
+
+/* ========== Footer (Hidden in new design) ========== */
+.ep-footer {
+  display: none;
+}
+
+.ep-footer-info {
+  font-size: 13px;
+  color: var(--ep-text-tertiary);
+}
+
+.ep-footer-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.ep-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 10px;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ep-btn-secondary {
+  color: var(--ep-text-secondary);
+  background: var(--ep-surface-elevated);
+  border: 1px solid var(--ep-border);
+}
+
+.ep-btn-secondary:hover {
+  color: var(--ep-text-primary);
+  border-color: var(--ep-border-hover);
+}
+
+.ep-btn-primary {
+  color: #fff;
+  background: var(--primary);
+  border: none;
+}
+
+.ep-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgb(from var(--primary) r g b / 0.3);
+}
+
+.ep-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 1024px) {
+  .ep-image-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .edit-portfolio-panel {
+    width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .ep-header {
+    padding: 16px 20px 0 20px;
+  }
+
+  .ep-tabs {
+    padding: 16px 20px 12px 20px;
+    overflow-x: auto;
+  }
+
+  .ep-content {
+    padding: 20px;
+  }
+
+  .ep-image-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .ep-posts-grid.active {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ep-image-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .ep-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .ep-add-image-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ========== Edit Image Modal ========== */
+.ep-edit-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 100;
+}
+
+.ep-edit-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.ep-edit-modal-content {
+  width: 95%;
+  max-width: 950px;
+  height: 90vh;
+  max-height: 90vh;
+  background: var(--ep-bg);
+  border-radius: 16px;
+  border: 1px solid var(--ep-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: scale(0.95) translateY(10px);
+  transition: transform 0.2s ease;
+  overscroll-behavior: contain;
+}
+
+.ep-edit-modal.active .ep-edit-modal-content {
+  transform: scale(1) translateY(0);
+}
+
+/* Smaller layout specifically for the Add Category modal */
+#epAddCategoryModal .ep-edit-modal-content {
+  max-width: 520px;
+  height: auto;
+  max-height: none;
+}
+#epAddCategoryModal .ep-edit-modal-body {
+  padding: 20px;
+}
+
+.ep-edit-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--ep-border);
+}
+
+.ep-edit-modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ep-text-primary);
+  margin: 0;
+}
+
+.ep-edit-modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--ep-border);
+  color: var(--ep-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  cursor: pointer !important;
+}
+
+.ep-edit-modal-close:hover {
+  background: var(--ep-surface);
+  color: var(--ep-text-primary);
+}
+
+.ep-edit-modal-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ep-edit-modal-body {
+  flex: 1;
+  padding: 24px;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
+/* Edit Preview - Right Side Panel */
+.ep-edit-preview {
+  flex: 1;
+  min-width: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ep-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+}
+
+.ep-edit-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background-position: center;
+  background-color: var(--ep-surface-elevated);
+}
+
+.ep-edit-preview img[src=""],
+.ep-edit-preview img:not([src]) {
+  display: none;
+}
+
+.ep-preview-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--ep-text-tertiary);
+  font-size: 14px;
+  background: var(--ep-surface);
+}
+
+.ep-preview-placeholder svg {
+  width: 48px;
+  height: 48px;
+  opacity: 0.4;
+}
+
+.ep-edit-preview::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.02) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Edit Form - Left Side Panel */
+.ep-edit-form {
+  width: 340px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.ep-edit-form::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ep-edit-form::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ep-edit-form::-webkit-scrollbar-thumb {
+  background: var(--ep-border);
+  border-radius: 4px;
+}
+
+.ep-edit-form::-webkit-scrollbar-thumb:hover {
+  background: var(--ep-border-hover);
+}
+
+.ep-edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ep-edit-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ep-text-secondary);
+}
+
+.ep-edit-field input[type="text"],
+.ep-edit-field textarea,
+.ep-edit-field select {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: var(--ep-font);
+  color: var(--ep-text-primary);
+  background: var(--ep-surface);
+  border: 1px solid var(--ep-border);
+  border-radius: 10px;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.ep-edit-field input[type="text"]:focus,
+.ep-edit-field textarea:focus,
+.ep-edit-field select:focus {
+  border-color: var(--ep-accent);
+  background: var(--ep-surface-elevated);
+}
+
+.ep-edit-field input[type="text"]::placeholder,
+.ep-edit-field textarea::placeholder {
+  color: var(--ep-text-tertiary);
+}
+
+.ep-edit-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.ep-edit-field select {
+  cursor: pointer !important;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.ep-edit-field select option {
+  background: var(--ep-surface);
+  color: var(--ep-text-primary);
+}
+
+/* Replace Zone */
+.ep-edit-replace-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  border: 2px dashed var(--ep-border);
+  border-radius: 10px;
+  cursor: pointer !important;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.ep-edit-replace-zone:hover {
+  border-color: var(--ep-accent);
+  background: var(--ep-accent-muted);
+}
+
+.ep-edit-replace-zone svg {
+  width: 32px;
+  height: 32px;
+  color: var(--ep-text-tertiary);
+}
+
+.ep-edit-replace-zone span {
+  font-size: 13px;
+  color: var(--ep-text-secondary);
+}
+
+.ep-edit-replace-zone input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer !important;
+}
+
+/* Edit Modal Footer */
+.ep-edit-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--ep-border);
+  background: var(--ep-surface);
+}
+
+.ep-edit-cancel-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ep-text-secondary);
+  background: transparent;
+  border: 1px solid var(--ep-border);
+  border-radius: 8px;
+  cursor: pointer !important;
+  transition: all 0.15s ease;
+}
+
+.ep-edit-cancel-btn:hover {
+  color: var(--ep-text-primary);
+  background: var(--ep-surface-elevated);
+  border-color: var(--ep-border-hover);
+}
+
+.ep-edit-save-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background: var(--ep-accent);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer !important;
+  transition: all 0.15s ease;
+}
+
+.ep-edit-save-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgb(from var(--ep-accent) r g b / 0.3);
+}
+
+.ep-edit-save-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ========== Categories Section (PRO) ========== */
+.ep-categories-content {
+  padding: 8px 0;
+}
+
+.ep-pro-feature-header {
+  text-align: center;
+  padding: 24px;
+  margin-bottom: 24px;
+  background: linear-gradient(180deg, var(--ep-surface) 0%, transparent 100%);
+  border-radius: 16px;
+  border: 1px solid var(--ep-border);
+}
+
+.ep-pro-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.2) 0%,
+    rgba(245, 158, 11, 0.05) 100%
+  );
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f59e0b;
+}
+
+.ep-pro-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.ep-pro-feature-header h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ep-text-primary);
+  margin: 0 0 8px;
+}
+
+.ep-pro-feature-header p {
+  font-size: 14px;
+  color: var(--ep-text-secondary);
+  margin: 0;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ep-categories-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.ep-category-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--ep-surface);
+  border: 1px solid var(--ep-border);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.ep-category-item:hover {
+  border-color: var(--ep-border-hover);
+  background: var(--ep-surface-elevated);
+}
+
+.ep-category-drag {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ep-text-tertiary);
+  cursor: grab !important;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.ep-category-item:hover .ep-category-drag {
+  opacity: 1;
+}
+
+.ep-category-drag svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ep-category-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  cursor: pointer !important;
+  transition: transform 0.2s ease;
+}
+
+.ep-category-color:hover {
+  transform: scale(1.15);
+}
+
+.ep-category-name {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: var(--ep-font);
+  color: var(--ep-text-primary);
+  background: var(--ep-bg);
+  border: 1px solid var(--ep-border);
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.ep-category-name:focus {
+  border-color: var(--ep-accent);
+  background: var(--ep-surface);
+}
+
+.ep-category-count {
+  font-size: 12px;
+  color: var(--ep-text-tertiary);
+  white-space: nowrap;
+}
+
+.ep-category-delete {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ep-text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.ep-category-item:hover .ep-category-delete {
+  opacity: 1;
+}
+
+.ep-category-delete:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--ep-error);
+  color: var(--ep-error);
+}
+
+.ep-category-delete svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ep-add-category-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ep-text-secondary);
+  background: transparent;
+  border: 2px dashed var(--ep-border);
+  border-radius: 12px;
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+}
+
+.ep-add-category-btn:hover {
+  color: var(--ep-accent);
+  border-color: var(--ep-accent);
+  background: var(--ep-accent-muted);
+}
+
+.ep-add-category-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ========== Category Icon Button ========== */
+.ep-category-icon-btn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 10px;
+  background: var(--ep-surface-elevated);
+  border: 1px solid var(--ep-border);
+  color: var(--ep-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+}
+
+.ep-category-icon-btn:hover {
+  background: var(--ep-accent-muted);
+  border-color: var(--ep-accent);
+  transform: scale(1.05);
+}
+
+.ep-category-icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ========== Icon Picker Modal ========== */
+.ep-category-modal-content {
+  max-width: 480px;
+}
+
+.ep-icon-picker-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--ep-surface);
+  border: 1px solid var(--ep-border);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.ep-icon-selected {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: var(--ep-text-secondary);
+}
+
+.ep-icon-selected svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ep-icon-label {
+  font-size: 13px;
+  color: var(--ep-text-tertiary);
+}
+
+.ep-icon-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.ep-icon-picker-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ep-icon-picker-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ep-icon-picker-grid::-webkit-scrollbar-thumb {
+  background: var(--ep-border);
+  border-radius: 3px;
+}
+
+.ep-icon-option {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  color: var(--ep-text-tertiary);
+  cursor: pointer !important;
+  transition: all 0.15s ease;
+}
+
+.ep-icon-option:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--ep-text-secondary);
+}
+
+.ep-icon-option.active {
+  background: var(--primary);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.ep-icon-option svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ========== Category Edit Button ========== */
+.ep-category-edit-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ep-text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.ep-category-item:hover .ep-category-edit-btn {
+  opacity: 1;
+}
+
+.ep-category-edit-btn:hover {
+  background: var(--ep-accent-muted);
+  border-color: var(--ep-accent);
+  color: var(--ep-accent);
+}
+
+.ep-category-edit-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ========== Category Modal Footer Layout ========== */
+.ep-category-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ep-category-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.ep-category-delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ep-error);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+}
+
+.ep-category-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: var(--ep-error);
+}
+
+.ep-category-delete-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Edit Modal Responsive */
+@media (max-width: 768px) {
+  .ep-edit-modal-content {
+    width: 95%;
+    height: auto;
+    max-height: 90vh;
+  }
+
+  .ep-edit-modal-body {
+    flex-direction: column;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .ep-edit-form {
+    width: 100%;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+
+  .ep-edit-preview {
+    order: -1;
+    height: 200px;
+    flex: none;
+  }
+}
+
+/* ========== Delete Confirmation Modal ========== */
+.ep-confirm-modal .ep-confirm-modal-content {
+  max-width: 400px;
+  height: auto;
+  max-height: none;
+}
+
+.ep-confirm-modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.ep-confirm-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ep-confirm-icon svg {
+  width: 28px;
+  height: 28px;
+  color: var(--ep-error);
+}
+
+.ep-confirm-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ep-confirm-message {
+  font-size: 14px;
+  color: var(--ep-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ep-confirm-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--ep-border);
+  background: var(--ep-surface);
+}
+
+.ep-confirm-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ep-confirm-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--ep-border);
+}
+
+.ep-confirm-delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: var(--ep-error);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  cursor: pointer !important;
+}
+
+.ep-confirm-delete-btn:hover {
+  background: #e54545;
+}
+
+.ep-confirm-delete-btn svg {
+  width: 16px;
+  height: 16px;
+}
