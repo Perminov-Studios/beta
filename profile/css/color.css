@@ -1426,8 +1426,8 @@ section.profile-section {
 }
 
 #AboutUser {
-  background: rgba(15, 15, 15, 0.477);
-  border: 0px solid #ffffff3d;
+  background: rgba(15, 15, 15, 0);
+  border: 1px solid #ffffff3d;
   width: 80vw;
   max-width: 1200px;
   left: 0;
@@ -1447,7 +1447,7 @@ section.profile-section {
 
 #AboutUser p {
   font-size: 16px;
-  margin: 14px 0 0;
+  margin: 14px;
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -1738,6 +1738,17 @@ section .block:nth-child(2) {
 
   background: rgba(255, 255, 255, 0.05);
   border: 1.5px solid #ffffff1a;
+}
+
+.Links tag#Followers {
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: #ffffff38;
 }
 
 .Links tag:last-child {
@@ -2093,6 +2104,7 @@ body.pro .Links ul li:last-child:hover {
   width: 18px;
   height: 18px;
   fill: white;
+  color: white;
   position: relative;
   top: 8px;
 }
@@ -2585,14 +2597,13 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
   padding-top: 25px;
   color: rgba(255, 255, 255, 0.4);
   font-size: 13px;
 }
 
-.footer-bottom p {
-  margin: 0;
-}
+
 
 .footer-bottom a {
   transition: color 0.3s ease;
