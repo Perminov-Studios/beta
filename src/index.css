@@ -1,0 +1,93 @@
+@import "tailwindcss";
+@import "@heroui/styles";
+@import "@heroui-pro/react/css";
+
+body {
+  overflow-x: hidden;
+  background: #060607;
+}
+
+/* Custom CSS approach */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.sidebar:hover::-webkit-scrollbar {
+  opacity: 1;
+}
+
+[data-entering] {
+  animation: toastEnter 300ms ease-out forwards;
+}
+
+@keyframes toastEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+  background: transparent;
+  border: 0;
+}
+
+body {
+  --sb-track-color: #18181b;
+  --sb-thumb-color: #27272a;
+  --sb-size: 14px;
+}
+
+body::-webkit-scrollbar {
+  width: var(--sb-size);
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 10px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 10px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}
+
+
+/* In your CSS */
+[data-radix-collection-item] {
+  position: relative;
+}
+
+/* Or target HeroUI's internal indicator classes */
+
+@layer components {
+  .chip {
+    @apply rounded-full text-xs;
+  }
+
+  .chip__label {
+    @apply font-medium;
+  }
+
+  .chip--accent {
+    @apply border-accent/20;
+  }
+
+  .chip--accent .chip__label {
+    @apply text-accent;
+  }
+}

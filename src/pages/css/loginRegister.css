@@ -1,0 +1,188 @@
+@import "tailwindcss";
+@import "@heroui/styles";
+@import "@heroui-pro/react/css";
+
+:root {
+  --darkThemeBkgrd: #0f0f12;
+  /*--mainGradient: linear-gradient(135deg, #45ff55 0%, #09feb1 100%);*/
+  --mainGradient: linear-gradient(135deg, #004fff 0%, #11d5fd 100%);
+  --PSBlue: #004fff;
+  --BlueBorder: #0051ff69;
+  --PSWhite: #e7fff4;
+}
+
+.LoginCard {
+  @apply p-8 w-full max-w-md space-y-4;
+}
+
+.glass {
+  @apply bg-black/30 backdrop-blur-lg rounded-lg shadow-lg;
+}
+/*
+.loginBackground {
+  background-image: url('https://pbs.twimg.com/media/G68tx6gXUAAG4uy?format=jpg&name=4096x4096');
+  background-size: cover;
+  background-position: center;
+}
+*/
+
+.loginBackground {
+  position: fixed; /* or absolute if inside a container */
+
+  width: 100vw; /* or whatever size you want */
+  height: 100vh;
+
+  border: 0px solid white;
+
+  background-image: url("/download.png");
+  background-size: 100% 100%;
+  background-position: center;
+
+  filter: blur(0px) grayscale(100%);
+  opacity: 0.5;
+
+  z-index: -1;
+
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* create a fade in animation for LoginBackground */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    top: -6px;
+  }
+  to {
+    opacity: 1;
+    top: -36px;
+  }
+}
+
+.fadedUp {
+  animation: fadeUp 0.5s ease-in-out;
+}
+
+.logo {
+  width: 100px;
+  height: 100px;
+  background-image: url("");
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  margin: 0 auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 6%;
+  z-index: 2;
+}
+
+.LoginBtn {
+  background-image: var(--mainGradient);
+  color: black;
+  font-weight: bold;
+}
+
+.RegisterCard {
+  border: 0px solid #5a5a5a !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+.LoginCard {
+  border: 0px solid #5a5a5a;
+  backdrop-filter: blur(20px);
+  background: #0f0f12a9;
+  position: relative;
+  overflow: unset;
+}
+
+.LoginCard h2,
+.RegisterCard h2 {
+  font-size: 30px;
+  text-transform: uppercase;
+  background: var(--mainGradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media screen and (max-width: 500px) {
+  .LoginCard,
+  .RegisterCard {
+    border: 0px solid #5a5a5a !important;
+    backdrop-filter: blur(20px) !important;
+    width: 90%;
+  }
+}
+
+.background-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Optional: make sure content is above the shader */
+.content {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+}
+
+.UserSkillTag {
+  background: #25252576;
+  color: #9f9f9f;
+  padding: 4px 12px;
+  font-size: 12px;
+  box-shadow: 0px 0px 0px var(--BlueBorder);
+}
+
+.UserSkillTag:hover {
+  cursor: default;
+}
+
+.ProfileUserSpects {
+  background: #06060700;
+  border: 1px solid rgba(128, 128, 128, 0.29);
+  border-radius: 0px;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 10px;
+  min-height: 100px;
+}
